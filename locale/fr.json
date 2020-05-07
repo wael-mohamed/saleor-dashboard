@@ -3958,7 +3958,7 @@
     "string": "Propriétés"
   },
   "src_dot_readOnly": {
-    "string": "Saleor est en mode lecture seule. Les modifications n’ont pas été sauvegardées."
+    "string": "Le site est en mode lecture seule. Les modifications n’ont pas été sauvegardées."
   },
   "src_dot_readyToCapture": {
     "context": "order status",
@@ -4008,7 +4008,7 @@
   },
   "src_dot_services_dot_components_dot_ServiceCreatePage_dot_3639008725": {
     "context": "card description",
-    "string": "Augmenter ou restreindre à l'utilisateur les permissions d'accès à certaines parties du système saleor "
+    "string": "Augmenter ou restreindre à l'utilisateur les permissions d'accès à certaines parties du système"
   },
   "src_dot_services_dot_components_dot_ServiceDefaultToken_dot_1336855942": {
     "string": "Clé d'accès générée"
@@ -5247,7 +5247,7 @@
   },
   "src_dot_webhooks_dot_components_dot_WebhookEvents_dot_3051538277": {
     "context": "webhook events",
-    "string": "Étendez ou restreignez les permissions des Webhooks pour réagir à certains événements de Saleor."
+    "string": "Étendez ou restreignez les permissions des Webhooks pour réagir à certains événements du site."
   },
   "src_dot_webhooks_dot_components_dot_WebhookEvents_dot_3345061702": {
     "context": "event",
