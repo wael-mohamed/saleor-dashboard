@@ -2257,7 +2257,7 @@
   },
   "src_dot_orders_dot_components_dot_OrderCannotCancelOrderDialog_dot_1561587911": {
     "context": "dialog header",
-    "string": "Saleor couldn’t cancel order"
+    "string": "Couldn’t cancel order"
   },
   "src_dot_orders_dot_components_dot_OrderCannotCancelOrderDialog_dot_775268031": {
     "string": "There are still fulfillments created for this order. Cancel the fulfillments first before you cancel the order."
@@ -3067,7 +3067,7 @@
   },
   "src_dot_permissionGroups_dot_components_dot_PermissionGroupCreatePage_dot_3920591233": {
     "context": "card description",
-    "string": "Expand or restrict group's permissions to access certain part of saleor system."
+    "string": "Expand or restrict group's permissions to access certain part of the system."
   },
   "src_dot_permissionGroups_dot_components_dot_PermissionGroupDeleteDialog_dot_2297471173": {
     "context": "dialog content",
@@ -3087,7 +3087,7 @@
   },
   "src_dot_permissionGroups_dot_components_dot_PermissionGroupDetailsPage_dot_3920591233": {
     "context": "card description",
-    "string": "Expand or restrict group's permissions to access certain part of saleor system."
+    "string": "Expand or restrict group's permissions to access certain part of the system."
   },
   "src_dot_permissionGroups_dot_components_dot_PermissionGroupInfo_dot_2081191949": {
     "context": "text field label",
@@ -3948,7 +3948,7 @@
     "string": "Properties"
   },
   "src_dot_readOnly": {
-    "string": "Saleor runs in read-only mode. Changes not saved."
+    "string": "The site runs in read-only mode. Changes not saved."
   },
   "src_dot_readyToCapture": {
     "context": "order status",
@@ -3998,7 +3998,7 @@
   },
   "src_dot_services_dot_components_dot_ServiceCreatePage_dot_3639008725": {
     "context": "card description",
-    "string": "Expand or restrict user's permissions to access certain part of saleor system."
+    "string": "Expand or restrict user's permissions to access certain part of the system."
   },
   "src_dot_services_dot_components_dot_ServiceDefaultToken_dot_1336855942": {
     "string": "Generated Token"
@@ -4035,7 +4035,7 @@
   },
   "src_dot_services_dot_components_dot_ServiceDetailsPage_dot_3639008725": {
     "context": "card description",
-    "string": "Expand or restrict user's permissions to access certain part of saleor system."
+    "string": "Expand or restrict user's permissions to access certain part of the system."
   },
   "src_dot_services_dot_components_dot_ServiceInfo_dot_3789449123": {
     "context": "service account",
@@ -4515,7 +4515,7 @@
     "string": "This where you will find all of the settings determining your stores e-mails. You can determine main email address and some of the contents of your emails."
   },
   "src_dot_somethingWentWrong": {
-    "string": "Saleor ran into an unexpected problem"
+    "string": "The site ran into an unexpected problem"
   },
   "src_dot_staff": {
     "context": "staff section name",
@@ -5240,7 +5240,7 @@
   },
   "src_dot_webhooks_dot_components_dot_WebhookEvents_dot_3051538277": {
     "context": "webhook events",
-    "string": "Expand or restrict webhooks permissions to register certain events in Saleor system."
+    "string": "Expand or restrict webhooks permissions to register certain events in the system."
   },
   "src_dot_webhooks_dot_components_dot_WebhookEvents_dot_3345061702": {
     "context": "event",

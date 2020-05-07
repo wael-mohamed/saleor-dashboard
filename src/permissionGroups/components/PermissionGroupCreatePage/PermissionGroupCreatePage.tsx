@@ -84,7 +84,7 @@ const PermissionGroupCreatePage: React.FC<PermissionGroupCreatePageProps> = ({
                 })}
                 description={intl.formatMessage({
                   defaultMessage:
-                    "Expand or restrict group's permissions to access certain part of saleor system.",
+                    "Expand or restrict group's permissions to access certain part of the system.",
                   description: "card description"
                 })}
               />

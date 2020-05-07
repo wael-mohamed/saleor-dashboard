@@ -2257,7 +2257,7 @@
   },
   "src_dot_orders_dot_components_dot_OrderCannotCancelOrderDialog_dot_1561587911": {
     "context": "dialog header",
-    "string": "Saleor couldn’t cancel order"
+    "string": "Couldn’t cancel order"
   },
   "src_dot_orders_dot_components_dot_OrderCannotCancelOrderDialog_dot_775268031": {
     "string": "There are still fulfillments created for this order. Cancel the fulfillments first before you cancel the order."
@@ -3067,7 +3067,7 @@
   },
   "src_dot_permissionGroups_dot_components_dot_PermissionGroupCreatePage_dot_3920591233": {
     "context": "card description",
-    "string": "Expand or restrict group's permissions to access certain part of saleor system."
+    "string": "Expand or restrict group's permissions to access certain part of the system."
   },
   "src_dot_permissionGroups_dot_components_dot_PermissionGroupDeleteDialog_dot_2297471173": {
     "context": "dialog content",
@@ -3087,7 +3087,7 @@
   },
   "src_dot_permissionGroups_dot_components_dot_PermissionGroupDetailsPage_dot_3920591233": {
     "context": "card description",
-    "string": "Expand or restrict group's permissions to access certain part of saleor system."
+    "string": "Expand or restrict group's permissions to access certain part of the system."
   },
   "src_dot_permissionGroups_dot_components_dot_PermissionGroupInfo_dot_2081191949": {
     "context": "text field label",

@@ -90,7 +90,7 @@ const ServiceCreatePage: React.FC<ServiceCreatePageProps> = props => {
               })}
               description={intl.formatMessage({
                 defaultMessage:
-                  "Expand or restrict user's permissions to access certain part of saleor system.",
+                  "Expand or restrict user's permissions to access certain part of the system.",
                 description: "card description"
               })}
             />

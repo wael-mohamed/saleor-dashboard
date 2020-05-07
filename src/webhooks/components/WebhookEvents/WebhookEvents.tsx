@@ -90,7 +90,7 @@ const WebhookEvents: React.FC<WebhookEventsProps> = ({
         <Typography>
           {intl.formatMessage({
             defaultMessage:
-              "Expand or restrict webhooks permissions to register certain events in Saleor system.",
+              "Expand or restrict webhooks permissions to register certain events in the system.",
             description: "webhook events"
           })}
         </Typography>
