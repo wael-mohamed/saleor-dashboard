@@ -42,12 +42,12 @@ module.exports = (env, argv) => {
   if (!devMode) {
     const publicPath = process.env.STATIC_URL || "/";
     output = {
-      chunkFilename: "[name].[chunkhash].js",
-      filename: "[name].[chunkhash].js",
+      chunkFilename: "static/[name].[chunkhash].js",
+      filename: "static/[name].[chunkhash].js",
       path: resolve(dashboardBuildPath),
       publicPath
     };
-    fileLoaderPath = "file-loader?name=[name].[hash].[ext]";
+    fileLoaderPath = "file-loader?name=static/[name].[hash].[ext]";
   } else {
     output = {
       chunkFilename: "[name].js",
