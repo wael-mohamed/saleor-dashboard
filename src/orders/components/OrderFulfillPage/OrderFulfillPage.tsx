@@ -1,114 +1,119 @@
-import React from "react";
-import { FormattedMessage, useIntl } from "react-intl";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TextField from "@material-ui/core/TextField";
-import classNames from "classnames";
 import Typography from "@material-ui/core/Typography";
-
-import useFormset, { FormsetData } from "@saleor/hooks/useFormset";
-import {
-  OrderFulfillStockInput,
-  OrderErrorCode
-} from "@saleor/types/globalTypes";
-import { WarehouseFragment } from "@saleor/warehouses/types/WarehouseFragment";
-import TableCellAvatar from "@saleor/components/TableCellAvatar";
-import Container from "@saleor/components/Container";
-import PageHeader from "@saleor/components/PageHeader";
-import SaveButtonBar from "@saleor/components/SaveButtonBar";
+import { CSSProperties } from "@material-ui/styles";
+import AppHeader from "@saleor/components/AppHeader";
+import CardTitle from "@saleor/components/CardTitle";
 import { ConfirmButtonTransitionState } from "@saleor/components/ConfirmButton";
+import Container from "@saleor/components/Container";
+import ControlledCheckbox from "@saleor/components/ControlledCheckbox";
 import Form from "@saleor/components/Form";
+import PageHeader from "@saleor/components/PageHeader";
+import ResponsiveTable from "@saleor/components/ResponsiveTable";
+import SaveButtonBar from "@saleor/components/SaveButtonBar";
+import Skeleton from "@saleor/components/Skeleton";
+import TableCellAvatar from "@saleor/components/TableCellAvatar";
+import useFormset, { FormsetData } from "@saleor/hooks/useFormset";
+import { renderCollection } from "@saleor/misc";
+import { FulfillOrder_orderFulfill_errors } from "@saleor/orders/types/FulfillOrder";
 import {
   OrderFulfillData_order,
   OrderFulfillData_order_lines
 } from "@saleor/orders/types/OrderFulfillData";
-import CardTitle from "@saleor/components/CardTitle";
-import ResponsiveTable from "@saleor/components/ResponsiveTable";
-import { Theme, makeStyles } from "@material-ui/core/styles";
+import {
+  OrderErrorCode,
+  OrderFulfillStockInput
+} from "@saleor/types/globalTypes";
 import { update } from "@saleor/utils/lists";
-import ControlledCheckbox from "@saleor/components/ControlledCheckbox";
-import { renderCollection } from "@saleor/misc";
-import Skeleton from "@saleor/components/Skeleton";
-import AppHeader from "@saleor/components/AppHeader";
-import { FulfillOrder_orderFulfill_errors } from "@saleor/orders/types/FulfillOrder";
+import { WarehouseFragment } from "@saleor/warehouses/types/WarehouseFragment";
+import classNames from "classnames";
+import React from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 
 type ClassKey =
   | "actionBar"
   | "table"
   | "colName"
   | "colQuantity"
-  | "colQuantityContent"
   | "colQuantityHeader"
   | "colQuantityTotal"
   | "colSku"
   | "error"
   | "full"
   | "quantityInnerInput"
-  | "quantityInput"
+  | "quantityInnerInputNoRemaining"
   | "remainingQuantity";
 const useStyles = makeStyles<Theme, OrderFulfillPageProps, ClassKey>(
-  theme => ({
-    [theme.breakpoints.up("lg")]: {
+  theme => {
+    const inputPadding: CSSProperties = {
+      paddingBottom: theme.spacing(2),
+      paddingTop: theme.spacing(2)
+    };
+
+    return {
+      [theme.breakpoints.up("lg")]: {
+        colName: {
+          width: ({ warehouses }) => (warehouses?.length > 3 ? 250 : "auto")
+        }
+      },
+      [theme.breakpoints.only("md")]: {
+        colName: {
+          width: ({ warehouses }) => (warehouses?.length > 2 ? 250 : "auto")
+        }
+      },
+      actionBar: {
+        flexDirection: "row",
+        paddingLeft: theme.spacing(2) + 2
+      },
       colName: {
-        width: ({ warehouses }) => (warehouses?.length > 3 ? 250 : "auto")
+        width: 250
+      },
+      colQuantity: {
+        textAlign: "right",
+        width: 210
+      },
+      colQuantityHeader: {
+        textAlign: "right"
+      },
+      colQuantityTotal: {
+        textAlign: "right",
+        width: 180
+      },
+      colSku: {
+        textAlign: "right",
+        textOverflow: "ellipsis",
+        width: 150
+      },
+      error: {
+        color: theme.palette.error.main
+      },
+      full: {
+        fontWeight: 600
+      },
+      quantityInnerInput: {
+        ...inputPadding
+      },
+      quantityInnerInputNoRemaining: {
+        paddingRight: 0
+      },
+      remainingQuantity: {
+        ...inputPadding,
+        color: theme.palette.text.secondary,
+        whiteSpace: "nowrap"
+      },
+      table: {
+        "&&": {
+          tableLayout: "fixed"
+        }
       }
-    },
-    [theme.breakpoints.only("md")]: {
-      colName: {
-        width: ({ warehouses }) => (warehouses?.length > 2 ? 250 : "auto")
-      }
-    },
-    actionBar: {
-      flexDirection: "row",
-      paddingLeft: theme.spacing(2) + 2
-    },
-    colName: {
-      width: 250
-    },
-    colQuantity: {
-      width: 210
-    },
-    colQuantityContent: {
-      alignItems: "center",
-      display: "inline-flex"
-    },
-    colQuantityHeader: {
-      textAlign: "right"
-    },
-    colQuantityTotal: {
-      textAlign: "right",
-      width: 180
-    },
-    colSku: {
-      textAlign: "right",
-      textOverflow: "ellipsis",
-      width: 150
-    },
-    error: {
-      color: theme.palette.error.main
-    },
-    full: {
-      fontWeight: 600
-    },
-    quantityInnerInput: {
-      padding: "16px 0 14px 12px"
-    },
-    quantityInput: {
-      width: 100
-    },
-    remainingQuantity: {
-      marginLeft: theme.spacing()
-    },
-    table: {
-      "&&": {
-        tableLayout: "fixed"
-      }
-    }
-  }),
+    };
+  },
   { name: "OrderFulfillPage" }
 );
 
@@ -343,50 +348,64 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                                 className={classes.colQuantity}
                                 key={warehouseStock.id}
                               >
-                                <div className={classes.colQuantityContent}>
-                                  <TextField
-                                    type="number"
-                                    inputProps={{
-                                      className: classes.quantityInnerInput,
-                                      max: warehouseStock.quantity,
-                                      min: 0,
-                                      style: { textAlign: "right" }
-                                    }}
-                                    className={classes.quantityInput}
-                                    value={formsetStock.quantity}
-                                    onChange={event =>
-                                      formsetChange(
-                                        line.id,
-                                        update(
-                                          {
-                                            quantity: parseInt(
-                                              event.target.value,
-                                              10
-                                            ),
-                                            warehouse: warehouse.id
-                                          },
-                                          formsetData[lineIndex].value,
-                                          (a, b) => a.warehouse === b.warehouse
-                                        )
+                                <TextField
+                                  type="number"
+                                  inputProps={{
+                                    className: classNames(
+                                      classes.quantityInnerInput,
+                                      {
+                                        [classes.quantityInnerInputNoRemaining]: !line
+                                          .variant.trackInventory
+                                      }
+                                    ),
+                                    max:
+                                      line.variant.trackInventory &&
+                                      warehouseStock.quantity,
+                                    min: 0,
+                                    style: { textAlign: "right" }
+                                  }}
+                                  fullWidth
+                                  value={formsetStock.quantity}
+                                  onChange={event =>
+                                    formsetChange(
+                                      line.id,
+                                      update(
+                                        {
+                                          quantity: parseInt(
+                                            event.target.value,
+                                            10
+                                          ),
+                                          warehouse: warehouse.id
+                                        },
+                                        formsetData[lineIndex].value,
+                                        (a, b) => a.warehouse === b.warehouse
                                       )
-                                    }
-                                    error={
-                                      overfulfill ||
+                                    )
+                                  }
+                                  error={
+                                    overfulfill ||
+                                    (line.variant.trackInventory &&
                                       formsetStock.quantity >
-                                        availableQuantity ||
-                                      !!errors?.find(
-                                        err =>
-                                          err.warehouse === warehouse.id &&
-                                          err.orderLine === line.id &&
-                                          err.code ===
-                                            OrderErrorCode.INSUFFICIENT_STOCK
-                                      )
-                                    }
-                                  />
-                                  <div className={classes.remainingQuantity}>
-                                    / {availableQuantity}
-                                  </div>
-                                </div>
+                                        availableQuantity) ||
+                                    !!errors?.find(
+                                      err =>
+                                        err.warehouse === warehouse.id &&
+                                        err.orderLine === line.id &&
+                                        err.code ===
+                                          OrderErrorCode.INSUFFICIENT_STOCK
+                                    )
+                                  }
+                                  InputProps={{
+                                    endAdornment: line.variant
+                                      .trackInventory && (
+                                      <div
+                                        className={classes.remainingQuantity}
+                                      >
+                                        / {availableQuantity}
+                                      </div>
+                                    )
+                                  }}
+                                />
                               </TableCell>
                             );
                           })}
