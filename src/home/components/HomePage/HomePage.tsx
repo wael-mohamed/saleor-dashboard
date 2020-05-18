@@ -1,6 +1,4 @@
 import { makeStyles } from "@material-ui/core/styles";
-import React from "react";
-
 import CardSpacer from "@saleor/components/CardSpacer";
 import Container from "@saleor/components/Container";
 import Grid from "@saleor/components/Grid";
@@ -9,6 +7,8 @@ import RequirePermissions from "@saleor/components/RequirePermissions";
 import Skeleton from "@saleor/components/Skeleton";
 import { UserPermissionProps } from "@saleor/types";
 import { PermissionEnum } from "@saleor/types/globalTypes";
+import React from "react";
+
 import Orders from "../../../icons/Orders";
 import Sales from "../../../icons/Sales";
 import {
@@ -33,6 +33,11 @@ const useStyles = makeStyles(
       },
       [theme.breakpoints.down("xs")]: {
         gridTemplateColumns: "1fr"
+      }
+    },
+    icon: {
+      "& path": {
+        fill: theme.palette.primary.main
       }
     }
   }),
@@ -86,7 +91,13 @@ const HomePage: React.FC<HomePageProps> = props => {
             <div className={classes.cardContainer}>
               <HomeAnalyticsCard
                 title={"Sales"}
-                icon={<Sales fontSize={"inherit"} viewBox="0 0 64 64" />}
+                icon={
+                  <Sales
+                    className={classes.icon}
+                    fontSize={"inherit"}
+                    viewBox="0 0 64 64"
+                  />
+                }
               >
                 {sales ? (
                   <Money money={sales} />
@@ -96,7 +107,13 @@ const HomePage: React.FC<HomePageProps> = props => {
               </HomeAnalyticsCard>
               <HomeAnalyticsCard
                 title={"Orders"}
-                icon={<Orders fontSize={"inherit"} viewBox="0 0 64 64" />}
+                icon={
+                  <Orders
+                    className={classes.icon}
+                    fontSize={"inherit"}
+                    viewBox="0 0 64 64"
+                  />
+                }
               >
                 {orders === undefined ? (
                   <Skeleton style={{ width: "5em" }} />

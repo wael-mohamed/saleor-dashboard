@@ -1,12 +1,12 @@
+import { isJwtError } from "@saleor/auth/errors";
+import { commonMessages } from "@saleor/intl";
+import { maybe, RequireAtLeastOne } from "@saleor/misc";
 import { ApolloQueryResult } from "apollo-client";
 import { DocumentNode } from "graphql";
 import { useEffect } from "react";
 import { QueryResult, useQuery as useBaseQuery } from "react-apollo";
 import { useIntl } from "react-intl";
 
-import { commonMessages } from "@saleor/intl";
-import { maybe, RequireAtLeastOne } from "@saleor/misc";
-import { isJwtError } from "@saleor/auth/errors";
 import useAppState from "./useAppState";
 import useNotifier from "./useNotifier";
 import useUser from "./useUser";
@@ -64,7 +64,7 @@ function makeQuery<TData, TVariables>(
     }, [queryData.loading]);
 
     if (queryData.error) {
-      if (queryData.error.graphQLErrors.every(isJwtError)) {
+      if (queryData.error.graphQLErrors.some(isJwtError)) {
         user.logout();
         notify({
           text: intl.formatMessage(commonMessages.sessionExpired)
