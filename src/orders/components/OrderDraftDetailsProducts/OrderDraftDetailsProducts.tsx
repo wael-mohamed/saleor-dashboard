@@ -47,6 +47,10 @@ const useStyles = makeStyles(
       textAlign: "right",
       width: 80
     },
+    colSKU: {
+      paddingLeft: 0,
+      width: "auto"
+    },
     colTotal: {
       textAlign: "right",
       width: 150
@@ -84,6 +88,11 @@ const OrderDraftDetailsProducts: React.FC<OrderDraftDetailsProductsProps> = prop
             <TableCell className={classes.colName}>
               <span className={classes.colNameLabel}>
                 <FormattedMessage defaultMessage="Product" />
+              </span>
+            </TableCell>
+            <TableCell className={classes.colSKU}>
+              <span>
+                <FormattedMessage defaultMessage="SKU" />
               </span>
             </TableCell>
             <TableCell className={classes.colQuantity}>
@@ -131,6 +140,9 @@ const OrderDraftDetailsProducts: React.FC<OrderDraftDetailsProductsProps> = prop
                   <Skeleton />
                 )}
               </TableCellAvatar>
+              <TableCell className={classes.colSKU}>
+                {maybe(() => line.productSku) || <Skeleton />}
+              </TableCell>
               <TableCell className={classes.colQuantity}>
                 {maybe(() => line.quantity) ? (
                   <Form
