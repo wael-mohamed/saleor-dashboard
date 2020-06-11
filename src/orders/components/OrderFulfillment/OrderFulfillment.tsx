@@ -1,3 +1,4 @@
+import { Link } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -258,24 +259,28 @@ const OrderFulfillment: React.FC<OrderFulfillmentProps> = props => {
                   }}
                 />
               </Typography>
-              <Typography color="textSecondary" variant="body2">
-                {fulfillment?.trackingNumber && (
-                  <FormattedMessage
-                    defaultMessage="Tracking Number: {trackingNumber}"
-                    values={{
-                      trackingNumber: (
-                        <Typography
-                          className={classes.infoLabel}
-                          color="textPrimary"
-                          variant="body2"
-                        >
-                          {fulfillment.trackingNumber}
-                        </Typography>
-                      )
-                    }}
-                  />
-                )}
-              </Typography>
+              {fulfillment?.trackingNumber && (
+                <Link
+                  href={`https://www.aramex.com/dz/fr/track/results?mode=&ShipmentNumber=${fulfillment.trackingNumber}`}
+                >
+                  <Typography color="textSecondary" variant="body2">
+                    <FormattedMessage
+                      defaultMessage="Tracking Number: {trackingNumber}"
+                      values={{
+                        trackingNumber: (
+                          <Typography
+                            className={classes.infoLabel}
+                            color="textPrimary"
+                            variant="body2"
+                          >
+                            {fulfillment.trackingNumber}
+                          </Typography>
+                        )
+                      }}
+                    />
+                  </Typography>
+                </Link>
+              )}
             </TableCell>
           </TableRow>
         </TableBody>
