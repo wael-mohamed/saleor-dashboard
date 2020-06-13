@@ -260,9 +260,7 @@ const OrderFulfillment: React.FC<OrderFulfillmentProps> = props => {
                 />
               </Typography>
               {fulfillment?.trackingNumber && (
-                <Link
-                  href={`https://www.aramex.com/dz/fr/track/results?mode=&ShipmentNumber=${fulfillment.trackingNumber}`}
-                >
+                <>
                   <Typography color="textSecondary" variant="body2">
                     <FormattedMessage
                       defaultMessage="Tracking Number: {trackingNumber}"
@@ -279,7 +277,12 @@ const OrderFulfillment: React.FC<OrderFulfillmentProps> = props => {
                       }}
                     />
                   </Typography>
-                </Link>
+                  <Link
+                    href={`https://www.aramex.com/dz/fr/track/results?mode=&ShipmentNumber=${fulfillment.trackingNumber}`}
+                  >
+                    {" check>"}
+                  </Link>
+                </>
               )}
             </TableCell>
           </TableRow>
