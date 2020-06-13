@@ -390,5 +390,5 @@ export function transformFormToAddress<T>(
 }
 
 export function getStringOrPlaceholder(s: string | undefined): string {
-  return s || "...";
+  return s || "";
 }
