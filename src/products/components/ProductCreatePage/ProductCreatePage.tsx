@@ -135,7 +135,7 @@ export const ProductCreatePage: React.FC<ProductCreatePageProps> = ({
     chargeTaxes: false,
     collections: [],
     description: {} as any,
-    isPublished: true,
+    isPublished: false,
     name: "",
     productType: "",
     publicationDate: "",
