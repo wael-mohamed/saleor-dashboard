@@ -15,6 +15,8 @@ import Skeleton from "@saleor/components/Skeleton";
 import TableCellAvatar, {
   AVATAR_MARGIN
 } from "@saleor/components/TableCellAvatar";
+import useNavigator from "@saleor/hooks/useNavigator";
+import { productUrl } from "@saleor/products/urls";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -79,6 +81,7 @@ const OrderDraftDetailsProducts: React.FC<OrderDraftDetailsProductsProps> = prop
   const { lines, onOrderLineChange, onOrderLineRemove } = props;
 
   const classes = useStyles(props);
+  const navigate = useNavigator();
 
   return (
     <ResponsiveTable className={classes.table}>
@@ -126,7 +129,10 @@ const OrderDraftDetailsProducts: React.FC<OrderDraftDetailsProductsProps> = prop
           </TableRow>
         ) : (
           renderCollection(lines, line => (
-            <TableRow key={line ? line.id : "skeleton"}>
+            <TableRow
+              key={line ? line.id : "skeleton"}
+              onClick={() => navigate(productUrl(line.id))}
+            >
               <TableCellAvatar
                 className={classes.colName}
                 thumbnail={maybe(() => line.thumbnail.url)}

@@ -17,6 +17,8 @@ import StatusLabel from "@saleor/components/StatusLabel";
 import TableCellAvatar, {
   AVATAR_MARGIN
 } from "@saleor/components/TableCellAvatar";
+import useNavigator from "@saleor/hooks/useNavigator";
+import { productUrl } from "@saleor/products/urls";
 import classNames from "classnames";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -94,6 +96,8 @@ const OrderFulfillment: React.FC<OrderFulfillmentProps> = props => {
   const classes = useStyles(props);
 
   const intl = useIntl();
+
+  const navigate = useNavigator();
 
   const lines = maybe(() => fulfillment.lines);
   const status = maybe(() => fulfillment.status);
@@ -201,6 +205,7 @@ const OrderFulfillment: React.FC<OrderFulfillmentProps> = props => {
               className={!!line ? classes.clickableRow : undefined}
               hover={!!line}
               key={maybe(() => line.id)}
+              onClick={() => navigate(productUrl(line.orderLine.id))}
             >
               <TableCellAvatar
                 className={classes.colName}

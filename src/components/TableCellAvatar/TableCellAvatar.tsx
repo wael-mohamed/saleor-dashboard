@@ -12,6 +12,11 @@ export const AVATAR_MARGIN = 32;
 const useStyles = makeStyles(
   theme => ({
     avatar: {
+      "&:hover": {
+        position: "absolute",
+        transform: "scale(10)",
+        zIndex: 10000
+      },
       background: "none",
       border: `1px solid ${theme.palette.divider}`,
       borderRadius: 2,

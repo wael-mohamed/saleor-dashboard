@@ -14,6 +14,8 @@ import StatusLabel from "@saleor/components/StatusLabel";
 import TableCellAvatar, {
   AVATAR_MARGIN
 } from "@saleor/components/TableCellAvatar";
+import useNavigator from "@saleor/hooks/useNavigator";
+import { productUrl } from "@saleor/products/urls";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -67,7 +69,7 @@ interface OrderUnfulfilledItemsProps {
 const OrderUnfulfilledItems: React.FC<OrderUnfulfilledItemsProps> = props => {
   const { canFulfill, lines, onFulfill } = props;
   const classes = useStyles(props);
-
+  const navigate = useNavigator();
   const intl = useIntl();
 
   return (
@@ -132,6 +134,7 @@ const OrderUnfulfilledItems: React.FC<OrderUnfulfilledItemsProps> = props => {
               className={!!line ? classes.clickableRow : undefined}
               hover={!!line}
               key={maybe(() => line.id)}
+              onClick={() => navigate(productUrl(line.id))}
             >
               <TableCellAvatar
                 className={classes.colName}
