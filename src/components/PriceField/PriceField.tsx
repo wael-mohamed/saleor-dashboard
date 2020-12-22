@@ -3,6 +3,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import React from "react";
+import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles(
   theme => ({
@@ -38,6 +39,8 @@ interface PriceFieldProps {
   name?: string;
   value?: string | number;
   InputProps?: InputProps;
+  inputProps?: InputProps["inputProps"];
+  required?: boolean;
   onChange(event: any);
 }
 
@@ -47,21 +50,31 @@ export const PriceField: React.FC<PriceFieldProps> = props => {
     disabled,
     error,
     label,
-    hint,
+    hint = "",
     currencySymbol,
     name,
     onChange,
+    required,
     value,
-    InputProps
+    InputProps,
+    inputProps
   } = props;
 
   const classes = useStyles(props);
-
+  const minValue = 0;
   return (
     <TextField
       className={className}
-      error={error}
-      helperText={hint}
+      error={error || value < minValue}
+      helperText={
+        hint ? (
+          hint
+        ) : value < minValue ? (
+          <FormattedMessage defaultMessage="Price cannot be lower than 0" />
+        ) : (
+          ""
+        )
+      }
       label={label}
       fullWidth
       value={value}
@@ -74,10 +87,20 @@ export const PriceField: React.FC<PriceFieldProps> = props => {
         ) : (
           <span />
         ),
+        inputProps: {
+          min: 0,
+          ...InputProps?.inputProps
+        },
         type: "number"
+      }}
+      inputProps={{
+        min: minValue,
+        type: "number",
+        ...inputProps
       }}
       name={name}
       disabled={disabled}
+      required={required}
       onChange={onChange}
     />
   );

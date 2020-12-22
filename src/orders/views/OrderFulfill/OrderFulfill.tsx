@@ -23,17 +23,20 @@ const OrderFulfill: React.FC<OrderFulfillProps> = ({ orderId }) => {
       orderId
     }
   });
+
   const { data: warehouseData, loading: warehousesLoading } = useWarehouseList({
     displayLoader: true,
     variables: {
       first: 20
     }
   });
+
   const [fulfillOrder, fulfillOrderOpts] = useOrderFulfill({
     onCompleted: data => {
       if (data.orderFulfill.errors.length === 0) {
         navigate(orderUrl(orderId), true);
         notify({
+          status: "success",
           text: intl.formatMessage({
             defaultMessage: "Fulfilled Items",
             description: "order fulfilled success message"
@@ -64,7 +67,7 @@ const OrderFulfill: React.FC<OrderFulfillProps> = ({ orderId }) => {
         }
       />
       <OrderFulfillPage
-        disabled={loading || warehousesLoading || fulfillOrderOpts.loading}
+        loading={loading || warehousesLoading || fulfillOrderOpts.loading}
         errors={fulfillOrderOpts.data?.orderFulfill.errors}
         onBack={() => navigate(orderUrl(orderId))}
         onSubmit={formData =>

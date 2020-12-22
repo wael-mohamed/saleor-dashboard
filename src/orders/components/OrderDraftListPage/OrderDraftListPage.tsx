@@ -33,7 +33,6 @@ export interface OrderDraftListPageProps
 }
 
 const OrderDraftListPage: React.FC<OrderDraftListPageProps> = ({
-  currencySymbol,
   currentTab,
   disabled,
   filterOpts,
@@ -49,7 +48,6 @@ const OrderDraftListPage: React.FC<OrderDraftListPageProps> = ({
   ...listProps
 }) => {
   const intl = useIntl();
-
   const structure = createFilterStructure(intl, filterOpts);
 
   return (
@@ -73,7 +71,6 @@ const OrderDraftListPage: React.FC<OrderDraftListPageProps> = ({
             defaultMessage: "All Drafts",
             description: "tab name"
           })}
-          currencySymbol={currencySymbol}
           currentTab={currentTab}
           filterStructure={structure}
           initialSearch={initialSearch}

@@ -14,9 +14,9 @@
 !.npmrc
 !.plop
 !.prettierignore
+!.prettierrc
 !.pylintrc
 !.travis*
-!.testcafe
 !.tx
 *.css
 *.log

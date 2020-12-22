@@ -18,6 +18,9 @@ const useStyles = makeStyles(
       },
       width: "100%"
     },
+    label: {
+      zIndex: 3
+    },
     noLabel: {
       padding: theme.spacing(2, 1.5)
     }
@@ -25,11 +28,14 @@ const useStyles = makeStyles(
   { name: "SingleSelectField" }
 );
 
+export interface Choice {
+  value: string;
+  label: string | React.ReactNode;
+}
+
+export type Choices = Choice[];
 interface SingleSelectFieldProps {
-  choices: Array<{
-    value: string;
-    label: string | React.ReactNode;
-  }>;
+  choices: Choices;
   className?: string;
   disabled?: boolean;
   error?: boolean;
@@ -74,7 +80,9 @@ export const SingleSelectField: React.FC<SingleSelectFieldProps> = props => {
       error={error}
       disabled={disabled}
     >
-      <InputLabel shrink={!!value}>{label}</InputLabel>
+      <InputLabel className={classes.label} shrink={!!value}>
+        {label}
+      </InputLabel>
       <Select
         variant="outlined"
         fullWidth
@@ -99,12 +107,21 @@ export const SingleSelectField: React.FC<SingleSelectFieldProps> = props => {
       >
         {choices.length > 0 ? (
           choices.map(choice => (
-            <MenuItem value={choice.value} key={choice.value}>
+            <MenuItem
+              data-test="selectFieldOption"
+              data-test-id={choice.value}
+              value={choice.value}
+              key={choice.value}
+            >
               {choice.label}
             </MenuItem>
           ))
         ) : (
-          <MenuItem disabled={true}>
+          <MenuItem
+            data-test="selectFieldOption"
+            data-test-disabled
+            disabled={true}
+          >
             <FormattedMessage defaultMessage="No results found" />
           </MenuItem>
         )}

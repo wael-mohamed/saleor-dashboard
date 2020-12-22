@@ -1,19 +1,16 @@
 import Card from "@material-ui/core/Card";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import AppHeader from "@saleor/components/AppHeader";
 import Container from "@saleor/components/Container";
 import PageHeader from "@saleor/components/PageHeader";
-import SearchInput from "@saleor/components/SearchBar/SearchInput";
 import { ShopInfo_shop_languages } from "@saleor/components/Shop/types/ShopInfo";
 import FilterTabs, { FilterTab } from "@saleor/components/TableFilter";
 import { maybe } from "@saleor/misc";
-import { SearchPageProps } from "@saleor/types";
 import React from "react";
-import { IntlShape, useIntl } from "react-intl";
+import { useIntl } from "react-intl";
 
 import { TranslatableEntities } from "../../urls";
 
-export interface TranslationsEntitiesListPageProps extends SearchPageProps {
+export interface TranslationsEntitiesListPageProps {
   children: React.ReactNode;
   filters: TranslationsEntitiesFilters;
   language: ShopInfo_shop_languages;
@@ -29,72 +26,10 @@ export interface TranslationsEntitiesFilters {
   onVouchersTabClick: () => void;
   onPagesTabClick: () => void;
   onProductTypesTabClick: () => void;
+  onShippingMethodsTabClick: () => void;
 }
-
-const useStyles = makeStyles(
-  theme => ({
-    root: {
-      display: "flex",
-      flexWrap: "wrap",
-      padding: theme.spacing(1, 3)
-    },
-    tabActions: {
-      borderBottom: `1px solid ${theme.palette.divider}`,
-      padding: theme.spacing(1, 3, 2),
-      textAlign: "right"
-    }
-  }),
-  {
-    name: "FilterActions"
-  }
-);
 
 export type TranslationsEntitiesListFilterTab = keyof typeof TranslatableEntities;
-
-function getSearchPlaceholder(
-  tab: TranslationsEntitiesListFilterTab,
-  intl: IntlShape
-): string {
-  switch (tab) {
-    case "categories":
-      return intl.formatMessage({
-        defaultMessage: "Search Category"
-      });
-
-    case "collections":
-      return intl.formatMessage({
-        defaultMessage: "Search Collection"
-      });
-
-    case "products":
-      return intl.formatMessage({
-        defaultMessage: "Search Product"
-      });
-
-    case "sales":
-      return intl.formatMessage({
-        defaultMessage: "Search Sale"
-      });
-
-    case "vouchers":
-      return intl.formatMessage({
-        defaultMessage: "Search Voucher"
-      });
-
-    case "pages":
-      return intl.formatMessage({
-        defaultMessage: "Search Page"
-      });
-
-    case "productTypes":
-      return intl.formatMessage({
-        defaultMessage: "Search Product Type"
-      });
-
-    default:
-      return "...";
-  }
-}
 
 const tabs: TranslationsEntitiesListFilterTab[] = [
   "categories",
@@ -103,15 +38,16 @@ const tabs: TranslationsEntitiesListFilterTab[] = [
   "sales",
   "vouchers",
   "pages",
-  "productTypes"
+  "productTypes",
+  "shippingMethods"
 ];
 
 const TranslationsEntitiesListPage: React.FC<TranslationsEntitiesListPageProps> = props => {
-  const { filters, language, onBack, children, ...searchProps } = props;
+  const { filters, language, onBack, children } = props;
 
-  const classes = useStyles(props);
   const intl = useIntl();
-  const currentTab = tabs.indexOf(filters.current);
+  const queryTab = tabs.indexOf(filters.current);
+  const currentTab = queryTab >= 0 ? queryTab : 0;
 
   return (
     <Container>
@@ -171,17 +107,17 @@ const TranslationsEntitiesListPage: React.FC<TranslationsEntitiesListPageProps> 
           />
           <FilterTab
             label={intl.formatMessage({
-              defaultMessage: "Product Types"
+              defaultMessage: "Attributes"
             })}
             onClick={filters.onProductTypesTabClick}
           />
-        </FilterTabs>
-        <div className={classes.root}>
-          <SearchInput
-            placeholder={getSearchPlaceholder(filters.current, intl)}
-            {...searchProps}
+          <FilterTab
+            label={intl.formatMessage({
+              defaultMessage: "Shipping methods"
+            })}
+            onClick={filters.onShippingMethodsTabClick}
           />
-        </div>
+        </FilterTabs>
         {children}
       </Card>
     </Container>

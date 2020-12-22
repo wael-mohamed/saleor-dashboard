@@ -1,8 +1,7 @@
-import { ProductErrorCode } from "@saleor/types/globalTypes";
-import { getProductErrorMessage } from "@saleor/utils/errors";
+import { AttributeErrorFragment } from "@saleor/fragments/types/AttributeErrorFragment";
+import { AttributeErrorCode } from "@saleor/types/globalTypes";
+import getAttributeErrorMessage from "@saleor/utils/errors/attribute";
 import { defineMessages, IntlShape } from "react-intl";
-
-import { ProductErrorFragment } from "./types/ProductErrorFragment";
 
 const messages = defineMessages({
   attributeSlugUnique: {
@@ -14,25 +13,25 @@ const messages = defineMessages({
 });
 
 export function getAttributeSlugErrorMessage(
-  err: ProductErrorFragment,
+  err: AttributeErrorFragment,
   intl: IntlShape
 ): string {
   switch (err?.code) {
-    case ProductErrorCode.UNIQUE:
+    case AttributeErrorCode.UNIQUE:
       return intl.formatMessage(messages.attributeSlugUnique);
     default:
-      return getProductErrorMessage(err, intl);
+      return getAttributeErrorMessage(err, intl);
   }
 }
 
 export function getAttributeValueErrorMessage(
-  err: ProductErrorFragment,
+  err: AttributeErrorFragment,
   intl: IntlShape
 ): string {
   switch (err?.code) {
-    case ProductErrorCode.ALREADY_EXISTS:
+    case AttributeErrorCode.ALREADY_EXISTS:
       return intl.formatMessage(messages.attributeValueAlreadyExists);
     default:
-      return getProductErrorMessage(err, intl);
+      return getAttributeErrorMessage(err, intl);
   }
 }

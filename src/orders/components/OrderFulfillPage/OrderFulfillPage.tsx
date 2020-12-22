@@ -19,6 +19,7 @@ import ResponsiveTable from "@saleor/components/ResponsiveTable";
 import SaveButtonBar from "@saleor/components/SaveButtonBar";
 import Skeleton from "@saleor/components/Skeleton";
 import TableCellAvatar from "@saleor/components/TableCellAvatar";
+import { WarehouseFragment } from "@saleor/fragments/types/WarehouseFragment";
 import useFormset, { FormsetData } from "@saleor/hooks/useFormset";
 import { renderCollection } from "@saleor/misc";
 import { FulfillOrder_orderFulfill_errors } from "@saleor/orders/types/FulfillOrder";
@@ -31,7 +32,6 @@ import {
   OrderFulfillStockInput
 } from "@saleor/types/globalTypes";
 import { update } from "@saleor/utils/lists";
-import { WarehouseFragment } from "@saleor/warehouses/types/WarehouseFragment";
 import classNames from "classnames";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -124,7 +124,7 @@ interface OrderFulfillSubmitData extends OrderFulfillFormData {
   items: FormsetData<null, OrderFulfillStockInput[]>;
 }
 export interface OrderFulfillPageProps {
-  disabled: boolean;
+  loading: boolean;
   errors: FulfillOrder_orderFulfill_errors[];
   order: OrderFulfillData_order;
   saveButtonBar: ConfirmButtonTransitionState;
@@ -143,7 +143,7 @@ function getRemainingQuantity(line: OrderFulfillData_order_lines): number {
 
 const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
   const {
-    disabled,
+    loading,
     errors,
     order,
     saveButtonBar,
@@ -183,6 +183,35 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
       ...formData,
       items: formsetData
     });
+
+  const shouldEnableSave = () => {
+    if (!order || loading) {
+      return false;
+    }
+
+    const isAtLeastOneFulfilled = formsetData.some(({ value }) =>
+      value.some(({ quantity }) => quantity > 0)
+    );
+
+    const areProperlyFulfilled = formsetData.every(({ id, value }) => {
+      const { lines } = order;
+
+      const { quantity, quantityFulfilled } = lines.find(
+        ({ id: lineId }) => lineId === id
+      );
+
+      const remainingQuantity = quantity - quantityFulfilled;
+
+      const formQuantityFulfilled = value.reduce(
+        (result, { quantity }) => result + quantity,
+        0
+      );
+
+      return formQuantityFulfilled <= remainingQuantity;
+    });
+
+    return isAtLeastOneFulfilled && areProperlyFulfilled;
+  };
 
   return (
     <Container>
@@ -257,10 +286,10 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                 <TableBody>
                   {renderCollection(
                     order?.lines.filter(line => getRemainingQuantity(line) > 0),
-                    (line, lineIndex) => {
+                    (line: OrderFulfillData_order_lines, lineIndex) => {
                       if (!line) {
                         return (
-                          <TableRow>
+                          <TableRow key={lineIndex}>
                             <TableCellAvatar className={classes.colName}>
                               <Skeleton />
                             </TableCellAvatar>
@@ -326,6 +355,7 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                             if (!warehouseStock) {
                               return (
                                 <TableCell
+                                  key="skeleton"
                                   className={classNames(
                                     classes.colQuantity,
                                     classes.error
@@ -339,9 +369,16 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                               );
                             }
 
+                            const warehouseAllocation = line.allocations.find(
+                              allocation =>
+                                allocation.warehouse.id === warehouse.id
+                            );
+                            const allocatedQuantityForLine =
+                              warehouseAllocation?.quantity || 0;
                             const availableQuantity =
                               warehouseStock.quantity -
-                              warehouseStock.quantityAllocated;
+                              warehouseStock.quantityAllocated +
+                              allocatedQuantityForLine;
 
                             return (
                               <TableCell
@@ -358,9 +395,10 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                                           .variant.trackInventory
                                       }
                                     ),
-                                    max:
+                                    max: (
                                       line.variant.trackInventory &&
-                                      warehouseStock.quantity,
+                                      availableQuantity
+                                    ).toString(),
                                     min: 0,
                                     style: { textAlign: "right" }
                                   }}
@@ -409,7 +447,11 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                               </TableCell>
                             );
                           })}
-                          <TableCell className={classes.colQuantityTotal}>
+
+                          <TableCell
+                            className={classes.colQuantityTotal}
+                            key="total"
+                          >
                             <span
                               className={classNames({
                                 [classes.error]: overfulfill,
@@ -440,7 +482,7 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
               </CardActions>
             </Card>
             <SaveButtonBar
-              disabled={disabled}
+              disabled={!shouldEnableSave()}
               labels={{
                 save: intl.formatMessage({
                   defaultMessage: "Fulfill",

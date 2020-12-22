@@ -18,13 +18,13 @@ import FormSpacer from "@saleor/components/FormSpacer";
 import Money from "@saleor/components/Money";
 import ResponsiveTable from "@saleor/components/ResponsiveTable";
 import TableCellAvatar from "@saleor/components/TableCellAvatar";
+import { OrderErrorFragment } from "@saleor/fragments/types/OrderErrorFragment";
 import useModalDialogErrors from "@saleor/hooks/useModalDialogErrors";
 import useModalDialogOpen from "@saleor/hooks/useModalDialogOpen";
 import useSearchQuery from "@saleor/hooks/useSearchQuery";
 import { buttonMessages } from "@saleor/intl";
 import { maybe, renderCollection } from "@saleor/misc";
-import { OrderErrorFragment } from "@saleor/orders/types/OrderErrorFragment";
-import { FetchMoreProps } from "@saleor/types";
+import { ChannelProps, FetchMoreProps } from "@saleor/types";
 import getOrderErrorMessage from "@saleor/utils/errors/order";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
@@ -38,7 +38,8 @@ import {
 const useStyles = makeStyles(
   theme => ({
     avatar: {
-      paddingLeft: 0
+      paddingLeft: 0,
+      width: 64
     },
     colName: {
       paddingLeft: 0
@@ -86,7 +87,9 @@ type SetVariantsAction = (
   data: SearchOrderVariant_search_edges_node_variants[]
 ) => void;
 
-export interface OrderProductAddDialogProps extends FetchMoreProps {
+export interface OrderProductAddDialogProps
+  extends FetchMoreProps,
+    ChannelProps {
   confirmButtonState: ConfirmButtonTransitionState;
   errors: OrderErrorFragment[];
   open: boolean;
@@ -167,6 +170,7 @@ const OrderProductAddDialog: React.FC<OrderProductAddDialogProps> = props => {
     loading,
     hasMore,
     products,
+    selectedChannelId,
     onFetch,
     onFetchMore,
     onClose,
@@ -185,13 +189,16 @@ const OrderProductAddDialog: React.FC<OrderProductAddDialogProps> = props => {
     onClose: () => setVariants([])
   });
 
-  const selectedVariantsToProductsMap = products
-    ? products.map(product =>
+  const productChoices = products.filter(
+    product => product.variants?.length > 0
+  );
+  const selectedVariantsToProductsMap = productChoices
+    ? productChoices.map(product =>
         product.variants.map(variant => isVariantSelected(variant, variants))
       )
     : [];
-  const productsWithAllVariantsSelected = products
-    ? products.map(product =>
+  const productsWithAllVariantsSelected = productChoices
+    ? productChoices.map(product =>
         hasAllVariantsSelected(product.variants, variants)
       )
     : [];
@@ -247,85 +254,95 @@ const OrderProductAddDialog: React.FC<OrderProductAddDialogProps> = props => {
           <ResponsiveTable key="table">
             <TableBody>
               {renderCollection(
-                products,
-                (product, productIndex) => (
-                  <React.Fragment key={product ? product.id : "skeleton"}>
-                    <TableRow>
-                      <TableCell
-                        padding="checkbox"
-                        className={classes.productCheckboxCell}
-                      >
-                        <Checkbox
-                          checked={
-                            productsWithAllVariantsSelected[productIndex]
-                          }
-                          disabled={loading}
-                          onChange={() =>
-                            onProductAdd(
-                              product,
-                              productIndex,
-                              productsWithAllVariantsSelected,
-                              variants,
-                              setVariants
-                            )
-                          }
+                productChoices,
+                (product, productIndex) =>
+                  product.variants.some(variant =>
+                    variant.channelListings.some(
+                      listing => listing.channel.id === selectedChannelId
+                    )
+                  ) ? (
+                    <React.Fragment key={product ? product.id : "skeleton"}>
+                      <TableRow>
+                        <TableCell
+                          padding="checkbox"
+                          className={classes.productCheckboxCell}
+                        >
+                          <Checkbox
+                            checked={
+                              productsWithAllVariantsSelected[productIndex]
+                            }
+                            disabled={loading}
+                            onChange={() =>
+                              onProductAdd(
+                                product,
+                                productIndex,
+                                productsWithAllVariantsSelected,
+                                variants,
+                                setVariants
+                              )
+                            }
+                          />
+                        </TableCell>
+                        <TableCellAvatar
+                          className={classes.avatar}
+                          thumbnail={maybe(() => product.thumbnail.url)}
                         />
-                      </TableCell>
-                      <TableCellAvatar
-                        className={classes.avatar}
-                        thumbnail={maybe(() => product.thumbnail.url)}
-                      />
-                      <TableCell className={classes.colName} colSpan={2}>
-                        {maybe(() => product.name)}
-                      </TableCell>
-                    </TableRow>
-                    {maybe(() => product.variants, []).map(
-                      (variant, variantIndex) => (
-                        <TableRow key={variant.id}>
-                          <TableCell />
-                          <TableCell className={classes.colVariantCheckbox}>
-                            <Checkbox
-                              className={classes.variantCheckbox}
-                              checked={
-                                selectedVariantsToProductsMap[productIndex][
-                                  variantIndex
-                                ]
-                              }
-                              disabled={loading}
-                              onChange={() =>
-                                onVariantAdd(
-                                  variant,
-                                  variantIndex,
-                                  productIndex,
-                                  variants,
-                                  selectedVariantsToProductsMap,
-                                  setVariants
-                                )
-                              }
-                            />
-                          </TableCell>
-                          <TableCell className={classes.colName}>
-                            <div>{variant.name}</div>
-                            <div className={classes.grayText}>
-                              <FormattedMessage
-                                defaultMessage="SKU {sku}"
-                                description="variant sku"
-                                values={{
-                                  sku: variant.sku
-                                }}
-                              />
-                            </div>
-                          </TableCell>
-                          <TableCell className={classes.textRight}>
-                            <Money
-                              money={variant.pricing.priceUndiscounted.net}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      )
-                    )}
-                  </React.Fragment>
-                ),
+                        <TableCell className={classes.colName} colSpan={2}>
+                          {maybe(() => product.name)}
+                        </TableCell>
+                      </TableRow>
+                      {maybe(() => product.variants, []).map(
+                        (variant, variantIndex) =>
+                          variant.channelListings.some(
+                            listing => listing.channel.id === selectedChannelId
+                          ) ? (
+                            <TableRow key={variant.id}>
+                              <TableCell />
+                              <TableCell className={classes.colVariantCheckbox}>
+                                <Checkbox
+                                  className={classes.variantCheckbox}
+                                  checked={
+                                    selectedVariantsToProductsMap[productIndex][
+                                      variantIndex
+                                    ]
+                                  }
+                                  disabled={loading}
+                                  onChange={() =>
+                                    onVariantAdd(
+                                      variant,
+                                      variantIndex,
+                                      productIndex,
+                                      variants,
+                                      selectedVariantsToProductsMap,
+                                      setVariants
+                                    )
+                                  }
+                                />
+                              </TableCell>
+                              <TableCell className={classes.colName}>
+                                <div>{variant.name}</div>
+                                <div className={classes.grayText}>
+                                  <FormattedMessage
+                                    defaultMessage="SKU {sku}"
+                                    description="variant sku"
+                                    values={{
+                                      sku: variant.sku
+                                    }}
+                                  />
+                                </div>
+                              </TableCell>
+                              <TableCell className={classes.textRight}>
+                                {variant?.channelListings[0]?.price && (
+                                  <Money
+                                    money={variant.channelListings[0].price}
+                                  />
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ) : null
+                      )}
+                    </React.Fragment>
+                  ) : null,
                 () => (
                   <TableRow>
                     <TableCell colSpan={4}>
@@ -340,8 +357,8 @@ const OrderProductAddDialog: React.FC<OrderProductAddDialogProps> = props => {
         {errors.length > 0 && (
           <>
             <FormSpacer />
-            {errors.map(err => (
-              <DialogContentText color="error">
+            {errors.map((err, index) => (
+              <DialogContentText color="error" key={index}>
                 {getOrderErrorMessage(err, intl)}
               </DialogContentText>
             ))}

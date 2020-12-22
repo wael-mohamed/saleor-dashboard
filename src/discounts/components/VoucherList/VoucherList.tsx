@@ -14,9 +14,10 @@ import TableHead from "@saleor/components/TableHead";
 import TablePagination from "@saleor/components/TablePagination";
 import { VoucherListUrlSortField } from "@saleor/discounts/urls";
 import { maybe, renderCollection } from "@saleor/misc";
-import { ListActions, ListProps, SortPage } from "@saleor/types";
+import { ChannelProps, ListActions, ListProps, SortPage } from "@saleor/types";
 import { DiscountValueTypeEnum } from "@saleor/types/globalTypes";
 import { getArrowDirection } from "@saleor/utils/sort";
+import { getFooterColSpanWithBulkActions } from "@saleor/utils/tables";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -25,8 +26,8 @@ import { VoucherList_vouchers_edges_node } from "../../types/VoucherList";
 export interface VoucherListProps
   extends ListProps,
     ListActions,
-    SortPage<VoucherListUrlSortField> {
-  defaultCurrency: string;
+    SortPage<VoucherListUrlSortField>,
+    ChannelProps {
   vouchers: VoucherList_vouchers_edges_node[];
 }
 
@@ -78,12 +79,11 @@ const useStyles = makeStyles(
   { name: "VoucherList" }
 );
 
-const numberOfColumns = 7;
+const numberOfColumns = 6;
 
 const VoucherList: React.FC<VoucherListProps> = props => {
   const {
     settings,
-    defaultCurrency,
     disabled,
     onNextPage,
     onPreviousPage,
@@ -94,6 +94,7 @@ const VoucherList: React.FC<VoucherListProps> = props => {
     vouchers,
     isChecked,
     selected,
+    selectedChannelId,
     sort,
     toggle,
     toggleAll,
@@ -130,6 +131,7 @@ const VoucherList: React.FC<VoucherListProps> = props => {
               ? getArrowDirection(sort.asc)
               : undefined
           }
+          textAlign="right"
           onClick={() => onSort(VoucherListUrlSortField.minSpent)}
           className={classes.colMinSpent}
         >
@@ -144,6 +146,7 @@ const VoucherList: React.FC<VoucherListProps> = props => {
               ? getArrowDirection(sort.asc)
               : undefined
           }
+          textAlign="right"
           onClick={() => onSort(VoucherListUrlSortField.startDate)}
           className={classes.colStart}
         >
@@ -158,6 +161,7 @@ const VoucherList: React.FC<VoucherListProps> = props => {
               ? getArrowDirection(sort.asc)
               : undefined
           }
+          textAlign="right"
           onClick={() => onSort(VoucherListUrlSortField.endDate)}
           className={classes.colEnd}
         >
@@ -172,6 +176,7 @@ const VoucherList: React.FC<VoucherListProps> = props => {
               ? getArrowDirection(sort.asc)
               : undefined
           }
+          textAlign="right"
           onClick={() => onSort(VoucherListUrlSortField.value)}
           className={classes.colValue}
         >
@@ -186,6 +191,7 @@ const VoucherList: React.FC<VoucherListProps> = props => {
               ? getArrowDirection(sort.asc)
               : undefined
           }
+          textAlign="right"
           onClick={() => onSort(VoucherListUrlSortField.limit)}
           className={classes.colUses}
         >
@@ -195,7 +201,7 @@ const VoucherList: React.FC<VoucherListProps> = props => {
       <TableFooter>
         <TableRow>
           <TablePagination
-            colSpan={numberOfColumns}
+            colSpan={getFooterColSpanWithBulkActions(vouchers, numberOfColumns)}
             settings={settings}
             hasNextPage={pageInfo && !disabled ? pageInfo.hasNextPage : false}
             onNextPage={onNextPage}
@@ -212,6 +218,10 @@ const VoucherList: React.FC<VoucherListProps> = props => {
           vouchers,
           voucher => {
             const isSelected = voucher ? isChecked(voucher.id) : false;
+            const channel = voucher?.channelListings?.find(
+              listing => listing.channel.id === selectedChannelId
+            );
+            const hasChannelsLoaded = voucher?.channelListings?.length;
 
             return (
               <TableRow
@@ -233,23 +243,25 @@ const VoucherList: React.FC<VoucherListProps> = props => {
                   {maybe<React.ReactNode>(() => voucher.code, <Skeleton />)}
                 </TableCell>
                 <TableCell className={classes.colMinSpent}>
-                  {voucher && voucher.minSpent ? (
-                    <Money money={voucher.minSpent} />
-                  ) : voucher && voucher.minSpent === null ? (
-                    "-"
+                  {voucher?.code ? (
+                    hasChannelsLoaded ? (
+                      <Money money={channel?.minSpent} />
+                    ) : (
+                      "-"
+                    )
                   ) : (
                     <Skeleton />
                   )}
                 </TableCell>
                 <TableCell className={classes.colStart}>
-                  {voucher && voucher.startDate ? (
+                  {voucher?.startDate ? (
                     <Date date={voucher.startDate} />
                   ) : (
                     <Skeleton />
                   )}
                 </TableCell>
                 <TableCell className={classes.colEnd}>
-                  {voucher && voucher.endDate ? (
+                  {voucher?.endDate ? (
                     <Date date={voucher.endDate} />
                   ) : voucher && voucher.endDate === null ? (
                     "-"
@@ -261,19 +273,23 @@ const VoucherList: React.FC<VoucherListProps> = props => {
                   className={classes.colValue}
                   onClick={voucher ? onRowClick(voucher.id) : undefined}
                 >
-                  {voucher &&
-                  voucher.discountValueType &&
-                  voucher.discountValue ? (
-                    voucher.discountValueType ===
-                    DiscountValueTypeEnum.FIXED ? (
-                      <Money
-                        money={{
-                          amount: voucher.discountValue,
-                          currency: defaultCurrency
-                        }}
-                      />
+                  {voucher?.code ? (
+                    hasChannelsLoaded ? (
+                      voucher.discountValueType ===
+                      DiscountValueTypeEnum.FIXED ? (
+                        <Money
+                          money={
+                            channel?.discountValue && {
+                              amount: channel?.discountValue,
+                              currency: channel?.currency
+                            }
+                          }
+                        />
+                      ) : (
+                        <Percent amount={channel?.discountValue} />
+                      )
                     ) : (
-                      <Percent amount={voucher.discountValue} />
+                      "-"
                     )
                   ) : (
                     <Skeleton />

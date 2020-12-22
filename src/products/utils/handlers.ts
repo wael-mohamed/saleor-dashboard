@@ -1,118 +1,203 @@
+import {
+  ChannelData,
+  ChannelPriceArgs,
+  ChannelPriceData
+} from "@saleor/channels/utils";
+import { AttributeInputData } from "@saleor/components/Attributes";
 import { FormChange } from "@saleor/hooks/useForm";
-import { FormsetChange, FormsetData } from "@saleor/hooks/useFormset";
-import { maybe } from "@saleor/misc";
+import {
+  FormsetAtomicData,
+  FormsetChange,
+  FormsetData
+} from "@saleor/hooks/useFormset";
 import { toggle } from "@saleor/utils/lists";
 
-import { ProductAttributeInputData } from "../components/ProductAttributes";
-import {
-  getAttributeInputFromProductType,
-  ProductAttributeValueChoices,
-  ProductType
-} from "./data";
+import { getAttributeInputFromProductType, ProductType } from "./data";
 
 export function createAttributeChangeHandler(
   changeAttributeData: FormsetChange<string[]>,
-  setSelectedAttributes: (data: ProductAttributeValueChoices[]) => void,
-  selectedAttributes: ProductAttributeValueChoices[],
-  attributes: FormsetData<ProductAttributeInputData>,
   triggerChange: () => void
-): FormsetChange {
+): FormsetChange<string> {
   return (attributeId: string, value: string) => {
-    const attributeValue = attributes
-      .find(attribute => attribute.id === attributeId)
-      .data.values.find(attributeValue => attributeValue.slug === value);
-
-    const valueChoice = {
-      label: maybe(() => attributeValue.name, value),
-      value
-    };
-
-    const itemIndex = selectedAttributes.findIndex(
-      item => item.id === attributeId
-    );
-    const attribute = selectedAttributes[itemIndex];
-
-    setSelectedAttributes([
-      ...selectedAttributes.slice(0, itemIndex),
-      {
-        ...attribute,
-        values: [valueChoice]
-      },
-      ...selectedAttributes.slice(itemIndex + 1)
-    ]);
-
     triggerChange();
-    changeAttributeData(attributeId, [value]);
+    changeAttributeData(attributeId, value === "" ? [] : [value]);
+  };
+}
+
+export function createChannelsPriceChangeHandler(
+  channelListings: ChannelPriceData[],
+  updateChannels: (data: ChannelPriceData[]) => void,
+  triggerChange: () => void
+) {
+  return (id: string, priceData: ChannelPriceArgs) => {
+    const { costPrice, price } = priceData;
+    const channelIndex = channelListings.findIndex(
+      channel => channel.id === id
+    );
+    const channel = channelListings[channelIndex];
+
+    const updatedChannels = [
+      ...channelListings.slice(0, channelIndex),
+      {
+        ...channel,
+        costPrice,
+        price
+      },
+      ...channelListings.slice(channelIndex + 1)
+    ];
+    updateChannels(updatedChannels);
+    triggerChange();
+  };
+}
+
+export function createChannelsChangeHandler(
+  channelListings: ChannelData[],
+  updateChannels: (data: ChannelData[]) => void,
+  triggerChange: () => void
+) {
+  return (
+    id: string,
+    data: Omit<ChannelData, "name" | "price" | "currency" | "id">
+  ) => {
+    const channelIndex = channelListings.findIndex(
+      channel => channel.id === id
+    );
+    const channel = channelListings[channelIndex];
+
+    const updatedChannels = [
+      ...channelListings.slice(0, channelIndex),
+      {
+        ...channel,
+        ...data
+      },
+      ...channelListings.slice(channelIndex + 1)
+    ];
+    updateChannels(updatedChannels);
+    triggerChange();
+  };
+}
+
+export function createVariantChannelsChangeHandler(
+  channelListings: ChannelPriceData[],
+  setData: (data: ChannelPriceData[]) => void,
+  triggerChange: () => void
+) {
+  return (id: string, priceData: ChannelPriceArgs) => {
+    const { costPrice, price } = priceData;
+    const channelIndex = channelListings.findIndex(
+      channel => channel.id === id
+    );
+    const channel = channelListings[channelIndex];
+
+    const updatedChannels = [
+      ...channelListings.slice(0, channelIndex),
+      {
+        ...channel,
+        costPrice,
+        price
+      },
+      ...channelListings.slice(channelIndex + 1)
+    ];
+    setData(updatedChannels);
+    triggerChange();
   };
 }
 
 export function createAttributeMultiChangeHandler(
   changeAttributeData: FormsetChange<string[]>,
-  setSelectedAttributes: (data: ProductAttributeValueChoices[]) => void,
-  selectedAttributes: ProductAttributeValueChoices[],
-  attributes: FormsetData<ProductAttributeInputData>,
+  attributes: FormsetData<AttributeInputData, string[]>,
   triggerChange: () => void
-): FormsetChange {
+): FormsetChange<string> {
   return (attributeId: string, value: string) => {
-    const attributeValue = attributes
-      .find(attribute => attribute.id === attributeId)
-      .data.values.find(attributeValue => attributeValue.slug === value);
-
-    const valueChoice = {
-      label: attributeValue ? attributeValue.name : value,
-      value
-    };
-
-    const itemIndex = selectedAttributes.findIndex(
-      item => item.id === attributeId
+    const attribute = attributes.find(
+      attribute => attribute.id === attributeId
     );
-    const attributeValues = selectedAttributes[itemIndex].values;
 
     const newAttributeValues = toggle(
-      valueChoice,
-      attributeValues,
-      (a, b) => a.value === b.value
+      value,
+      attribute.value,
+      (a, b) => a === b
     );
-
-    const newSelectedAttributes = [
-      ...selectedAttributes.slice(0, itemIndex),
-      {
-        ...selectedAttributes[itemIndex],
-        values: newAttributeValues
-      },
-      ...selectedAttributes.slice(itemIndex + 1)
-    ];
-    setSelectedAttributes(newSelectedAttributes);
 
     triggerChange();
-    changeAttributeData(
-      attributeId,
-      newAttributeValues.map(({ value }) => value)
+    changeAttributeData(attributeId, newAttributeValues);
+  };
+}
+
+export function createAttributeFileChangeHandler(
+  changeAttributeData: FormsetChange<string[]>,
+  attributesWithNewFileValue: FormsetData<FormsetData<null, File>>,
+  addAttributeNewFileValue: (data: FormsetAtomicData<null, File>) => void,
+  changeAttributeNewFileValue: FormsetChange<File>,
+  triggerChange: () => void
+): FormsetChange<File> {
+  return (attributeId: string, value: File) => {
+    triggerChange();
+
+    const newFileValueAssigned = attributesWithNewFileValue.find(
+      attribute => attribute.id === attributeId
     );
+
+    if (newFileValueAssigned) {
+      changeAttributeNewFileValue(attributeId, value);
+    } else {
+      addAttributeNewFileValue({
+        data: null,
+        id: attributeId,
+        label: null,
+        value
+      });
+    }
+
+    changeAttributeData(attributeId, value ? [value.name] : []);
   };
 }
 
 export function createProductTypeSelectHandler(
-  change: FormChange,
-  setAttributes: (data: FormsetData<ProductAttributeInputData>) => void,
-  setSelectedAttributes: (data: ProductAttributeValueChoices[]) => void,
+  setAttributes: (data: FormsetData<AttributeInputData>) => void,
   setProductType: (productType: ProductType) => void,
-  productTypeChoiceList: ProductType[]
+  productTypeChoiceList: ProductType[],
+  triggerChange: () => void
 ): FormChange {
   return (event: React.ChangeEvent<any>) => {
     const id = event.target.value;
     const selectedProductType = productTypeChoiceList.find(
       productType => productType.id === id
     );
+    triggerChange();
     setProductType(selectedProductType);
-    change(event);
-
     setAttributes(getAttributeInputFromProductType(selectedProductType));
-    setSelectedAttributes(
-      selectedProductType.productAttributes.map(attribute => ({
-        id: attribute.id,
-        values: []
-      }))
-    );
   };
 }
+
+export const getChannelsInput = (channels: ChannelPriceData[]) =>
+  channels?.map(channel => ({
+    data: channel,
+    id: channel.id,
+    label: channel.name,
+    value: {
+      costPrice: channel.costPrice || "",
+      price: channel.price || ""
+    }
+  }));
+
+export const getAvailabilityVariables = (channels: ChannelData[]) =>
+  channels.map(channel => {
+    const { isAvailableForPurchase, availableForPurchase } = channel;
+    const isAvailable =
+      availableForPurchase && !isAvailableForPurchase
+        ? true
+        : isAvailableForPurchase;
+
+    return {
+      availableForPurchaseDate:
+        isAvailableForPurchase || availableForPurchase === ""
+          ? null
+          : availableForPurchase,
+      channelId: channel.id,
+      isAvailableForPurchase: isAvailable,
+      isPublished: channel.isPublished,
+      publicationDate: channel.publicationDate,
+      visibleInListings: channel.visibleInListings
+    };
+  });

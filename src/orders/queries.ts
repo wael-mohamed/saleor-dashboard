@@ -1,3 +1,10 @@
+import { fragmentAddress } from "@saleor/fragments/address";
+import {
+  fragmentOrderDetails,
+  fragmentOrderSettings,
+  fragmentRefundOrderLine
+} from "@saleor/fragments/orders";
+import { fragmentMoney } from "@saleor/fragments/products";
 import makeQuery from "@saleor/hooks/makeQuery";
 import makeTopLevelSearch from "@saleor/hooks/makeTopLevelSearch";
 import gql from "graphql-tag";
@@ -14,172 +21,14 @@ import {
 } from "./types/OrderFulfillData";
 import { OrderList, OrderListVariables } from "./types/OrderList";
 import {
+  OrderRefundData,
+  OrderRefundDataVariables
+} from "./types/OrderRefundData";
+import { OrderSettings } from "./types/OrderSettings";
+import {
   SearchOrderVariant as SearchOrderVariantType,
   SearchOrderVariantVariables
 } from "./types/SearchOrderVariant";
-
-export const fragmentOrderEvent = gql`
-  fragment OrderEventFragment on OrderEvent {
-    id
-    amount
-    date
-    email
-    emailType
-    message
-    quantity
-    type
-    user {
-      id
-      email
-    }
-  }
-`;
-export const fragmentAddress = gql`
-  fragment AddressFragment on Address {
-    city
-    cityArea
-    companyName
-    country {
-      __typename
-      code
-      country
-    }
-    countryArea
-    firstName
-    id
-    lastName
-    phone
-    postalCode
-    streetAddress1
-    streetAddress2
-  }
-`;
-export const fragmentOrderLine = gql`
-  fragment OrderLineFragment on OrderLine {
-    id
-    isShippingRequired
-    productName
-    productSku
-    quantity
-    quantityFulfilled
-    unitPrice {
-      gross {
-        amount
-        currency
-      }
-      net {
-        amount
-        currency
-      }
-    }
-    thumbnail {
-      url
-    }
-  }
-`;
-export const fulfillmentFragment = gql`
-  ${fragmentOrderLine}
-  fragment FulfillmentFragment on Fulfillment {
-    id
-    lines {
-      id
-      quantity
-      orderLine {
-        ...OrderLineFragment
-      }
-    }
-    fulfillmentOrder
-    status
-    trackingNumber
-    warehouse {
-      id
-      name
-    }
-  }
-`;
-
-export const fragmentOrderDetails = gql`
-  ${fragmentAddress}
-  ${fragmentOrderEvent}
-  ${fragmentOrderLine}
-  ${fulfillmentFragment}
-  fragment OrderDetailsFragment on Order {
-    id
-    billingAddress {
-      ...AddressFragment
-    }
-    canFinalize
-    created
-    customerNote
-    events {
-      ...OrderEventFragment
-    }
-    fulfillments {
-      ...FulfillmentFragment
-    }
-    lines {
-      ...OrderLineFragment
-    }
-    number
-    paymentStatus
-    shippingAddress {
-      ...AddressFragment
-    }
-    shippingMethod {
-      id
-    }
-    shippingMethodName
-    shippingPrice {
-      gross {
-        amount
-        currency
-      }
-    }
-    status
-    subtotal {
-      gross {
-        amount
-        currency
-      }
-    }
-    total {
-      gross {
-        amount
-        currency
-      }
-      tax {
-        amount
-        currency
-      }
-    }
-    actions
-    totalAuthorized {
-      amount
-      currency
-    }
-    totalCaptured {
-      amount
-      currency
-    }
-    user {
-      id
-      email
-    }
-    userEmail
-    availableShippingMethods {
-      id
-      name
-      price {
-        amount
-        currency
-      }
-    }
-    discount {
-      amount
-      currency
-    }
-  }
-`;
 
 export const orderListQuery = gql`
   ${fragmentAddress}
@@ -322,12 +171,16 @@ export const searchOrderVariant = gql`
             id
             name
             sku
-            pricing {
-              priceUndiscounted {
-                net {
-                  amount
-                  currency
-                }
+            channelListings {
+              channel {
+                id
+                isActive
+                name
+                currencyCode
+              }
+              price {
+                amount
+                currency
               }
             }
           }
@@ -356,6 +209,12 @@ const orderFulfillData = gql`
         isShippingRequired
         productName
         quantity
+        allocations {
+          quantity
+          warehouse {
+            id
+          }
+        }
         quantityFulfilled
         variant {
           id
@@ -389,3 +248,59 @@ export const useOrderFulfillData = makeQuery<
   OrderFulfillData,
   OrderFulfillDataVariables
 >(orderFulfillData);
+
+export const orderSettingsQuery = gql`
+  ${fragmentOrderSettings}
+  query OrderSettings {
+    orderSettings {
+      ...OrderSettingsFragment
+    }
+  }
+`;
+export const useOrderSettingsQuery = makeQuery<OrderSettings, never>(
+  orderSettingsQuery
+);
+
+const orderRefundData = gql`
+  ${fragmentMoney}
+  ${fragmentRefundOrderLine}
+  query OrderRefundData($orderId: ID!) {
+    order(id: $orderId) {
+      id
+      number
+      total {
+        gross {
+          ...Money
+        }
+      }
+      totalCaptured {
+        ...Money
+      }
+      shippingPrice {
+        gross {
+          ...Money
+        }
+      }
+      lines {
+        ...RefundOrderLineFragment
+        quantityFulfilled
+      }
+      fulfillments {
+        id
+        status
+        fulfillmentOrder
+        lines {
+          id
+          quantity
+          orderLine {
+            ...RefundOrderLineFragment
+          }
+        }
+      }
+    }
+  }
+`;
+export const useOrderRefundData = makeQuery<
+  OrderRefundData,
+  OrderRefundDataVariables
+>(orderRefundData);

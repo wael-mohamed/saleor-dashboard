@@ -6,6 +6,18 @@
 // GraphQL query operation: CategoryDetails
 // ====================================================
 
+export interface CategoryDetails_category_metadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface CategoryDetails_category_privateMetadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
 export interface CategoryDetails_category_backgroundImage {
   __typename: "Image";
   alt: string | null;
@@ -62,12 +74,6 @@ export interface CategoryDetails_category_products_pageInfo {
   startCursor: string | null;
 }
 
-export interface CategoryDetails_category_products_edges_node_basePrice {
-  __typename: "Money";
-  amount: number;
-  currency: string;
-}
-
 export interface CategoryDetails_category_products_edges_node_thumbnail {
   __typename: "Image";
   url: string;
@@ -79,14 +85,64 @@ export interface CategoryDetails_category_products_edges_node_productType {
   name: string;
 }
 
+export interface CategoryDetails_category_products_edges_node_channelListings_channel {
+  __typename: "Channel";
+  id: string;
+  name: string;
+  currencyCode: string;
+}
+
+export interface CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange_start_net {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange_start {
+  __typename: "TaxedMoney";
+  net: CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange_start_net;
+}
+
+export interface CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange_stop_net {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange_stop {
+  __typename: "TaxedMoney";
+  net: CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange_stop_net;
+}
+
+export interface CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange {
+  __typename: "TaxedMoneyRange";
+  start: CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange_start | null;
+  stop: CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange_stop | null;
+}
+
+export interface CategoryDetails_category_products_edges_node_channelListings_pricing {
+  __typename: "ProductPricingInfo";
+  priceRange: CategoryDetails_category_products_edges_node_channelListings_pricing_priceRange | null;
+}
+
+export interface CategoryDetails_category_products_edges_node_channelListings {
+  __typename: "ProductChannelListing";
+  isPublished: boolean;
+  publicationDate: any | null;
+  isAvailableForPurchase: boolean | null;
+  availableForPurchase: any | null;
+  visibleInListings: boolean;
+  channel: CategoryDetails_category_products_edges_node_channelListings_channel;
+  pricing: CategoryDetails_category_products_edges_node_channelListings_pricing | null;
+}
+
 export interface CategoryDetails_category_products_edges_node {
   __typename: "Product";
   id: string;
   name: string;
-  basePrice: CategoryDetails_category_products_edges_node_basePrice | null;
-  isAvailable: boolean | null;
   thumbnail: CategoryDetails_category_products_edges_node_thumbnail | null;
   productType: CategoryDetails_category_products_edges_node_productType;
+  channelListings: CategoryDetails_category_products_edges_node_channelListings[] | null;
 }
 
 export interface CategoryDetails_category_products_edges {
@@ -104,8 +160,11 @@ export interface CategoryDetails_category_products {
 export interface CategoryDetails_category {
   __typename: "Category";
   id: string;
+  metadata: (CategoryDetails_category_metadata | null)[];
+  privateMetadata: (CategoryDetails_category_privateMetadata | null)[];
   backgroundImage: CategoryDetails_category_backgroundImage | null;
   name: string;
+  slug: string;
   descriptionJson: any;
   seoDescription: string | null;
   seoTitle: string | null;

@@ -1,14 +1,15 @@
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
-import { ProductErrorFragment } from "@saleor/attributes/types/ProductErrorFragment";
 import CardTitle from "@saleor/components/CardTitle";
 import ControlledCheckbox from "@saleor/components/ControlledCheckbox";
 import FormSpacer from "@saleor/components/FormSpacer";
 import SingleSelectField from "@saleor/components/SingleSelectField";
+import { AttributeErrorFragment } from "@saleor/fragments/types/AttributeErrorFragment";
 import { commonMessages } from "@saleor/intl";
 import { AttributeInputTypeEnum } from "@saleor/types/globalTypes";
-import { getFormErrors, getProductErrorMessage } from "@saleor/utils/errors";
+import { getFormErrors } from "@saleor/utils/errors";
+import getAttributeErrorMessage from "@saleor/utils/errors/attribute";
 import React from "react";
 import { useIntl } from "react-intl";
 import slugify from "slugify";
@@ -20,7 +21,7 @@ export interface AttributeDetailsProps {
   canChangeType: boolean;
   data: AttributePageFormData;
   disabled: boolean;
-  errors: ProductErrorFragment[];
+  errors: AttributeErrorFragment[];
   onChange: (event: React.ChangeEvent<any>) => void;
 }
 
@@ -46,6 +47,13 @@ const AttributeDetails: React.FC<AttributeDetailsProps> = ({
         description: "product attribute type"
       }),
       value: AttributeInputTypeEnum.MULTISELECT
+    },
+    {
+      label: intl.formatMessage({
+        defaultMessage: "File",
+        description: "file attribute type"
+      }),
+      value: AttributeInputTypeEnum.FILE
     }
   ];
 
@@ -66,7 +74,7 @@ const AttributeDetails: React.FC<AttributeDetailsProps> = ({
           })}
           name={"name" as keyof AttributePageFormData}
           fullWidth
-          helperText={getProductErrorMessage(formErrors.name, intl)}
+          helperText={getAttributeErrorMessage(formErrors.name, intl)}
           value={data.name}
           onChange={onChange}
         />
@@ -97,7 +105,7 @@ const AttributeDetails: React.FC<AttributeDetailsProps> = ({
           choices={inputTypeChoices}
           disabled={disabled || !canChangeType}
           error={!!formErrors.inputType}
-          hint={getProductErrorMessage(formErrors.inputType, intl)}
+          hint={getAttributeErrorMessage(formErrors.inputType, intl)}
           label={intl.formatMessage({
             defaultMessage: "Catalog Input type for Store Owner",
             description: "attribute's editor component"

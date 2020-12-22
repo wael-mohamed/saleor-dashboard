@@ -1,9 +1,12 @@
+import messages from "@saleor/containers/BackgroundTasks/messages";
 import useNavigator from "@saleor/hooks/useNavigator";
 import useNotifier from "@saleor/hooks/useNotifier";
 import createDialogActionHandlers from "@saleor/utils/handlers/dialogActionHandlers";
 import React from "react";
 import { useIntl } from "react-intl";
 
+import { InvoiceEmailSend } from "../../types/InvoiceEmailSend";
+import { InvoiceRequest } from "../../types/InvoiceRequest";
 import { OrderAddNote } from "../../types/OrderAddNote";
 import { OrderCancel } from "../../types/OrderCancel";
 import { OrderCapture } from "../../types/OrderCapture";
@@ -16,7 +19,6 @@ import { OrderLineDelete } from "../../types/OrderLineDelete";
 import { OrderLinesAdd } from "../../types/OrderLinesAdd";
 import { OrderLineUpdate } from "../../types/OrderLineUpdate";
 import { OrderMarkAsPaid } from "../../types/OrderMarkAsPaid";
-import { OrderRefund } from "../../types/OrderRefund";
 import { OrderShippingMethodUpdate } from "../../types/OrderShippingMethodUpdate";
 import { OrderUpdate } from "../../types/OrderUpdate";
 import { OrderVoid } from "../../types/OrderVoid";
@@ -39,9 +41,11 @@ interface OrderDetailsMessages {
     handleOrderMarkAsPaid: (data: OrderMarkAsPaid) => void;
     handleOrderVoid: (data: OrderVoid) => void;
     handlePaymentCapture: (data: OrderCapture) => void;
-    handlePaymentRefund: (data: OrderRefund) => void;
     handleShippingMethodUpdate: (data: OrderShippingMethodUpdate) => void;
     handleUpdate: (data: OrderUpdate) => void;
+    handleInvoiceGeneratePending: (data: InvoiceRequest) => void;
+    handleInvoiceGenerateFinished: (data: InvoiceRequest) => void;
+    handleInvoiceSend: (data: InvoiceEmailSend) => void;
   }) => React.ReactElement;
   id: string;
   params: OrderUrlQueryParams;
@@ -66,19 +70,9 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.orderCapture?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Payment successfully captured"
-        })
-      });
-      closeModal();
-    }
-  };
-  const handlePaymentRefund = (data: OrderRefund) => {
-    const errs = data.orderRefund?.errors;
-    if (errs.length === 0) {
-      pushMessage({
-        text: intl.formatMessage({
-          defaultMessage: "Payment successfully refunded"
         })
       });
       closeModal();
@@ -88,6 +82,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.orderMarkAsPaid?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Order marked as paid"
         })
@@ -99,6 +94,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.orderCancel?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Order successfully cancelled"
         })
@@ -110,6 +106,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.draftOrderDelete?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Order successfully cancelled"
         })
@@ -121,6 +118,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.orderVoid?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Order payment successfully voided"
         })
@@ -132,6 +130,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.orderAddNote?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Note successfully added"
         })
@@ -142,26 +141,31 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.orderUpdate?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Order successfully updated"
         })
       });
+      closeModal();
     }
   };
   const handleDraftUpdate = (data: OrderDraftUpdate) => {
     const errs = data.draftOrderUpdate?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Order successfully updated"
         })
       });
     }
+    closeModal();
   };
   const handleShippingMethodUpdate = (data: OrderShippingMethodUpdate) => {
     const errs = data.orderUpdateShipping?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Shipping method successfully updated"
         })
@@ -173,6 +177,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.draftOrderLineDelete?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Order line deleted"
         })
@@ -183,6 +188,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.draftOrderLinesCreate?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Order line added"
         })
@@ -194,6 +200,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.draftOrderLineUpdate?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Order line updated"
         })
@@ -204,6 +211,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.orderFulfillmentCancel?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Fulfillment successfully cancelled"
         })
@@ -217,6 +225,7 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.orderFulfillmentUpdateTracking?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Fulfillment successfully updated"
         })
@@ -228,8 +237,45 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     const errs = data.draftOrderComplete?.errors;
     if (errs.length === 0) {
       pushMessage({
+        status: "success",
         text: intl.formatMessage({
           defaultMessage: "Draft order successfully finalized"
+        })
+      });
+    }
+  };
+  const handleInvoiceGeneratePending = (data: InvoiceRequest) => {
+    const errs = data.invoiceRequest?.errors;
+    if (errs.length === 0) {
+      pushMessage({
+        text: intl.formatMessage({
+          defaultMessage:
+            "We’re generating the invoice you requested. Please wait a couple of moments"
+        }),
+        title: intl.formatMessage({
+          defaultMessage: "Invoice is Generating"
+        })
+      });
+      closeModal();
+    }
+  };
+  const handleInvoiceGenerateFinished = (data: InvoiceRequest) => {
+    const errs = data.invoiceRequest?.errors;
+    if (errs.length === 0) {
+      pushMessage({
+        status: "success",
+        text: intl.formatMessage(messages.invoiceGenerateFinishedText),
+        title: intl.formatMessage(messages.invoiceGenerateFinishedTitle)
+      });
+      closeModal();
+    }
+  };
+  const handleInvoiceSend = (data: InvoiceEmailSend) => {
+    const errs = data.invoiceSendEmail?.errors;
+    if (errs.length === 0) {
+      pushMessage({
+        text: intl.formatMessage({
+          defaultMessage: "Invoice email sent"
         })
       });
       closeModal();
@@ -240,6 +286,9 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     handleDraftCancel,
     handleDraftFinalize,
     handleDraftUpdate,
+    handleInvoiceGenerateFinished,
+    handleInvoiceGeneratePending,
+    handleInvoiceSend,
     handleNoteAdd,
     handleOrderCancel,
     handleOrderFulfillmentCancel,
@@ -250,7 +299,6 @@ export const OrderDetailsMessages: React.FC<OrderDetailsMessages> = ({
     handleOrderMarkAsPaid,
     handleOrderVoid,
     handlePaymentCapture,
-    handlePaymentRefund,
     handleShippingMethodUpdate,
     handleUpdate
   });

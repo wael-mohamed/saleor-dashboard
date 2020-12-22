@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { OrderErrorCode, OrderEventsEmailsEnum, OrderEventsEnum, FulfillmentStatus, PaymentChargeStatusEnum, OrderStatus, OrderAction } from "./../../types/globalTypes";
+import { OrderErrorCode, OrderEventsEmailsEnum, OrderEventsEnum, FulfillmentStatus, PaymentChargeStatusEnum, OrderStatus, OrderAction, JobStatusEnum } from "./../../types/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: OrderMarkAsPaid
@@ -12,6 +12,18 @@ export interface OrderMarkAsPaid_orderMarkAsPaid_errors {
   __typename: "OrderError";
   code: OrderErrorCode;
   field: string | null;
+}
+
+export interface OrderMarkAsPaid_orderMarkAsPaid_order_metadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface OrderMarkAsPaid_orderMarkAsPaid_order_privateMetadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
 }
 
 export interface OrderMarkAsPaid_orderMarkAsPaid_order_billingAddress_country {
@@ -42,17 +54,40 @@ export interface OrderMarkAsPaid_orderMarkAsPaid_order_events_user {
   email: string;
 }
 
+export interface OrderMarkAsPaid_orderMarkAsPaid_order_events_lines_orderLine {
+  __typename: "OrderLine";
+  id: string;
+  productName: string;
+  variantName: string;
+}
+
+export interface OrderMarkAsPaid_orderMarkAsPaid_order_events_lines {
+  __typename: "OrderEventOrderLineObject";
+  quantity: number | null;
+  orderLine: OrderMarkAsPaid_orderMarkAsPaid_order_events_lines_orderLine | null;
+}
+
 export interface OrderMarkAsPaid_orderMarkAsPaid_order_events {
   __typename: "OrderEvent";
   id: string;
   amount: number | null;
+  shippingCostsIncluded: boolean | null;
   date: any | null;
   email: string | null;
   emailType: OrderEventsEmailsEnum | null;
+  invoiceNumber: string | null;
   message: string | null;
   quantity: number | null;
+  transactionReference: string | null;
   type: OrderEventsEnum | null;
   user: OrderMarkAsPaid_orderMarkAsPaid_order_events_user | null;
+  lines: (OrderMarkAsPaid_orderMarkAsPaid_order_events_lines | null)[] | null;
+}
+
+export interface OrderMarkAsPaid_orderMarkAsPaid_order_fulfillments_lines_orderLine_variant {
+  __typename: "ProductVariant";
+  id: string;
+  quantityAvailable: number;
 }
 
 export interface OrderMarkAsPaid_orderMarkAsPaid_order_fulfillments_lines_orderLine_unitPrice_gross {
@@ -82,6 +117,7 @@ export interface OrderMarkAsPaid_orderMarkAsPaid_order_fulfillments_lines_orderL
   __typename: "OrderLine";
   id: string;
   isShippingRequired: boolean;
+  variant: OrderMarkAsPaid_orderMarkAsPaid_order_fulfillments_lines_orderLine_variant | null;
   productName: string;
   productSku: string;
   quantity: number;
@@ -113,6 +149,12 @@ export interface OrderMarkAsPaid_orderMarkAsPaid_order_fulfillments {
   warehouse: OrderMarkAsPaid_orderMarkAsPaid_order_fulfillments_warehouse | null;
 }
 
+export interface OrderMarkAsPaid_orderMarkAsPaid_order_lines_variant {
+  __typename: "ProductVariant";
+  id: string;
+  quantityAvailable: number;
+}
+
 export interface OrderMarkAsPaid_orderMarkAsPaid_order_lines_unitPrice_gross {
   __typename: "Money";
   amount: number;
@@ -140,6 +182,7 @@ export interface OrderMarkAsPaid_orderMarkAsPaid_order_lines {
   __typename: "OrderLine";
   id: string;
   isShippingRequired: boolean;
+  variant: OrderMarkAsPaid_orderMarkAsPaid_order_lines_variant | null;
   productName: string;
   productSku: string;
   quantity: number;
@@ -252,9 +295,28 @@ export interface OrderMarkAsPaid_orderMarkAsPaid_order_discount {
   currency: string;
 }
 
+export interface OrderMarkAsPaid_orderMarkAsPaid_order_invoices {
+  __typename: "Invoice";
+  id: string;
+  number: string | null;
+  createdAt: any;
+  url: string | null;
+  status: JobStatusEnum;
+}
+
+export interface OrderMarkAsPaid_orderMarkAsPaid_order_channel {
+  __typename: "Channel";
+  isActive: boolean;
+  id: string;
+  name: string;
+  currencyCode: string;
+}
+
 export interface OrderMarkAsPaid_orderMarkAsPaid_order {
   __typename: "Order";
   id: string;
+  metadata: (OrderMarkAsPaid_orderMarkAsPaid_order_metadata | null)[];
+  privateMetadata: (OrderMarkAsPaid_orderMarkAsPaid_order_privateMetadata | null)[];
   billingAddress: OrderMarkAsPaid_orderMarkAsPaid_order_billingAddress | null;
   canFinalize: boolean;
   created: any;
@@ -278,6 +340,9 @@ export interface OrderMarkAsPaid_orderMarkAsPaid_order {
   userEmail: string | null;
   availableShippingMethods: (OrderMarkAsPaid_orderMarkAsPaid_order_availableShippingMethods | null)[] | null;
   discount: OrderMarkAsPaid_orderMarkAsPaid_order_discount | null;
+  invoices: (OrderMarkAsPaid_orderMarkAsPaid_order_invoices | null)[] | null;
+  channel: OrderMarkAsPaid_orderMarkAsPaid_order_channel;
+  isPaid: boolean | null;
 }
 
 export interface OrderMarkAsPaid_orderMarkAsPaid {
@@ -292,4 +357,5 @@ export interface OrderMarkAsPaid {
 
 export interface OrderMarkAsPaidVariables {
   id: string;
+  transactionReference?: string | null;
 }

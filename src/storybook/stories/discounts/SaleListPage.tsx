@@ -25,7 +25,6 @@ const props: SaleListPageProps = {
   ...filterPageProps,
   ...sortPageProps,
   ...tabPageProps,
-  defaultCurrency: "USD",
   filterOpts: {
     saleType: {
       active: false,
@@ -44,6 +43,7 @@ const props: SaleListPageProps = {
     }
   },
   sales: saleList,
+  selectedChannelId: "123",
   sort: {
     ...sortPageProps.sort,
     sort: SaleListUrlSortField.name
@@ -54,4 +54,11 @@ storiesOf("Views / Discounts / Sale list", module)
   .addDecorator(Decorator)
   .add("default", () => <SaleListPage {...props} />)
   .add("loading", () => <SaleListPage {...props} sales={undefined} />)
-  .add("no data", () => <SaleListPage {...props} sales={[]} />);
+  .add("no data", () => <SaleListPage {...props} sales={[]} />)
+  .add("no channels", () => (
+    <SaleListPage
+      {...props}
+      sales={saleList.map(sale => ({ ...sale, channelListings: [] }))}
+      selectedChannelId=""
+    />
+  ));

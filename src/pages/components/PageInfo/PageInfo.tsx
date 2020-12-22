@@ -4,24 +4,24 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import CardTitle from "@saleor/components/CardTitle";
 import FormSpacer from "@saleor/components/FormSpacer";
-import RichTextEditor from "@saleor/components/RichTextEditor";
+import RichTextEditor, {
+  RichTextEditorChange
+} from "@saleor/components/RichTextEditor";
+import { PageErrorFragment } from "@saleor/fragments/types/PageErrorFragment";
 import { commonMessages } from "@saleor/intl";
-import { PageErrorFragment } from "@saleor/pages/types/PageErrorFragment";
 import { getFormErrors } from "@saleor/utils/errors";
 import getPageErrorMessage from "@saleor/utils/errors/page";
 import React from "react";
 import { useIntl } from "react-intl";
 
-import { maybe } from "../../../misc";
-import { PageDetails_page } from "../../types/PageDetails";
-import { FormData } from "../PageDetailsPage";
+import { PageData } from "../PageDetailsPage/form";
 
 export interface PageInfoProps {
-  data: FormData;
+  data: PageData;
   disabled: boolean;
   errors: PageErrorFragment[];
-  page: PageDetails_page;
   onChange: (event: React.ChangeEvent<any>) => void;
+  onContentChange: RichTextEditorChange;
 }
 
 const useStyles = makeStyles(
@@ -34,7 +34,7 @@ const useStyles = makeStyles(
 );
 
 const PageInfo: React.FC<PageInfoProps> = props => {
-  const { data, disabled, errors, page, onChange } = props;
+  const { data, disabled, errors, onChange, onContentChange } = props;
 
   const classes = useStyles(props);
   const intl = useIntl();
@@ -56,22 +56,22 @@ const PageInfo: React.FC<PageInfoProps> = props => {
             defaultMessage: "Title",
             description: "page title"
           })}
-          name={"title" as keyof FormData}
+          name={"title" as keyof PageData}
           value={data.title}
           onChange={onChange}
         />
         <FormSpacer />
         <RichTextEditor
+          data={data.content}
           disabled={disabled}
           error={!!formErrors.contentJson}
           helperText={getPageErrorMessage(formErrors.contentJson, intl)}
-          initial={maybe(() => JSON.parse(page.contentJson))}
           label={intl.formatMessage({
             defaultMessage: "Content",
             description: "page content"
           })}
-          name={"content" as keyof FormData}
-          onChange={onChange}
+          name={"content" as keyof PageData}
+          onChange={onContentChange}
         />
       </CardContent>
     </Card>

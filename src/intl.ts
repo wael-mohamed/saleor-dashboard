@@ -7,6 +7,13 @@ export const commonMessages = defineMessages({
   catalog: {
     defaultMessage: "Catalog"
   },
+  chooseFile: {
+    defaultMessage: "Choose file",
+    description: "button"
+  },
+  customApps: {
+    defaultMessage: "Local Apps"
+  },
   dashboard: {
     defaultMessage: "Dashboard"
   },
@@ -37,7 +44,7 @@ export const commonMessages = defineMessages({
     defaultMessage: "First Name"
   },
   generalInformations: {
-    defaultMessage: "General Informations"
+    defaultMessage: "General Information"
   },
   lastName: {
     defaultMessage: "Last Name"
@@ -129,6 +136,10 @@ export const buttonMessages = defineMessages({
     defaultMessage: "Manage",
     description: "button"
   },
+  nextStep: {
+    defaultMessage: "Next",
+    description: "go to next step, button"
+  },
   ok: {
     defaultMessage: "OK",
     description: "button"
@@ -139,6 +150,14 @@ export const buttonMessages = defineMessages({
   },
   save: {
     defaultMessage: "Save",
+    description: "button"
+  },
+  selectAll: {
+    defaultMessage: "Select All",
+    description: "select all options, button"
+  },
+  send: {
+    defaultMessage: "Send",
     description: "button"
   },
   show: {
@@ -152,6 +171,10 @@ export const buttonMessages = defineMessages({
 });
 
 export const sectionNames = defineMessages({
+  apps: {
+    defaultMessage: "Apps",
+    description: "apps section name"
+  },
   attributes: {
     defaultMessage: "Attributes",
     description: "attributes section name"
@@ -159,6 +182,10 @@ export const sectionNames = defineMessages({
   categories: {
     defaultMessage: "Categories",
     description: "categories section name"
+  },
+  channels: {
+    defaultMessage: "Channels",
+    description: "channels section name"
   },
   collections: {
     defaultMessage: "Collections",
@@ -176,6 +203,10 @@ export const sectionNames = defineMessages({
     defaultMessage: "Draft Orders",
     description: "draft orders section name"
   },
+  exchangeRates: {
+    defaultMessage: "Exchange Rates",
+    description: "Manage and Update your warehouse information"
+  },
   home: {
     defaultMessage: "Home",
     description: "home section name"
@@ -187,6 +218,10 @@ export const sectionNames = defineMessages({
   orders: {
     defaultMessage: "Orders",
     description: "orders section name"
+  },
+  pageTypes: {
+    defaultMessage: "Page Types",
+    description: "page types section name"
   },
   pages: {
     defaultMessage: "Pages",

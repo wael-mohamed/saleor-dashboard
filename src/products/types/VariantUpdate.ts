@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { StockInput, AttributeValueInput, ProductErrorCode, StockErrorCode } from "./../../types/globalTypes";
+import { StockInput, AttributeValueInput, ProductErrorCode, AttributeInputTypeEnum, WeightUnitsEnum, StockErrorCode } from "./../../types/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: VariantUpdate
@@ -12,41 +12,107 @@ export interface VariantUpdate_productVariantUpdate_errors {
   __typename: "ProductError";
   code: ProductErrorCode;
   field: string | null;
+  attributes: string[] | null;
 }
 
-export interface VariantUpdate_productVariantUpdate_productVariant_attributes_attribute_values {
+export interface VariantUpdate_productVariantUpdate_productVariant_metadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_privateMetadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_attribute_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_attribute_values {
   __typename: "AttributeValue";
   id: string;
   name: string | null;
   slug: string | null;
+  file: VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_attribute_values_file | null;
 }
 
-export interface VariantUpdate_productVariantUpdate_productVariant_attributes_attribute {
+export interface VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_attribute {
   __typename: "Attribute";
   id: string;
   name: string | null;
   slug: string | null;
+  inputType: AttributeInputTypeEnum | null;
   valueRequired: boolean;
-  values: (VariantUpdate_productVariantUpdate_productVariant_attributes_attribute_values | null)[] | null;
+  values: (VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_attribute_values | null)[] | null;
 }
 
-export interface VariantUpdate_productVariantUpdate_productVariant_attributes_values {
+export interface VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_values {
   __typename: "AttributeValue";
   id: string;
   name: string | null;
   slug: string | null;
+  file: VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_values_file | null;
 }
 
-export interface VariantUpdate_productVariantUpdate_productVariant_attributes {
+export interface VariantUpdate_productVariantUpdate_productVariant_selectionAttributes {
   __typename: "SelectedAttribute";
-  attribute: VariantUpdate_productVariantUpdate_productVariant_attributes_attribute;
-  values: (VariantUpdate_productVariantUpdate_productVariant_attributes_values | null)[];
+  attribute: VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_attribute;
+  values: (VariantUpdate_productVariantUpdate_productVariant_selectionAttributes_values | null)[];
 }
 
-export interface VariantUpdate_productVariantUpdate_productVariant_costPrice {
-  __typename: "Money";
-  amount: number;
-  currency: string;
+export interface VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_attribute_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_attribute_values {
+  __typename: "AttributeValue";
+  id: string;
+  name: string | null;
+  slug: string | null;
+  file: VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_attribute_values_file | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_attribute {
+  __typename: "Attribute";
+  id: string;
+  name: string | null;
+  slug: string | null;
+  inputType: AttributeInputTypeEnum | null;
+  valueRequired: boolean;
+  values: (VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_attribute_values | null)[] | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_values {
+  __typename: "AttributeValue";
+  id: string;
+  name: string | null;
+  slug: string | null;
+  file: VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_values_file | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes {
+  __typename: "SelectedAttribute";
+  attribute: VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_attribute;
+  values: (VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes_values | null)[];
 }
 
 export interface VariantUpdate_productVariantUpdate_productVariant_images {
@@ -55,10 +121,9 @@ export interface VariantUpdate_productVariantUpdate_productVariant_images {
   url: string;
 }
 
-export interface VariantUpdate_productVariantUpdate_productVariant_priceOverride {
-  __typename: "Money";
-  amount: number;
-  currency: string;
+export interface VariantUpdate_productVariantUpdate_productVariant_product_defaultVariant {
+  __typename: "ProductVariant";
+  id: string;
 }
 
 export interface VariantUpdate_productVariantUpdate_productVariant_product_images {
@@ -72,6 +137,52 @@ export interface VariantUpdate_productVariantUpdate_productVariant_product_image
 export interface VariantUpdate_productVariantUpdate_productVariant_product_thumbnail {
   __typename: "Image";
   url: string;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_product_channelListings_channel {
+  __typename: "Channel";
+  id: string;
+  name: string;
+  currencyCode: string;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange_start_net {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange_start {
+  __typename: "TaxedMoney";
+  net: VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange_start_net;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange_stop_net {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange_stop {
+  __typename: "TaxedMoney";
+  net: VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange_stop_net;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange {
+  __typename: "TaxedMoneyRange";
+  start: VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange_start | null;
+  stop: VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange_stop | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing {
+  __typename: "ProductPricingInfo";
+  priceRange: VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing_priceRange | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_product_channelListings {
+  __typename: "ProductChannelListing";
+  channel: VariantUpdate_productVariantUpdate_productVariant_product_channelListings_channel;
+  pricing: VariantUpdate_productVariantUpdate_productVariant_product_channelListings_pricing | null;
 }
 
 export interface VariantUpdate_productVariantUpdate_productVariant_product_variants_images {
@@ -91,10 +202,38 @@ export interface VariantUpdate_productVariantUpdate_productVariant_product_varia
 export interface VariantUpdate_productVariantUpdate_productVariant_product {
   __typename: "Product";
   id: string;
+  defaultVariant: VariantUpdate_productVariantUpdate_productVariant_product_defaultVariant | null;
   images: (VariantUpdate_productVariantUpdate_productVariant_product_images | null)[] | null;
   name: string;
   thumbnail: VariantUpdate_productVariantUpdate_productVariant_product_thumbnail | null;
+  channelListings: VariantUpdate_productVariantUpdate_productVariant_product_channelListings[] | null;
   variants: (VariantUpdate_productVariantUpdate_productVariant_product_variants | null)[] | null;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_channelListings_channel {
+  __typename: "Channel";
+  id: string;
+  name: string;
+  currencyCode: string;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_channelListings_price {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_channelListings_costPrice {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface VariantUpdate_productVariantUpdate_productVariant_channelListings {
+  __typename: "ProductVariantChannelListing";
+  channel: VariantUpdate_productVariantUpdate_productVariant_channelListings_channel;
+  price: VariantUpdate_productVariantUpdate_productVariant_channelListings_price | null;
+  costPrice: VariantUpdate_productVariantUpdate_productVariant_channelListings_costPrice | null;
 }
 
 export interface VariantUpdate_productVariantUpdate_productVariant_stocks_warehouse {
@@ -111,18 +250,27 @@ export interface VariantUpdate_productVariantUpdate_productVariant_stocks {
   warehouse: VariantUpdate_productVariantUpdate_productVariant_stocks_warehouse;
 }
 
+export interface VariantUpdate_productVariantUpdate_productVariant_weight {
+  __typename: "Weight";
+  unit: WeightUnitsEnum;
+  value: number;
+}
+
 export interface VariantUpdate_productVariantUpdate_productVariant {
   __typename: "ProductVariant";
   id: string;
-  attributes: VariantUpdate_productVariantUpdate_productVariant_attributes[];
-  costPrice: VariantUpdate_productVariantUpdate_productVariant_costPrice | null;
+  metadata: (VariantUpdate_productVariantUpdate_productVariant_metadata | null)[];
+  privateMetadata: (VariantUpdate_productVariantUpdate_productVariant_privateMetadata | null)[];
+  selectionAttributes: VariantUpdate_productVariantUpdate_productVariant_selectionAttributes[];
+  nonSelectionAttributes: VariantUpdate_productVariantUpdate_productVariant_nonSelectionAttributes[];
   images: (VariantUpdate_productVariantUpdate_productVariant_images | null)[] | null;
   name: string;
-  priceOverride: VariantUpdate_productVariantUpdate_productVariant_priceOverride | null;
   product: VariantUpdate_productVariantUpdate_productVariant_product;
+  channelListings: VariantUpdate_productVariantUpdate_productVariant_channelListings[] | null;
   sku: string;
   stocks: (VariantUpdate_productVariantUpdate_productVariant_stocks | null)[] | null;
   trackInventory: boolean;
+  weight: VariantUpdate_productVariantUpdate_productVariant_weight | null;
 }
 
 export interface VariantUpdate_productVariantUpdate {
@@ -138,39 +286,104 @@ export interface VariantUpdate_productVariantStocksUpdate_errors {
   index: number | null;
 }
 
-export interface VariantUpdate_productVariantStocksUpdate_productVariant_attributes_attribute_values {
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_metadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_privateMetadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_attribute_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_attribute_values {
   __typename: "AttributeValue";
   id: string;
   name: string | null;
   slug: string | null;
+  file: VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_attribute_values_file | null;
 }
 
-export interface VariantUpdate_productVariantStocksUpdate_productVariant_attributes_attribute {
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_attribute {
   __typename: "Attribute";
   id: string;
   name: string | null;
   slug: string | null;
+  inputType: AttributeInputTypeEnum | null;
   valueRequired: boolean;
-  values: (VariantUpdate_productVariantStocksUpdate_productVariant_attributes_attribute_values | null)[] | null;
+  values: (VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_attribute_values | null)[] | null;
 }
 
-export interface VariantUpdate_productVariantStocksUpdate_productVariant_attributes_values {
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_values {
   __typename: "AttributeValue";
   id: string;
   name: string | null;
   slug: string | null;
+  file: VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_values_file | null;
 }
 
-export interface VariantUpdate_productVariantStocksUpdate_productVariant_attributes {
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes {
   __typename: "SelectedAttribute";
-  attribute: VariantUpdate_productVariantStocksUpdate_productVariant_attributes_attribute;
-  values: (VariantUpdate_productVariantStocksUpdate_productVariant_attributes_values | null)[];
+  attribute: VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_attribute;
+  values: (VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes_values | null)[];
 }
 
-export interface VariantUpdate_productVariantStocksUpdate_productVariant_costPrice {
-  __typename: "Money";
-  amount: number;
-  currency: string;
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_attribute_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_attribute_values {
+  __typename: "AttributeValue";
+  id: string;
+  name: string | null;
+  slug: string | null;
+  file: VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_attribute_values_file | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_attribute {
+  __typename: "Attribute";
+  id: string;
+  name: string | null;
+  slug: string | null;
+  inputType: AttributeInputTypeEnum | null;
+  valueRequired: boolean;
+  values: (VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_attribute_values | null)[] | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_values {
+  __typename: "AttributeValue";
+  id: string;
+  name: string | null;
+  slug: string | null;
+  file: VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_values_file | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes {
+  __typename: "SelectedAttribute";
+  attribute: VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_attribute;
+  values: (VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes_values | null)[];
 }
 
 export interface VariantUpdate_productVariantStocksUpdate_productVariant_images {
@@ -179,10 +392,9 @@ export interface VariantUpdate_productVariantStocksUpdate_productVariant_images 
   url: string;
 }
 
-export interface VariantUpdate_productVariantStocksUpdate_productVariant_priceOverride {
-  __typename: "Money";
-  amount: number;
-  currency: string;
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_defaultVariant {
+  __typename: "ProductVariant";
+  id: string;
 }
 
 export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_images {
@@ -196,6 +408,52 @@ export interface VariantUpdate_productVariantStocksUpdate_productVariant_product
 export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_thumbnail {
   __typename: "Image";
   url: string;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_channel {
+  __typename: "Channel";
+  id: string;
+  name: string;
+  currencyCode: string;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange_start_net {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange_start {
+  __typename: "TaxedMoney";
+  net: VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange_start_net;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange_stop_net {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange_stop {
+  __typename: "TaxedMoney";
+  net: VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange_stop_net;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange {
+  __typename: "TaxedMoneyRange";
+  start: VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange_start | null;
+  stop: VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange_stop | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing {
+  __typename: "ProductPricingInfo";
+  priceRange: VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing_priceRange | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings {
+  __typename: "ProductChannelListing";
+  channel: VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_channel;
+  pricing: VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings_pricing | null;
 }
 
 export interface VariantUpdate_productVariantStocksUpdate_productVariant_product_variants_images {
@@ -215,10 +473,38 @@ export interface VariantUpdate_productVariantStocksUpdate_productVariant_product
 export interface VariantUpdate_productVariantStocksUpdate_productVariant_product {
   __typename: "Product";
   id: string;
+  defaultVariant: VariantUpdate_productVariantStocksUpdate_productVariant_product_defaultVariant | null;
   images: (VariantUpdate_productVariantStocksUpdate_productVariant_product_images | null)[] | null;
   name: string;
   thumbnail: VariantUpdate_productVariantStocksUpdate_productVariant_product_thumbnail | null;
+  channelListings: VariantUpdate_productVariantStocksUpdate_productVariant_product_channelListings[] | null;
   variants: (VariantUpdate_productVariantStocksUpdate_productVariant_product_variants | null)[] | null;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_channelListings_channel {
+  __typename: "Channel";
+  id: string;
+  name: string;
+  currencyCode: string;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_channelListings_price {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_channelListings_costPrice {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_channelListings {
+  __typename: "ProductVariantChannelListing";
+  channel: VariantUpdate_productVariantStocksUpdate_productVariant_channelListings_channel;
+  price: VariantUpdate_productVariantStocksUpdate_productVariant_channelListings_price | null;
+  costPrice: VariantUpdate_productVariantStocksUpdate_productVariant_channelListings_costPrice | null;
 }
 
 export interface VariantUpdate_productVariantStocksUpdate_productVariant_stocks_warehouse {
@@ -235,18 +521,27 @@ export interface VariantUpdate_productVariantStocksUpdate_productVariant_stocks 
   warehouse: VariantUpdate_productVariantStocksUpdate_productVariant_stocks_warehouse;
 }
 
+export interface VariantUpdate_productVariantStocksUpdate_productVariant_weight {
+  __typename: "Weight";
+  unit: WeightUnitsEnum;
+  value: number;
+}
+
 export interface VariantUpdate_productVariantStocksUpdate_productVariant {
   __typename: "ProductVariant";
   id: string;
-  attributes: VariantUpdate_productVariantStocksUpdate_productVariant_attributes[];
-  costPrice: VariantUpdate_productVariantStocksUpdate_productVariant_costPrice | null;
+  metadata: (VariantUpdate_productVariantStocksUpdate_productVariant_metadata | null)[];
+  privateMetadata: (VariantUpdate_productVariantStocksUpdate_productVariant_privateMetadata | null)[];
+  selectionAttributes: VariantUpdate_productVariantStocksUpdate_productVariant_selectionAttributes[];
+  nonSelectionAttributes: VariantUpdate_productVariantStocksUpdate_productVariant_nonSelectionAttributes[];
   images: (VariantUpdate_productVariantStocksUpdate_productVariant_images | null)[] | null;
   name: string;
-  priceOverride: VariantUpdate_productVariantStocksUpdate_productVariant_priceOverride | null;
   product: VariantUpdate_productVariantStocksUpdate_productVariant_product;
+  channelListings: VariantUpdate_productVariantStocksUpdate_productVariant_channelListings[] | null;
   sku: string;
   stocks: (VariantUpdate_productVariantStocksUpdate_productVariant_stocks | null)[] | null;
   trackInventory: boolean;
+  weight: VariantUpdate_productVariantStocksUpdate_productVariant_weight | null;
 }
 
 export interface VariantUpdate_productVariantStocksUpdate {
@@ -332,9 +627,8 @@ export interface VariantUpdateVariables {
   removeStocks: string[];
   id: string;
   attributes?: (AttributeValueInput | null)[] | null;
-  costPrice?: any | null;
-  priceOverride?: any | null;
   sku?: string | null;
   trackInventory: boolean;
   stocks: StockInput[];
+  weight?: any | null;
 }

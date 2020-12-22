@@ -1,11 +1,19 @@
-import { productErrorFragment } from "@saleor/attributes/mutations";
-import gql from "graphql-tag";
-
-import { TypedMutation } from "../mutations";
+import {
+  CollectionChannelListingUpdate,
+  CollectionChannelListingUpdateVariables
+} from "@saleor/collections/types/CollectionChannelListingUpdate";
 import {
   collectionDetailsFragment,
   collectionProductFragment
-} from "./queries";
+} from "@saleor/fragments/collections";
+import {
+  collectionChannelListingErrorFragment,
+  collectionsErrorFragment,
+  productErrorFragment
+} from "@saleor/fragments/errors";
+import makeMutation from "@saleor/hooks/makeMutation";
+import gql from "graphql-tag";
+
 import {
   CollectionAssignProduct,
   CollectionAssignProductVariables
@@ -15,17 +23,9 @@ import {
   CollectionBulkDeleteVariables
 } from "./types/CollectionBulkDelete";
 import {
-  CollectionBulkPublish,
-  CollectionBulkPublishVariables
-} from "./types/CollectionBulkPublish";
-import {
   CollectionUpdate,
   CollectionUpdateVariables
 } from "./types/CollectionUpdate";
-import {
-  CollectionUpdateWithHomepage,
-  CollectionUpdateWithHomepageVariables
-} from "./types/CollectionUpdateWithHomepage";
 import {
   CreateCollection,
   CreateCollectionVariables
@@ -39,69 +39,28 @@ import {
   UnassignCollectionProductVariables
 } from "./types/UnassignCollectionProduct";
 
-export const ShopErrorFragment = gql`
-  fragment ShopErrorFragment on ShopError {
-    code
-    field
-  }
-`;
-
 const collectionUpdate = gql`
   ${collectionDetailsFragment}
-  ${productErrorFragment}
+  ${collectionsErrorFragment}
   mutation CollectionUpdate($id: ID!, $input: CollectionInput!) {
     collectionUpdate(id: $id, input: $input) {
       collection {
         ...CollectionDetailsFragment
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: collectionErrors {
+        ...CollectionErrorFragment
       }
     }
   }
 `;
-export const TypedCollectionUpdateMutation = TypedMutation<
+export const useCollectionUpdateMutation = makeMutation<
   CollectionUpdate,
   CollectionUpdateVariables
 >(collectionUpdate);
 
-const collectionUpdateWithHomepage = gql`
-  ${collectionDetailsFragment}
-  ${productErrorFragment}
-  ${ShopErrorFragment}
-  mutation CollectionUpdateWithHomepage(
-    $id: ID!
-    $input: CollectionInput!
-    $homepageId: ID
-  ) {
-    homepageCollectionUpdate(collection: $homepageId) {
-      errors: shopErrors {
-        ...ShopErrorFragment
-      }
-      shop {
-        homepageCollection {
-          id
-        }
-      }
-    }
-    collectionUpdate(id: $id, input: $input) {
-      collection {
-        ...CollectionDetailsFragment
-      }
-      errors: productErrors {
-        ...ProductErrorFragment
-      }
-    }
-  }
-`;
-export const TypedCollectionUpdateWithHomepageMutation = TypedMutation<
-  CollectionUpdateWithHomepage,
-  CollectionUpdateWithHomepageVariables
->(collectionUpdateWithHomepage);
-
 const assignCollectionProduct = gql`
   ${collectionProductFragment}
-  ${productErrorFragment}
+  ${collectionsErrorFragment}
   mutation CollectionAssignProduct(
     $collectionId: ID!
     $productIds: [ID!]!
@@ -127,53 +86,53 @@ const assignCollectionProduct = gql`
           }
         }
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: collectionErrors {
+        ...CollectionErrorFragment
       }
     }
   }
 `;
-export const TypedCollectionAssignProductMutation = TypedMutation<
+export const useCollectionAssignProductMutation = makeMutation<
   CollectionAssignProduct,
   CollectionAssignProductVariables
 >(assignCollectionProduct);
 
 const createCollection = gql`
   ${collectionDetailsFragment}
-  ${productErrorFragment}
+  ${collectionsErrorFragment}
   mutation CreateCollection($input: CollectionCreateInput!) {
     collectionCreate(input: $input) {
       collection {
         ...CollectionDetailsFragment
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: collectionErrors {
+        ...CollectionErrorFragment
       }
     }
   }
 `;
-export const TypedCollectionCreateMutation = TypedMutation<
+export const useCollectionCreateMutation = makeMutation<
   CreateCollection,
   CreateCollectionVariables
 >(createCollection);
 
 const removeCollection = gql`
-  ${productErrorFragment}
+  ${collectionsErrorFragment}
   mutation RemoveCollection($id: ID!) {
     collectionDelete(id: $id) {
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: collectionErrors {
+        ...CollectionErrorFragment
       }
     }
   }
 `;
-export const TypedCollectionRemoveMutation = TypedMutation<
+export const useCollectionRemoveMutation = makeMutation<
   RemoveCollection,
   RemoveCollectionVariables
 >(removeCollection);
 
 const unassignCollectionProduct = gql`
-  ${productErrorFragment}
+  ${collectionsErrorFragment}
   mutation UnassignCollectionProduct(
     $collectionId: ID!
     $productIds: [ID]!
@@ -192,7 +151,6 @@ const unassignCollectionProduct = gql`
           edges {
             node {
               id
-              isPublished
               name
               productType {
                 id
@@ -211,13 +169,13 @@ const unassignCollectionProduct = gql`
           }
         }
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: collectionErrors {
+        ...CollectionErrorFragment
       }
     }
   }
 `;
-export const TypedUnassignCollectionProductMutation = TypedMutation<
+export const useUnassignCollectionProductMutation = makeMutation<
   UnassignCollectionProduct,
   UnassignCollectionProductVariables
 >(unassignCollectionProduct);
@@ -232,22 +190,25 @@ const collectionBulkDelete = gql`
     }
   }
 `;
-export const TypedCollectionBulkDelete = TypedMutation<
+export const useCollectionBulkDelete = makeMutation<
   CollectionBulkDelete,
   CollectionBulkDeleteVariables
 >(collectionBulkDelete);
 
-const collectionBulkPublish = gql`
-  ${productErrorFragment}
-  mutation CollectionBulkPublish($ids: [ID]!, $isPublished: Boolean!) {
-    collectionBulkPublish(ids: $ids, isPublished: $isPublished) {
-      errors: productErrors {
-        ...ProductErrorFragment
+const collectionChannelListingUpdate = gql`
+  ${collectionChannelListingErrorFragment}
+  mutation CollectionChannelListingUpdate(
+    $id: ID!
+    $input: CollectionChannelListingUpdateInput!
+  ) {
+    collectionChannelListingUpdate(id: $id, input: $input) {
+      errors: collectionChannelListingErrors {
+        ...CollectionChannelListingErrorFragment
       }
     }
   }
 `;
-export const TypedCollectionBulkPublish = TypedMutation<
-  CollectionBulkPublish,
-  CollectionBulkPublishVariables
->(collectionBulkPublish);
+export const useCollectionChannelListingUpdate = makeMutation<
+  CollectionChannelListingUpdate,
+  CollectionChannelListingUpdateVariables
+>(collectionChannelListingUpdate);

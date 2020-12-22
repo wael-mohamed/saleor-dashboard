@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { OrderErrorCode, OrderEventsEmailsEnum, OrderEventsEnum, FulfillmentStatus, PaymentChargeStatusEnum, OrderStatus, OrderAction } from "./../../types/globalTypes";
+import { OrderErrorCode, OrderEventsEmailsEnum, OrderEventsEnum, FulfillmentStatus, PaymentChargeStatusEnum, OrderStatus, OrderAction, JobStatusEnum } from "./../../types/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: OrderLineDelete
@@ -12,6 +12,18 @@ export interface OrderLineDelete_draftOrderLineDelete_errors {
   __typename: "OrderError";
   code: OrderErrorCode;
   field: string | null;
+}
+
+export interface OrderLineDelete_draftOrderLineDelete_order_metadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface OrderLineDelete_draftOrderLineDelete_order_privateMetadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
 }
 
 export interface OrderLineDelete_draftOrderLineDelete_order_billingAddress_country {
@@ -42,17 +54,40 @@ export interface OrderLineDelete_draftOrderLineDelete_order_events_user {
   email: string;
 }
 
+export interface OrderLineDelete_draftOrderLineDelete_order_events_lines_orderLine {
+  __typename: "OrderLine";
+  id: string;
+  productName: string;
+  variantName: string;
+}
+
+export interface OrderLineDelete_draftOrderLineDelete_order_events_lines {
+  __typename: "OrderEventOrderLineObject";
+  quantity: number | null;
+  orderLine: OrderLineDelete_draftOrderLineDelete_order_events_lines_orderLine | null;
+}
+
 export interface OrderLineDelete_draftOrderLineDelete_order_events {
   __typename: "OrderEvent";
   id: string;
   amount: number | null;
+  shippingCostsIncluded: boolean | null;
   date: any | null;
   email: string | null;
   emailType: OrderEventsEmailsEnum | null;
+  invoiceNumber: string | null;
   message: string | null;
   quantity: number | null;
+  transactionReference: string | null;
   type: OrderEventsEnum | null;
   user: OrderLineDelete_draftOrderLineDelete_order_events_user | null;
+  lines: (OrderLineDelete_draftOrderLineDelete_order_events_lines | null)[] | null;
+}
+
+export interface OrderLineDelete_draftOrderLineDelete_order_fulfillments_lines_orderLine_variant {
+  __typename: "ProductVariant";
+  id: string;
+  quantityAvailable: number;
 }
 
 export interface OrderLineDelete_draftOrderLineDelete_order_fulfillments_lines_orderLine_unitPrice_gross {
@@ -82,6 +117,7 @@ export interface OrderLineDelete_draftOrderLineDelete_order_fulfillments_lines_o
   __typename: "OrderLine";
   id: string;
   isShippingRequired: boolean;
+  variant: OrderLineDelete_draftOrderLineDelete_order_fulfillments_lines_orderLine_variant | null;
   productName: string;
   productSku: string;
   quantity: number;
@@ -113,6 +149,12 @@ export interface OrderLineDelete_draftOrderLineDelete_order_fulfillments {
   warehouse: OrderLineDelete_draftOrderLineDelete_order_fulfillments_warehouse | null;
 }
 
+export interface OrderLineDelete_draftOrderLineDelete_order_lines_variant {
+  __typename: "ProductVariant";
+  id: string;
+  quantityAvailable: number;
+}
+
 export interface OrderLineDelete_draftOrderLineDelete_order_lines_unitPrice_gross {
   __typename: "Money";
   amount: number;
@@ -140,6 +182,7 @@ export interface OrderLineDelete_draftOrderLineDelete_order_lines {
   __typename: "OrderLine";
   id: string;
   isShippingRequired: boolean;
+  variant: OrderLineDelete_draftOrderLineDelete_order_lines_variant | null;
   productName: string;
   productSku: string;
   quantity: number;
@@ -252,9 +295,28 @@ export interface OrderLineDelete_draftOrderLineDelete_order_discount {
   currency: string;
 }
 
+export interface OrderLineDelete_draftOrderLineDelete_order_invoices {
+  __typename: "Invoice";
+  id: string;
+  number: string | null;
+  createdAt: any;
+  url: string | null;
+  status: JobStatusEnum;
+}
+
+export interface OrderLineDelete_draftOrderLineDelete_order_channel {
+  __typename: "Channel";
+  isActive: boolean;
+  id: string;
+  name: string;
+  currencyCode: string;
+}
+
 export interface OrderLineDelete_draftOrderLineDelete_order {
   __typename: "Order";
   id: string;
+  metadata: (OrderLineDelete_draftOrderLineDelete_order_metadata | null)[];
+  privateMetadata: (OrderLineDelete_draftOrderLineDelete_order_privateMetadata | null)[];
   billingAddress: OrderLineDelete_draftOrderLineDelete_order_billingAddress | null;
   canFinalize: boolean;
   created: any;
@@ -278,6 +340,9 @@ export interface OrderLineDelete_draftOrderLineDelete_order {
   userEmail: string | null;
   availableShippingMethods: (OrderLineDelete_draftOrderLineDelete_order_availableShippingMethods | null)[] | null;
   discount: OrderLineDelete_draftOrderLineDelete_order_discount | null;
+  invoices: (OrderLineDelete_draftOrderLineDelete_order_invoices | null)[] | null;
+  channel: OrderLineDelete_draftOrderLineDelete_order_channel;
+  isPaid: boolean | null;
 }
 
 export interface OrderLineDelete_draftOrderLineDelete {

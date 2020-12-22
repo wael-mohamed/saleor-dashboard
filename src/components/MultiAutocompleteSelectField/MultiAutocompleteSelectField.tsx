@@ -83,6 +83,7 @@ export interface MultiAutocompleteSelectFieldProps
   placeholder?: string;
   helperText?: string;
   label?: string;
+  disabled?: boolean;
   fetchChoices?: (value: string) => void;
   onChange: (event: React.ChangeEvent<any>) => void;
 }
@@ -105,6 +106,7 @@ const MultiAutocompleteSelectFieldComponent: React.FC<MultiAutocompleteSelectFie
     name,
     placeholder,
     value,
+    disabled,
     fetchChoices,
     onChange,
     onFetchMore,
@@ -167,16 +169,19 @@ const MultiAutocompleteSelectFieldComponent: React.FC<MultiAutocompleteSelectFie
                 helperText={helperText}
                 label={label}
                 fullWidth={true}
+                disabled={disabled}
               />
               {isOpen && (!!inputValue || !!choices.length) && (
                 <MultiAutocompleteSelectFieldContent
-                  add={{
-                    ...add,
-                    onClick: () => {
-                      add.onClick();
-                      closeMenu();
+                  add={
+                    add && {
+                      ...add,
+                      onClick: () => {
+                        add.onClick();
+                        closeMenu();
+                      }
                     }
-                  }}
+                  }
                   choices={choices.filter(
                     choice => !value.includes(choice.value)
                   )}

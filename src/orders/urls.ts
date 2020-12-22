@@ -15,6 +15,8 @@ import {
 
 const orderSectionUrl = "/orders";
 
+type CreateOrderDialog = "create-order";
+
 export const orderListPath = orderSectionUrl;
 export enum OrderListUrlFiltersEnum {
   createdFrom = "createdFrom",
@@ -28,7 +30,7 @@ export enum OrderListUrlFiltersWithMultipleValuesEnum {
 }
 export type OrderListUrlFilters = Filters<OrderListUrlFiltersEnum> &
   FiltersWithMultipleValues<OrderListUrlFiltersWithMultipleValuesEnum>;
-export type OrderListUrlDialog = "cancel" | TabActionDialog;
+export type OrderListUrlDialog = "cancel" | CreateOrderDialog | TabActionDialog;
 export enum OrderListUrlSortField {
   number = "number",
   customer = "customer",
@@ -61,7 +63,10 @@ export enum OrderDraftListUrlFiltersEnum {
   query = "query"
 }
 export type OrderDraftListUrlFilters = Filters<OrderDraftListUrlFiltersEnum>;
-export type OrderDraftListUrlDialog = "remove" | TabActionDialog;
+export type OrderDraftListUrlDialog =
+  | "remove"
+  | CreateOrderDialog
+  | TabActionDialog;
 export enum OrderDraftListUrlSortField {
   number = "number",
   customer = "customer",
@@ -98,8 +103,8 @@ export type OrderUrlDialog =
   | "edit-shipping-address"
   | "finalize"
   | "mark-paid"
-  | "refund"
-  | "void";
+  | "void"
+  | "invoice-send";
 export type OrderUrlQueryParams = Dialog<OrderUrlDialog> & SingleAction;
 export const orderUrl = (id: string, params?: OrderUrlQueryParams) =>
   orderPath(encodeURIComponent(id)) + "?" + stringifyQs(params);
@@ -108,3 +113,9 @@ export const orderFulfillPath = (id: string) =>
   urlJoin(orderPath(id), "fulfill");
 export const orderFulfillUrl = (id: string) =>
   orderFulfillPath(encodeURIComponent(id));
+
+export const orderSettingsPath = urlJoin(orderSectionUrl, "settings");
+
+export const orderRefundPath = (id: string) => urlJoin(orderPath(id), "refund");
+export const orderRefundUrl = (id: string) =>
+  orderRefundPath(encodeURIComponent(id));

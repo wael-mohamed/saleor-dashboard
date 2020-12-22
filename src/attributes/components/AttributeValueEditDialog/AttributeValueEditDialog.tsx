@@ -5,11 +5,11 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import { getAttributeValueErrorMessage } from "@saleor/attributes/errors";
-import { ProductErrorFragment } from "@saleor/attributes/types/ProductErrorFragment";
 import ConfirmButton, {
   ConfirmButtonTransitionState
 } from "@saleor/components/ConfirmButton";
 import Form from "@saleor/components/Form";
+import { AttributeErrorFragment } from "@saleor/fragments/types/AttributeErrorFragment";
 import useModalDialogErrors from "@saleor/hooks/useModalDialogErrors";
 import { buttonMessages } from "@saleor/intl";
 import { maybe } from "@saleor/misc";
@@ -26,7 +26,7 @@ export interface AttributeValueEditDialogProps {
   attributeValue: AttributeDetails_attribute_values | null;
   confirmButtonState: ConfirmButtonTransitionState;
   disabled: boolean;
-  errors: ProductErrorFragment[];
+  errors: AttributeErrorFragment[];
   open: boolean;
   onSubmit: (data: AttributeValueEditDialogFormData) => void;
   onClose: () => void;

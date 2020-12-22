@@ -2,8 +2,8 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import CardTitle from "@saleor/components/CardTitle";
+import { ShippingErrorFragment } from "@saleor/fragments/types/ShippingErrorFragment";
 import { commonMessages } from "@saleor/intl";
-import { ShippingErrorFragment } from "@saleor/shipping/types/ShippingErrorFragment";
 import { getFormErrors } from "@saleor/utils/errors";
 import getShippingErrorMessage from "@saleor/utils/errors/shipping";
 import React from "react";
@@ -38,7 +38,7 @@ const ShippingZoneInfo: React.FC<ShippingZoneInfoProps> = ({
           fullWidth
           helperText={getShippingErrorMessage(formErrors.name, intl)}
           label={intl.formatMessage({
-            defaultMessage: "Shipping Zone Name"
+            defaultMessage: "Shipping rate name"
           })}
           name="name"
           value={data.name}

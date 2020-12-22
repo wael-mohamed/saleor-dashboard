@@ -31,9 +31,10 @@ interface ActionDialogProps extends DialogProps {
   children?: React.ReactNode;
   confirmButtonLabel?: string;
   confirmButtonState: ConfirmButtonTransitionState;
+  disabled?: boolean;
   maxWidth?: "xs" | "sm" | "md" | "lg" | "xl" | false;
   title: string;
-  variant?: "default" | "delete";
+  variant?: "default" | "delete" | "info";
   onConfirm();
 }
 
@@ -42,6 +43,7 @@ const ActionDialog: React.FC<ActionDialogProps> = props => {
     children,
     confirmButtonLabel,
     confirmButtonState,
+    disabled,
     open,
     title,
     variant,
@@ -58,23 +60,27 @@ const ActionDialog: React.FC<ActionDialogProps> = props => {
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>
+        <Button data-test="back" onClick={onClose}>
           <FormattedMessage {...buttonMessages.back} />
         </Button>
-        <ConfirmButton
-          transitionState={confirmButtonState}
-          color="primary"
-          variant="contained"
-          onClick={onConfirm}
-          className={classNames({
-            [classes.deleteButton]: variant === "delete"
-          })}
-        >
-          {confirmButtonLabel ||
-            (variant === "delete"
-              ? intl.formatMessage(buttonMessages.delete)
-              : intl.formatMessage(buttonMessages.confirm))}
-        </ConfirmButton>
+        {variant !== "info" && (
+          <ConfirmButton
+            disabled={disabled}
+            transitionState={confirmButtonState}
+            color="primary"
+            variant="contained"
+            onClick={onConfirm}
+            className={classNames({
+              [classes.deleteButton]: variant === "delete"
+            })}
+            data-test="submit"
+          >
+            {confirmButtonLabel ||
+              (variant === "delete"
+                ? intl.formatMessage(buttonMessages.delete)
+                : intl.formatMessage(buttonMessages.confirm))}
+          </ConfirmButton>
+        )}
       </DialogActions>
     </Dialog>
   );

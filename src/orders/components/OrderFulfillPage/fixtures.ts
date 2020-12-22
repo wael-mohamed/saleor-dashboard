@@ -10,6 +10,7 @@ export const orderToFulfill: OrderFulfillData_order = {
   lines: [
     {
       __typename: "OrderLine",
+      allocations: [],
       id: "T3JkZXJMaW5lOjQ=",
       isShippingRequired: true,
       productName: "T-Shirt",
@@ -66,11 +67,12 @@ export const orderToFulfill: OrderFulfillData_order = {
       },
       thumbnail: {
         __typename: "Image",
-        url: placeholderImage
+        url: placeholderImage.default
       }
     },
     {
       __typename: "OrderLine",
+      allocations: [],
       id: "T3JkZXJMaW5lOjU=",
       isShippingRequired: true,
       productName: "Lemon Juice",
@@ -120,11 +122,12 @@ export const orderToFulfill: OrderFulfillData_order = {
       },
       thumbnail: {
         __typename: "Image",
-        url: placeholderImage
+        url: placeholderImage.default
       }
     },
     {
       __typename: "OrderLine",
+      allocations: [],
       id: "T3JkZXJMaW5lOjY=",
       isShippingRequired: true,
       productName: "Orange Juice",
@@ -167,7 +170,7 @@ export const orderToFulfill: OrderFulfillData_order = {
       },
       thumbnail: {
         __typename: "Image",
-        url: placeholderImage
+        url: placeholderImage.default
       }
     }
   ],

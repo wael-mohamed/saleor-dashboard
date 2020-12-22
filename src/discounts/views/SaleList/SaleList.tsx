@@ -2,6 +2,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ActionDialog from "@saleor/components/ActionDialog";
+import useAppChannel from "@saleor/components/AppLayout/AppChannelContext";
 import DeleteFilterTabDialog from "@saleor/components/DeleteFilterTabDialog";
 import SaveFilterTabDialog, {
   SaveFilterTabDialogFormData
@@ -14,7 +15,6 @@ import useNotifier from "@saleor/hooks/useNotifier";
 import usePaginator, {
   createPaginationState
 } from "@saleor/hooks/usePaginator";
-import useShop from "@saleor/hooks/useShop";
 import { commonMessages, sectionNames } from "@saleor/intl";
 import { maybe } from "@saleor/misc";
 import { ListViews } from "@saleor/types";
@@ -56,7 +56,6 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
   const navigate = useNavigator();
   const notify = useNotifier();
   const paginate = usePaginator();
-  const shop = useShop();
   const { isSelected, listElements, reset, toggle, toggleAll } = useBulkActions(
     params.ids
   );
@@ -64,6 +63,12 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
     ListViews.SALES_LIST
   );
   const intl = useIntl();
+  const { channel } = useAppChannel();
+
+  const [openModal, closeModal] = createDialogActionHandlers<
+    SaleListUrlDialog,
+    SaleListUrlQueryParams
+  >(navigate, saleListUrl, params);
 
   const paginationState = createPaginationState(settings.rowNumber, params);
   const queryVariables = React.useMemo(
@@ -100,11 +105,6 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
     params
   });
 
-  const [openModal, closeModal] = createDialogActionHandlers<
-    SaleListUrlDialog,
-    SaleListUrlQueryParams
-  >(navigate, saleListUrl, params);
-
   const handleTabChange = (tab: number) => {
     reset();
     navigate(
@@ -137,6 +137,7 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
   const handleSaleBulkDelete = (data: SaleBulkDelete) => {
     if (data.saleBulkDelete.errors.length === 0) {
       notify({
+        status: "success",
         text: intl.formatMessage(commonMessages.savedChanges)
       });
       reset();
@@ -146,7 +147,6 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
   };
 
   const handleSort = createSortHandler(navigate, saleListUrl, params);
-  const currencySymbol = maybe(() => shop.defaultCurrency, "USD");
 
   return (
     <TypedSaleBulkDelete onCompleted={handleSaleBulkDelete}>
@@ -162,7 +162,6 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
           <>
             <WindowTitle title={intl.formatMessage(sectionNames.sales)} />
             <SaleListPage
-              currencySymbol={currencySymbol}
               currentTab={currentTab}
               filterOpts={getFilterOpts(params)}
               initialSearch={params.query || ""}
@@ -173,12 +172,11 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
               onTabDelete={() => openModal("delete-search")}
               onTabSave={() => openModal("save-search")}
               tabs={tabs.map(tab => tab.name)}
-              defaultCurrency={maybe(() => shop.defaultCurrency)}
               sales={maybe(() => data.sales.edges.map(edge => edge.node))}
               settings={settings}
               disabled={loading}
               pageInfo={pageInfo}
-              onAdd={() => navigate(saleAddUrl)}
+              onAdd={() => navigate(saleAddUrl())}
               onNextPage={loadNextPage}
               onPreviousPage={loadPreviousPage}
               onSort={handleSort}
@@ -201,6 +199,7 @@ export const SaleList: React.FC<SaleListProps> = ({ params }) => {
                   <DeleteIcon />
                 </IconButton>
               }
+              selectedChannelId={channel.id}
             />
             <ActionDialog
               confirmButtonState={saleBulkDeleteOpts.status}

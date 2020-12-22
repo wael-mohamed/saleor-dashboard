@@ -2,18 +2,36 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { AttributeValueCreateInput, AttributeInputTypeEnum, AttributeValueType, ProductErrorCode } from "./../../types/globalTypes";
+import { AttributeValueCreateInput, AttributeTypeEnum, AttributeInputTypeEnum, AttributeErrorCode } from "./../../types/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: AttributeValueCreate
 // ====================================================
+
+export interface AttributeValueCreate_attributeValueCreate_attribute_metadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface AttributeValueCreate_attributeValueCreate_attribute_privateMetadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface AttributeValueCreate_attributeValueCreate_attribute_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
 
 export interface AttributeValueCreate_attributeValueCreate_attribute_values {
   __typename: "AttributeValue";
   id: string;
   name: string | null;
   slug: string | null;
-  type: AttributeValueType | null;
+  file: AttributeValueCreate_attributeValueCreate_attribute_values_file | null;
 }
 
 export interface AttributeValueCreate_attributeValueCreate_attribute {
@@ -21,9 +39,12 @@ export interface AttributeValueCreate_attributeValueCreate_attribute {
   id: string;
   name: string | null;
   slug: string | null;
+  type: AttributeTypeEnum | null;
   visibleInStorefront: boolean;
   filterableInDashboard: boolean;
   filterableInStorefront: boolean;
+  metadata: (AttributeValueCreate_attributeValueCreate_attribute_metadata | null)[];
+  privateMetadata: (AttributeValueCreate_attributeValueCreate_attribute_privateMetadata | null)[];
   availableInGrid: boolean;
   inputType: AttributeInputTypeEnum | null;
   storefrontSearchPosition: number;
@@ -32,8 +53,8 @@ export interface AttributeValueCreate_attributeValueCreate_attribute {
 }
 
 export interface AttributeValueCreate_attributeValueCreate_errors {
-  __typename: "ProductError";
-  code: ProductErrorCode;
+  __typename: "AttributeError";
+  code: AttributeErrorCode;
   field: string | null;
 }
 

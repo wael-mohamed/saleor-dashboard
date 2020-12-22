@@ -1,19 +1,26 @@
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardTitle from "@saleor/components/CardTitle";
+import { SingleAutocompleteChoiceType } from "@saleor/components/SingleAutocompleteSelectField";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
-import { ListActions, PageListProps } from "../../../types";
+import { ChannelProps, ListActions, PageListProps } from "../../../types";
 import { CategoryDetails_category_products_edges_node } from "../../types/CategoryDetails";
 import CategoryProductList from "../CategoryProductList";
 
-interface CategoryProductsProps extends PageListProps, ListActions {
+interface CategoryProductsProps
+  extends PageListProps,
+    ListActions,
+    ChannelProps {
   products: CategoryDetails_category_products_edges_node[];
+  channelChoices: SingleAutocompleteChoiceType[];
+  channelsCount: number;
   categoryName: string;
 }
 
 export const CategoryProducts: React.FC<CategoryProductsProps> = ({
+  channelsCount,
   products,
   disabled,
   pageInfo,
@@ -24,6 +31,7 @@ export const CategoryProducts: React.FC<CategoryProductsProps> = ({
   categoryName,
   isChecked,
   selected,
+  selectedChannelId,
   toggle,
   toggleAll,
   toolbar
@@ -50,6 +58,8 @@ export const CategoryProducts: React.FC<CategoryProductsProps> = ({
         }
       />
       <CategoryProductList
+        channelsCount={channelsCount}
+        selectedChannelId={selectedChannelId}
         products={products}
         disabled={disabled}
         pageInfo={pageInfo}

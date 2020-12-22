@@ -2,11 +2,23 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { OrderEventsEmailsEnum, OrderEventsEnum, FulfillmentStatus, PaymentChargeStatusEnum, OrderStatus, OrderAction, WeightUnitsEnum } from "./../../types/globalTypes";
+import { OrderEventsEmailsEnum, OrderEventsEnum, FulfillmentStatus, PaymentChargeStatusEnum, OrderStatus, OrderAction, JobStatusEnum, WeightUnitsEnum } from "./../../types/globalTypes";
 
 // ====================================================
 // GraphQL query operation: OrderDetails
 // ====================================================
+
+export interface OrderDetails_order_metadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface OrderDetails_order_privateMetadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
 
 export interface OrderDetails_order_billingAddress_country {
   __typename: "CountryDisplay";
@@ -36,17 +48,40 @@ export interface OrderDetails_order_events_user {
   email: string;
 }
 
+export interface OrderDetails_order_events_lines_orderLine {
+  __typename: "OrderLine";
+  id: string;
+  productName: string;
+  variantName: string;
+}
+
+export interface OrderDetails_order_events_lines {
+  __typename: "OrderEventOrderLineObject";
+  quantity: number | null;
+  orderLine: OrderDetails_order_events_lines_orderLine | null;
+}
+
 export interface OrderDetails_order_events {
   __typename: "OrderEvent";
   id: string;
   amount: number | null;
+  shippingCostsIncluded: boolean | null;
   date: any | null;
   email: string | null;
   emailType: OrderEventsEmailsEnum | null;
+  invoiceNumber: string | null;
   message: string | null;
   quantity: number | null;
+  transactionReference: string | null;
   type: OrderEventsEnum | null;
   user: OrderDetails_order_events_user | null;
+  lines: (OrderDetails_order_events_lines | null)[] | null;
+}
+
+export interface OrderDetails_order_fulfillments_lines_orderLine_variant {
+  __typename: "ProductVariant";
+  id: string;
+  quantityAvailable: number;
 }
 
 export interface OrderDetails_order_fulfillments_lines_orderLine_unitPrice_gross {
@@ -76,6 +111,7 @@ export interface OrderDetails_order_fulfillments_lines_orderLine {
   __typename: "OrderLine";
   id: string;
   isShippingRequired: boolean;
+  variant: OrderDetails_order_fulfillments_lines_orderLine_variant | null;
   productName: string;
   productSku: string;
   quantity: number;
@@ -107,6 +143,12 @@ export interface OrderDetails_order_fulfillments {
   warehouse: OrderDetails_order_fulfillments_warehouse | null;
 }
 
+export interface OrderDetails_order_lines_variant {
+  __typename: "ProductVariant";
+  id: string;
+  quantityAvailable: number;
+}
+
 export interface OrderDetails_order_lines_unitPrice_gross {
   __typename: "Money";
   amount: number;
@@ -134,6 +176,7 @@ export interface OrderDetails_order_lines {
   __typename: "OrderLine";
   id: string;
   isShippingRequired: boolean;
+  variant: OrderDetails_order_lines_variant | null;
   productName: string;
   productSku: string;
   quantity: number;
@@ -246,9 +289,28 @@ export interface OrderDetails_order_discount {
   currency: string;
 }
 
+export interface OrderDetails_order_invoices {
+  __typename: "Invoice";
+  id: string;
+  number: string | null;
+  createdAt: any;
+  url: string | null;
+  status: JobStatusEnum;
+}
+
+export interface OrderDetails_order_channel {
+  __typename: "Channel";
+  isActive: boolean;
+  id: string;
+  name: string;
+  currencyCode: string;
+}
+
 export interface OrderDetails_order {
   __typename: "Order";
   id: string;
+  metadata: (OrderDetails_order_metadata | null)[];
+  privateMetadata: (OrderDetails_order_privateMetadata | null)[];
   billingAddress: OrderDetails_order_billingAddress | null;
   canFinalize: boolean;
   created: any;
@@ -272,6 +334,9 @@ export interface OrderDetails_order {
   userEmail: string | null;
   availableShippingMethods: (OrderDetails_order_availableShippingMethods | null)[] | null;
   discount: OrderDetails_order_discount | null;
+  invoices: (OrderDetails_order_invoices | null)[] | null;
+  channel: OrderDetails_order_channel;
+  isPaid: boolean | null;
 }
 
 export interface OrderDetails_shop_countries {
@@ -282,7 +347,7 @@ export interface OrderDetails_shop_countries {
 
 export interface OrderDetails_shop {
   __typename: "Shop";
-  countries: (OrderDetails_shop_countries | null)[];
+  countries: OrderDetails_shop_countries[];
   defaultWeightUnit: WeightUnitsEnum | null;
 }
 

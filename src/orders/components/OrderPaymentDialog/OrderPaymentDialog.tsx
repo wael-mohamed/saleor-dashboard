@@ -10,8 +10,8 @@ import ConfirmButton, {
 } from "@saleor/components/ConfirmButton";
 import Form from "@saleor/components/Form";
 import FormSpacer from "@saleor/components/FormSpacer";
+import { OrderErrorFragment } from "@saleor/fragments/types/OrderErrorFragment";
 import { buttonMessages } from "@saleor/intl";
-import { OrderErrorFragment } from "@saleor/orders/types/OrderErrorFragment";
 import { getFormErrors } from "@saleor/utils/errors";
 import getOrderErrorMessage from "@saleor/utils/errors/order";
 import React from "react";
@@ -26,7 +26,6 @@ export interface OrderPaymentDialogProps {
   errors: OrderErrorFragment[];
   open: boolean;
   initial: number;
-  variant: "capture" | "refund";
   onClose: () => void;
   onSubmit: (data: FormData) => void;
 }
@@ -36,7 +35,6 @@ const OrderPaymentDialog: React.FC<OrderPaymentDialogProps> = ({
   errors,
   open,
   initial,
-  variant,
   onClose,
   onSubmit
 }) => {
@@ -56,15 +54,10 @@ const OrderPaymentDialog: React.FC<OrderPaymentDialogProps> = ({
         {({ data, change, submit }) => (
           <>
             <DialogTitle>
-              {variant === "capture"
-                ? intl.formatMessage({
-                    defaultMessage: "Capture Payment",
-                    description: "dialog header"
-                  })
-                : intl.formatMessage({
-                    defaultMessage: "Refund Payment",
-                    description: "dialog header"
-                  })}
+              {intl.formatMessage({
+                defaultMessage: "Capture Payment",
+                description: "dialog header"
+              })}
             </DialogTitle>
             <DialogContent>
               <TextField
@@ -88,8 +81,8 @@ const OrderPaymentDialog: React.FC<OrderPaymentDialogProps> = ({
                   <FormSpacer />
                   {errors
                     .filter(err => !formFields.includes(err.field))
-                    .map(err => (
-                      <DialogContentText color="error">
+                    .map((err, index) => (
+                      <DialogContentText color="error" key={index}>
                         {getOrderErrorMessage(err, intl)}
                       </DialogContentText>
                     ))}

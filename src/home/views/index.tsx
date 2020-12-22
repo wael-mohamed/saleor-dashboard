@@ -1,3 +1,4 @@
+import useAppChannel from "@saleor/components/AppLayout/AppChannelContext";
 import useNavigator from "@saleor/hooks/useNavigator";
 import useUser from "@saleor/hooks/useUser";
 import React from "react";
@@ -12,9 +13,10 @@ import { HomePageQuery } from "../queries";
 const HomeSection = () => {
   const navigate = useNavigator();
   const { user } = useUser();
+  const { channel } = useAppChannel();
 
   return (
-    <HomePageQuery displayLoader>
+    <HomePageQuery displayLoader variables={{ channel: channel.slug }}>
       {({ data }) => (
         <HomePage
           activities={maybe(() =>

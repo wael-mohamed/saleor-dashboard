@@ -1,7 +1,13 @@
+import {
+  saleDetailsFragment,
+  saleFragment,
+  voucherDetailsFragment,
+  voucherFragment
+} from "@saleor/fragments/discounts";
+import { pageInfoFragment } from "@saleor/fragments/pageInfo";
 import makeQuery from "@saleor/hooks/makeQuery";
 import gql from "graphql-tag";
 
-import { pageInfoFragment, TypedQuery } from "../queries";
 import { SaleDetails, SaleDetailsVariables } from "./types/SaleDetails";
 import { SaleList, SaleListVariables } from "./types/SaleList";
 import {
@@ -9,160 +15,6 @@ import {
   VoucherDetailsVariables
 } from "./types/VoucherDetails";
 import { VoucherList, VoucherListVariables } from "./types/VoucherList";
-
-export const saleFragment = gql`
-  fragment SaleFragment on Sale {
-    id
-    name
-    type
-    startDate
-    endDate
-    value
-  }
-`;
-
-export const saleDetailsFragment = gql`
-  ${pageInfoFragment}
-  ${saleFragment}
-  fragment SaleDetailsFragment on Sale {
-    ...SaleFragment
-    products(after: $after, before: $before, first: $first, last: $last) {
-      edges {
-        node {
-          id
-          name
-          isPublished
-          productType {
-            id
-            name
-          }
-          thumbnail {
-            url
-          }
-        }
-      }
-      pageInfo {
-        ...PageInfoFragment
-      }
-      totalCount
-    }
-    categories(after: $after, before: $before, first: $first, last: $last) {
-      edges {
-        node {
-          id
-          name
-          products {
-            totalCount
-          }
-        }
-      }
-      pageInfo {
-        ...PageInfoFragment
-      }
-      totalCount
-    }
-    collections(after: $after, before: $before, first: $first, last: $last) {
-      edges {
-        node {
-          id
-          name
-          products {
-            totalCount
-          }
-        }
-      }
-      pageInfo {
-        ...PageInfoFragment
-      }
-      totalCount
-    }
-  }
-`;
-
-export const voucherFragment = gql`
-  fragment VoucherFragment on Voucher {
-    id
-    code
-    startDate
-    endDate
-    usageLimit
-    discountValueType
-    discountValue
-    countries {
-      code
-      country
-    }
-    minSpent {
-      currency
-      amount
-    }
-    minCheckoutItemsQuantity
-  }
-`;
-
-export const voucherDetailsFragment = gql`
-  ${pageInfoFragment}
-  ${voucherFragment}
-  fragment VoucherDetailsFragment on Voucher {
-    ...VoucherFragment
-    type
-    code
-    usageLimit
-    used
-    applyOncePerOrder
-    applyOncePerCustomer
-    products(after: $after, before: $before, first: $first, last: $last) {
-      edges {
-        node {
-          id
-          name
-          productType {
-            id
-            name
-          }
-          isPublished
-          thumbnail {
-            url
-          }
-        }
-      }
-      totalCount
-      pageInfo {
-        ...PageInfoFragment
-      }
-    }
-    collections(after: $after, before: $before, first: $first, last: $last) {
-      edges {
-        node {
-          id
-          name
-          products {
-            totalCount
-          }
-        }
-      }
-      totalCount
-      pageInfo {
-        ...PageInfoFragment
-      }
-    }
-    categories(after: $after, before: $before, first: $first, last: $last) {
-      edges {
-        node {
-          id
-          name
-          products {
-            totalCount
-          }
-        }
-      }
-      totalCount
-      pageInfo {
-        ...PageInfoFragment
-      }
-    }
-  }
-`;
 
 export const saleList = gql`
   ${pageInfoFragment}
@@ -246,7 +98,7 @@ export const saleDetails = gql`
     }
   }
 `;
-export const TypedSaleDetails = TypedQuery<SaleDetails, SaleDetailsVariables>(
+export const useSaleDetails = makeQuery<SaleDetails, SaleDetailsVariables>(
   saleDetails
 );
 
@@ -264,7 +116,7 @@ const voucherDetails = gql`
     }
   }
 `;
-export const TypedVoucherDetails = TypedQuery<
+export const useVoucherDetails = makeQuery<
   VoucherDetails,
   VoucherDetailsVariables
 >(voucherDetails);

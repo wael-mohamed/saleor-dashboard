@@ -1,38 +1,24 @@
-import { ProductErrorFragment } from "@saleor/attributes/types/ProductErrorFragment";
 import AppHeader from "@saleor/components/AppHeader";
 import { CardSpacer } from "@saleor/components/CardSpacer";
 import { ConfirmButtonTransitionState } from "@saleor/components/ConfirmButton";
 import Container from "@saleor/components/Container";
-import Form from "@saleor/components/Form";
+import Metadata from "@saleor/components/Metadata";
 import PageHeader from "@saleor/components/PageHeader";
 import SaveButtonBar from "@saleor/components/SaveButtonBar";
 import SeoForm from "@saleor/components/SeoForm";
+import { ProductErrorFragment } from "@saleor/fragments/types/ProductErrorFragment";
 import { sectionNames } from "@saleor/intl";
-import { ContentState, convertToRaw, RawDraftContentState } from "draft-js";
 import React from "react";
 import { useIntl } from "react-intl";
 
 import CategoryDetailsForm from "../../components/CategoryDetailsForm";
-
-interface FormData {
-  description: RawDraftContentState;
-  name: string;
-  seoTitle: string;
-  seoDescription: string;
-}
-
-const initialData: FormData = {
-  description: convertToRaw(ContentState.createFromText("")),
-  name: "",
-  seoDescription: "",
-  seoTitle: ""
-};
+import CategoryCreateForm, { CategoryCreateData } from "./form";
 
 export interface CategoryCreatePageProps {
   errors: ProductErrorFragment[];
   disabled: boolean;
   saveButtonBarState: ConfirmButtonTransitionState;
-  onSubmit(data: FormData);
+  onSubmit(data: CategoryCreateData);
   onBack();
 }
 
@@ -44,9 +30,10 @@ export const CategoryCreatePage: React.FC<CategoryCreatePageProps> = ({
   saveButtonBarState
 }) => {
   const intl = useIntl();
+
   return (
-    <Form onSubmit={onSubmit} initial={initialData} confirmLeave>
-      {({ data, change, submit, hasChanged }) => (
+    <CategoryCreateForm onSubmit={onSubmit}>
+      {({ data, change, handlers, submit, hasChanged }) => (
         <Container>
           <AppHeader onBack={onBack}>
             {intl.formatMessage(sectionNames.categories)}
@@ -59,17 +46,21 @@ export const CategoryCreatePage: React.FC<CategoryCreatePageProps> = ({
           />
           <div>
             <CategoryDetailsForm
-              disabled={disabled}
               data={data}
-              onChange={change}
+              disabled={disabled}
               errors={errors}
+              onChange={change}
+              onDescriptionChange={handlers.changeDescription}
             />
             <CardSpacer />
             <SeoForm
+              allowEmptySlug={true}
               helperText={intl.formatMessage({
                 defaultMessage:
                   "Add search engine title and description to make this category easier to find"
               })}
+              slug={data.slug}
+              slugPlaceholder={data.name}
               title={data.seoTitle}
               titlePlaceholder={data.name}
               description={data.seoDescription}
@@ -78,6 +69,8 @@ export const CategoryCreatePage: React.FC<CategoryCreatePageProps> = ({
               onChange={change}
               disabled={disabled}
             />
+            <CardSpacer />
+            <Metadata data={data} onChange={handlers.changeMetadata} />
             <SaveButtonBar
               onCancel={onBack}
               onSave={submit}
@@ -87,7 +80,7 @@ export const CategoryCreatePage: React.FC<CategoryCreatePageProps> = ({
           </div>
         </Container>
       )}
-    </Form>
+    </CategoryCreateForm>
   );
 };
 CategoryCreatePage.displayName = "CategoryCreatePage";

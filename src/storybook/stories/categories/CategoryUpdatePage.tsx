@@ -14,9 +14,18 @@ import Decorator from "../../Decorator";
 
 const category = categoryFixture(placeholderImage);
 
+const channelChoices = category.products.edges[0].node.channelListings.map(
+  listing => ({
+    label: listing.channel.name,
+    value: listing.channel.id
+  })
+);
+
 const updateProps: Omit<CategoryUpdatePageProps, "classes"> = {
   category,
   changeTab: undefined,
+  channelChoices,
+  channelsCount: 2,
   currentTab: CategoryPageTab.categories,
   disabled: false,
   errors: [],
@@ -38,6 +47,7 @@ const updateProps: Omit<CategoryUpdatePageProps, "classes"> = {
   productListToolbar: null,
   products: category.products.edges.map(edge => edge.node),
   saveButtonBarState: "default",
+  selectedChannelId: "123",
   subcategories: category.children.edges.map(edge => edge.node),
   subcategoryListToolbar: null,
   ...listActionsProps

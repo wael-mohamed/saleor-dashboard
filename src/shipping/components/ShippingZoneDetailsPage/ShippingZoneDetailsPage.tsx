@@ -5,35 +5,41 @@ import Container from "@saleor/components/Container";
 import CountryList from "@saleor/components/CountryList";
 import Form from "@saleor/components/Form";
 import Grid from "@saleor/components/Grid";
+import Metadata from "@saleor/components/Metadata/Metadata";
+import { MetadataFormData } from "@saleor/components/Metadata/types";
 import { MultiAutocompleteChoiceType } from "@saleor/components/MultiAutocompleteSelectField";
 import PageHeader from "@saleor/components/PageHeader";
 import SaveButtonBar from "@saleor/components/SaveButtonBar";
 import { SingleAutocompleteChoiceType } from "@saleor/components/SingleAutocompleteSelectField";
+import { ShippingErrorFragment } from "@saleor/fragments/types/ShippingErrorFragment";
+import {
+  ShippingZoneDetailsFragment,
+  ShippingZoneDetailsFragment_warehouses
+} from "@saleor/fragments/types/ShippingZoneDetailsFragment";
+import { SubmitPromise } from "@saleor/hooks/useForm";
 import useStateFromProps from "@saleor/hooks/useStateFromProps";
-import { ShippingErrorFragment } from "@saleor/shipping/types/ShippingErrorFragment";
 import createMultiAutocompleteSelectHandler from "@saleor/utils/handlers/multiAutocompleteSelectChangeHandler";
+import { mapMetadataItemToInput } from "@saleor/utils/maps";
+import useMetadataChangeTrigger from "@saleor/utils/metadata/useMetadataChangeTrigger";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { getStringOrPlaceholder } from "../../../misc";
-import { FetchMoreProps, SearchProps } from "../../../types";
+import { ChannelProps, FetchMoreProps, SearchProps } from "../../../types";
 import { ShippingMethodTypeEnum } from "../../../types/globalTypes";
-import {
-  ShippingZoneDetailsFragment,
-  ShippingZoneDetailsFragment_warehouses
-} from "../../types/ShippingZoneDetailsFragment";
 import ShippingZoneInfo from "../ShippingZoneInfo";
 import ShippingZoneRates from "../ShippingZoneRates";
 import ShippingZoneWarehouses from "../ShippingZoneWarehouses";
 
-export interface FormData {
+export interface FormData extends MetadataFormData {
   name: string;
   warehouses: string[];
 }
 
 export interface ShippingZoneDetailsPageProps
   extends FetchMoreProps,
-    SearchProps {
+    SearchProps,
+    ChannelProps {
   disabled: boolean;
   errors: ShippingErrorFragment[];
   saveButtonBarState: ConfirmButtonTransitionState;
@@ -46,7 +52,7 @@ export interface ShippingZoneDetailsPageProps
   onPriceRateAdd: () => void;
   onPriceRateEdit: (id: string) => void;
   onRateRemove: (rateId: string) => void;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData) => SubmitPromise;
   onWarehouseAdd: () => void;
   onWeightRateAdd: () => void;
   onWeightRateEdit: (id: string) => void;
@@ -80,13 +86,16 @@ const ShippingZoneDetailsPage: React.FC<ShippingZoneDetailsPageProps> = ({
   onWeightRateAdd,
   onWeightRateEdit,
   saveButtonBarState,
+  selectedChannelId,
   shippingZone,
   warehouses
 }) => {
   const intl = useIntl();
 
   const initialForm: FormData = {
+    metadata: shippingZone?.metadata.map(mapMetadataItemToInput),
     name: shippingZone?.name || "",
+    privateMetadata: shippingZone?.privateMetadata.map(mapMetadataItemToInput),
     warehouses: shippingZone?.warehouses?.map(warehouse => warehouse.id) || []
   };
   const [warehouseDisplayValues, setWarehouseDisplayValues] = useStateFromProps<
@@ -100,6 +109,10 @@ const ShippingZoneDetailsPage: React.FC<ShippingZoneDetailsPageProps> = ({
 
   const warehouseChoices = warehouses.map(warehouseToChoice);
 
+  const {
+    makeChangeHandler: makeMetadataChangeHandler
+  } = useMetadataChangeTrigger();
+
   return (
     <Form initial={initialForm} onSubmit={onSubmit}>
       {({ change, data, hasChanged, submit, toggleValue }) => {
@@ -109,6 +122,8 @@ const ShippingZoneDetailsPage: React.FC<ShippingZoneDetailsPageProps> = ({
           warehouseDisplayValues,
           warehouseChoices
         );
+
+        const changeMetadata = makeMetadataChangeHandler(change);
 
         return (
           <Container>
@@ -157,6 +172,7 @@ const ShippingZoneDetailsPage: React.FC<ShippingZoneDetailsPageProps> = ({
                     method => method.type === ShippingMethodTypeEnum.PRICE
                   )}
                   variant="price"
+                  selectedChannelId={selectedChannelId}
                 />
                 <CardSpacer />
                 <ShippingZoneRates
@@ -168,7 +184,10 @@ const ShippingZoneDetailsPage: React.FC<ShippingZoneDetailsPageProps> = ({
                     method => method.type === ShippingMethodTypeEnum.WEIGHT
                   )}
                   variant="weight"
+                  selectedChannelId={selectedChannelId}
                 />
+                <CardSpacer />
+                <Metadata data={data} onChange={changeMetadata} />
               </div>
               <div>
                 <ShippingZoneWarehouses

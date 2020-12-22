@@ -32,8 +32,24 @@ const WebhookEvents: React.FC<WebhookEventsProps> = ({
       defaultMessage: "All events",
       description: "event"
     }),
+    [WebhookEventTypeEnum.CHECKOUT_CREATED]: intl.formatMessage({
+      defaultMessage: "Checkout created",
+      description: "event"
+    }),
+    [WebhookEventTypeEnum.CHECKOUT_UPDATED]: intl.formatMessage({
+      defaultMessage: "Checkout updated",
+      description: "event"
+    }),
     [WebhookEventTypeEnum.CUSTOMER_CREATED]: intl.formatMessage({
       defaultMessage: "Customer created",
+      description: "event"
+    }),
+    [WebhookEventTypeEnum.CHECKOUT_CREATED]: intl.formatMessage({
+      defaultMessage: "Checkout created",
+      description: "event"
+    }),
+    [WebhookEventTypeEnum.CHECKOUT_UPDATED]: intl.formatMessage({
+      defaultMessage: "Checkout updated",
       description: "event"
     }),
     [WebhookEventTypeEnum.ORDER_CANCELLED]: intl.formatMessage({
@@ -42,6 +58,10 @@ const WebhookEvents: React.FC<WebhookEventsProps> = ({
     }),
     [WebhookEventTypeEnum.ORDER_CREATED]: intl.formatMessage({
       defaultMessage: "Order created",
+      description: "event"
+    }),
+    [WebhookEventTypeEnum.ORDER_CONFIRMED]: intl.formatMessage({
+      defaultMessage: "Order confirmed",
       description: "event"
     }),
     [WebhookEventTypeEnum.ORDER_FULFILLED]: intl.formatMessage({
@@ -60,12 +80,28 @@ const WebhookEvents: React.FC<WebhookEventsProps> = ({
       defaultMessage: "Product created",
       description: "event"
     }),
+    [WebhookEventTypeEnum.PRODUCT_UPDATED]: intl.formatMessage({
+      defaultMessage: "Product updated",
+      description: "event"
+    }),
     [WebhookEventTypeEnum.CHECKOUT_QUANTITY_CHANGED]: intl.formatMessage({
       defaultMessage: "Changed quantity in checkout",
       description: "event"
     }),
     [WebhookEventTypeEnum.FULFILLMENT_CREATED]: intl.formatMessage({
       defaultMessage: "Fulfillment created",
+      description: "event"
+    }),
+    [WebhookEventTypeEnum.INVOICE_REQUESTED]: intl.formatMessage({
+      defaultMessage: "Invoice requested",
+      description: "event"
+    }),
+    [WebhookEventTypeEnum.INVOICE_SENT]: intl.formatMessage({
+      defaultMessage: "Invoice sent",
+      description: "event"
+    }),
+    [WebhookEventTypeEnum.INVOICE_DELETED]: intl.formatMessage({
+      defaultMessage: "Invoice deleted",
       description: "event"
     })
   };

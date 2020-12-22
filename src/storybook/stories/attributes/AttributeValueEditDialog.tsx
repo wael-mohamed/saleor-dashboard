@@ -1,8 +1,5 @@
 import { attribute } from "@saleor/attributes/fixtures";
-import {
-  AttributeValueType,
-  ProductErrorCode
-} from "@saleor/types/globalTypes";
+import { AttributeErrorCode } from "@saleor/types/globalTypes";
 import { storiesOf } from "@storybook/react";
 import React from "react";
 
@@ -12,10 +9,7 @@ import AttributeValueEditDialog, {
 import Decorator from "../../Decorator";
 
 const props: AttributeValueEditDialogProps = {
-  attributeValue: {
-    ...attribute.values[0],
-    type: AttributeValueType.STRING
-  },
+  attributeValue: attribute.values[0],
   confirmButtonState: "default",
   disabled: false,
   errors: [],
@@ -32,8 +26,8 @@ storiesOf("Attributes / Attribute value edit", module)
       {...props}
       errors={[
         {
-          __typename: "ProductError",
-          code: ProductErrorCode.INVALID,
+          __typename: "AttributeError",
+          code: AttributeErrorCode.INVALID,
           field: "name"
         }
       ]}

@@ -9,20 +9,19 @@ import Grid from "@saleor/components/Grid";
 import Hr from "@saleor/components/Hr";
 import PageHeader from "@saleor/components/PageHeader";
 import SaveButtonBar from "@saleor/components/SaveButtonBar";
+import { ShopErrorFragment } from "@saleor/fragments/types/ShopErrorFragment";
 import useAddressValidation from "@saleor/hooks/useAddressValidation";
+import { SubmitPromise } from "@saleor/hooks/useForm";
 import useStateFromProps from "@saleor/hooks/useStateFromProps";
 import { commonMessages, sectionNames } from "@saleor/intl";
-import { ShopErrorFragment } from "@saleor/siteSettings/types/ShopErrorFragment";
 import createSingleAutocompleteSelectHandler from "@saleor/utils/handlers/singleAutocompleteSelectChangeHandler";
 import { mapCountriesToChoices } from "@saleor/utils/maps";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { maybe } from "../../../misc";
-import { AuthorizationKeyType } from "../../../types/globalTypes";
 import { SiteSettings_shop } from "../../types/SiteSettings";
 import SiteSettingsDetails from "../SiteSettingsDetails/SiteSettingsDetails";
-import SiteSettingsKeys from "../SiteSettingsKeys/SiteSettingsKeys";
 import SiteSettingsMailing, {
   SiteSettingsMailingFormData
 } from "../SiteSettingsMailing";
@@ -52,9 +51,7 @@ export interface SiteSettingsPageProps {
   shop: SiteSettings_shop;
   saveButtonBarState: ConfirmButtonTransitionState;
   onBack: () => void;
-  onKeyAdd: () => void;
-  onKeyRemove: (keyType: AuthorizationKeyType) => void;
-  onSubmit: (data: SiteSettingsPageFormData) => void;
+  onSubmit: (data: SiteSettingsPageFormData) => SubmitPromise;
 }
 
 export function areAddressInputFieldsModified(
@@ -92,8 +89,6 @@ const SiteSettingsPage: React.FC<SiteSettingsPageProps> = props => {
     saveButtonBarState,
     shop,
     onBack,
-    onKeyAdd,
-    onKeyRemove,
     onSubmit
   } = props;
   const classes = useStyles(props);
@@ -105,7 +100,7 @@ const SiteSettingsPage: React.FC<SiteSettingsPageProps> = props => {
   const {
     errors: validationErrors,
     submit: handleSubmitWithAddress
-  } = useAddressValidation<SiteSettingsPageFormData>(onSubmit);
+  } = useAddressValidation(onSubmit);
 
   const initialFormAddress: SiteSettingsPageAddressFormData = {
     city: maybe(() => shop.companyAddress.city, ""),
@@ -134,7 +129,7 @@ const SiteSettingsPage: React.FC<SiteSettingsPageProps> = props => {
         const submitFunc = areAddressInputFieldsModified(data)
           ? handleSubmitWithAddress
           : onSubmit;
-        submitFunc(data);
+        return submitFunc(data);
       }}
       confirmLeave
     >
@@ -212,24 +207,6 @@ const SiteSettingsPage: React.FC<SiteSettingsPageProps> = props => {
                 })}
                 onChange={change}
                 onCountryChange={handleCountryChange}
-              />
-              <Hr className={classes.hr} />
-              <div>
-                <Typography>
-                  <FormattedMessage
-                    defaultMessage="Authentication Methods"
-                    description="section header"
-                  />
-                </Typography>
-                <Typography variant="body2">
-                  <FormattedMessage defaultMessage="Authentication method defines additional ways that customers can log in to your ecommerce." />
-                </Typography>
-              </div>
-              <SiteSettingsKeys
-                disabled={disabled}
-                keys={maybe(() => shop.authorizationKeys)}
-                onAdd={onKeyAdd}
-                onRemove={onKeyRemove}
               />
             </Grid>
             <SaveButtonBar

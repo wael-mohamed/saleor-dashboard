@@ -3,19 +3,18 @@ import CardSpacer from "@saleor/components/CardSpacer";
 import Container from "@saleor/components/Container";
 import LanguageSwitch from "@saleor/components/LanguageSwitch";
 import PageHeader from "@saleor/components/PageHeader";
+import { CollectionTranslationFragment } from "@saleor/fragments/types/CollectionTranslationFragment";
 import { commonMessages, sectionNames } from "@saleor/intl";
+import { TranslationsEntitiesPageProps } from "@saleor/translations/types";
 import React from "react";
 import { useIntl } from "react-intl";
 
-import { maybe } from "../../../misc";
 import { LanguageCodeEnum } from "../../../types/globalTypes";
-import { CollectionTranslationFragment } from "../../types/CollectionTranslationFragment";
-import { TranslationsEntitiesPageProps } from "../../types/TranslationsEntitiesPage";
 import TranslationFields from "../TranslationFields";
 
 export interface TranslationsCollectionsPageProps
   extends TranslationsEntitiesPageProps {
-  collection: CollectionTranslationFragment;
+  data: CollectionTranslationFragment;
 }
 
 export const fieldNames = {
@@ -30,7 +29,7 @@ const TranslationsCollectionsPage: React.FC<TranslationsCollectionsPageProps> = 
   disabled,
   languageCode,
   languages,
-  collection,
+  data,
   saveButtonState,
   onBack,
   onDiscard,
@@ -53,7 +52,7 @@ const TranslationsCollectionsPage: React.FC<TranslationsCollectionsPageProps> = 
             description: "header"
           },
           {
-            collectionName: maybe(() => collection.name, "..."),
+            collectionName: data?.collection?.name || "...",
             languageCode
           }
         )}
@@ -75,22 +74,16 @@ const TranslationsCollectionsPage: React.FC<TranslationsCollectionsPageProps> = 
               defaultMessage: "Collection Name"
             }),
             name: fieldNames.name,
-            translation: maybe(() =>
-              collection.translation ? collection.translation.name : null
-            ),
+            translation: data?.translation?.name || null,
             type: "short" as "short",
-            value: maybe(() => collection.name)
+            value: data?.collection?.name
           },
           {
             displayName: intl.formatMessage(commonMessages.description),
             name: fieldNames.descriptionJson,
-            translation: maybe(() =>
-              collection.translation
-                ? collection.translation.descriptionJson
-                : null
-            ),
+            translation: data?.translation?.descriptionJson || null,
             type: "rich" as "rich",
-            value: maybe(() => collection.descriptionJson)
+            value: data?.collection?.descriptionJson
           }
         ]}
         saveButtonState={saveButtonState}
@@ -112,24 +105,18 @@ const TranslationsCollectionsPage: React.FC<TranslationsCollectionsPageProps> = 
               defaultMessage: "Search Engine Title"
             }),
             name: fieldNames.seoTitle,
-            translation: maybe(() =>
-              collection.translation ? collection.translation.seoTitle : null
-            ),
+            translation: data?.translation?.seoTitle || null,
             type: "short" as "short",
-            value: maybe(() => collection.seoTitle)
+            value: data?.collection?.seoTitle
           },
           {
             displayName: intl.formatMessage({
               defaultMessage: "Search Engine Description"
             }),
             name: fieldNames.seoDescription,
-            translation: maybe(() =>
-              collection.translation
-                ? collection.translation.seoDescription
-                : null
-            ),
+            translation: data?.translation?.seoDescription || null,
             type: "long" as "long",
-            value: maybe(() => collection.seoDescription)
+            value: data?.collection?.seoDescription
           }
         ]}
         saveButtonState={saveButtonState}

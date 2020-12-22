@@ -2,6 +2,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ActionDialog from "@saleor/components/ActionDialog";
+import useAppChannel from "@saleor/components/AppLayout/AppChannelContext";
 import DeleteFilterTabDialog from "@saleor/components/DeleteFilterTabDialog";
 import SaveFilterTabDialog, {
   SaveFilterTabDialogFormData
@@ -14,7 +15,6 @@ import useNotifier from "@saleor/hooks/useNotifier";
 import usePaginator, {
   createPaginationState
 } from "@saleor/hooks/usePaginator";
-import useShop from "@saleor/hooks/useShop";
 import { commonMessages, sectionNames } from "@saleor/intl";
 import { maybe } from "@saleor/misc";
 import { ListViews } from "@saleor/types";
@@ -56,7 +56,6 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
   const navigate = useNavigator();
   const notify = useNotifier();
   const paginate = usePaginator();
-  const shop = useShop();
   const { isSelected, listElements, reset, toggle, toggleAll } = useBulkActions(
     params.ids
   );
@@ -64,6 +63,13 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
     ListViews.VOUCHER_LIST
   );
   const intl = useIntl();
+
+  const { channel } = useAppChannel();
+
+  const [openModal, closeModal] = createDialogActionHandlers<
+    VoucherListUrlDialog,
+    VoucherListUrlQueryParams
+  >(navigate, voucherListUrl, params);
 
   const paginationState = createPaginationState(settings.rowNumber, params);
   const queryVariables = React.useMemo(
@@ -100,11 +106,6 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
     params
   });
 
-  const [openModal, closeModal] = createDialogActionHandlers<
-    VoucherListUrlDialog,
-    VoucherListUrlQueryParams
-  >(navigate, voucherListUrl, params);
-
   const handleTabChange = (tab: number) => {
     reset();
     navigate(
@@ -129,7 +130,7 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
   const canOpenBulkActionDialog = maybe(() => params.ids.length > 0);
 
   const { loadNextPage, loadPreviousPage, pageInfo } = paginate(
-    maybe(() => data.vouchers.pageInfo),
+    data?.vouchers?.pageInfo,
     paginationState,
     params
   );
@@ -137,6 +138,7 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
   const handleVoucherBulkDelete = (data: VoucherBulkDelete) => {
     if (data.voucherBulkDelete.errors.length === 0) {
       notify({
+        status: "success",
         text: intl.formatMessage(commonMessages.savedChanges)
       });
       reset();
@@ -146,7 +148,6 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
   };
 
   const handleSort = createSortHandler(navigate, voucherListUrl, params);
-  const currencySymbol = maybe(() => shop.defaultCurrency, "USD");
 
   return (
     <TypedVoucherBulkDelete onCompleted={handleVoucherBulkDelete}>
@@ -162,7 +163,6 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
           <>
             <WindowTitle title={intl.formatMessage(sectionNames.vouchers)} />
             <VoucherListPage
-              currencySymbol={currencySymbol}
               currentTab={currentTab}
               filterOpts={getFilterOpts(params)}
               initialSearch={params.query || ""}
@@ -173,12 +173,11 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
               onTabDelete={() => openModal("delete-search")}
               onTabSave={() => openModal("save-search")}
               tabs={tabs.map(tab => tab.name)}
-              defaultCurrency={maybe(() => shop.defaultCurrency)}
               settings={settings}
               vouchers={maybe(() => data.vouchers.edges.map(edge => edge.node))}
               disabled={loading}
               pageInfo={pageInfo}
-              onAdd={() => navigate(voucherAddUrl)}
+              onAdd={() => navigate(voucherAddUrl())}
               onNextPage={loadNextPage}
               onPreviousPage={loadPreviousPage}
               onUpdateListSettings={updateListSettings}
@@ -201,6 +200,7 @@ export const VoucherList: React.FC<VoucherListProps> = ({ params }) => {
                   <DeleteIcon />
                 </IconButton>
               }
+              selectedChannelId={channel.id}
             />
             <ActionDialog
               confirmButtonState={voucherBulkDeleteOpts.status}

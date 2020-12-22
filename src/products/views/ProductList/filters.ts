@@ -2,8 +2,7 @@ import { UseSearchResult } from "@saleor/hooks/makeSearch";
 import { findValueInEnum, maybe } from "@saleor/misc";
 import {
   ProductFilterKeys,
-  ProductListFilterOpts,
-  ProductStatus
+  ProductListFilterOpts
 } from "@saleor/products/components/ProductListPage";
 import {
   InitialProductFilterData_attributes_edges_node,
@@ -41,6 +40,7 @@ import {
 } from "../../../utils/filters";
 import {
   ProductListUrlFilters,
+  ProductListUrlFiltersAsDictWithMultipleValues,
   ProductListUrlFiltersEnum,
   ProductListUrlFiltersWithMultipleValues,
   ProductListUrlQueryParams
@@ -181,10 +181,6 @@ export function getFilterOpts(
       onSearchChange: productTypes.search.search,
       value: maybe(() => dedupeFilter(params.productTypes), [])
     },
-    status: {
-      active: maybe(() => params.status !== undefined, false),
-      value: maybe(() => findValueInEnum(params.status, ProductStatus))
-    },
     stockStatus: {
       active: maybe(() => params.stockStatus !== undefined, false),
       value: maybe(() => findValueInEnum(params.stockStatus, StockAvailability))
@@ -193,7 +189,8 @@ export function getFilterOpts(
 }
 
 export function getFilterVariables(
-  params: ProductListUrlFilters
+  params: ProductListUrlFilters,
+  channel: string | undefined
 ): ProductFilterInput {
   return {
     attributes: !!params.attributes
@@ -206,15 +203,14 @@ export function getFilterVariables(
         }))
       : null,
     categories: params.categories !== undefined ? params.categories : null,
+    channel: channel || null,
     collections: params.collections !== undefined ? params.collections : null,
-    isPublished:
-      params.status !== undefined
-        ? params.status === ProductStatus.PUBLISHED
-        : null,
-    price: getGteLteVariables({
-      gte: parseFloat(params.priceFrom),
-      lte: parseFloat(params.priceTo)
-    }),
+    price: channel
+      ? getGteLteVariables({
+          gte: parseFloat(params.priceFrom),
+          lte: parseFloat(params.priceTo)
+        })
+      : null,
     productTypes:
       params.productTypes !== undefined ? params.productTypes : null,
     search: params.query,
@@ -270,13 +266,6 @@ export function getFilterQueryParam(
         ProductListUrlFiltersWithMultipleValues.productTypes
       );
 
-    case ProductFilterKeys.status:
-      return getSingleEnumValueQueryParam(
-        filter,
-        ProductListUrlFiltersEnum.status,
-        ProductStatus
-      );
-
     case ProductFilterKeys.stock:
       return getSingleEnumValueQueryParam(
         filter,
@@ -295,4 +284,8 @@ export const {
 export const { areFiltersApplied, getActiveFilters } = createFilterUtils<
   ProductListUrlQueryParams,
   ProductListUrlFilters
->(ProductListUrlFiltersEnum);
+>({
+  ...ProductListUrlFiltersEnum,
+  ...ProductListUrlFiltersWithMultipleValues,
+  ...ProductListUrlFiltersAsDictWithMultipleValues
+});

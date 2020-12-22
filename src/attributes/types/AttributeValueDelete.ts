@@ -2,18 +2,36 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { AttributeInputTypeEnum, AttributeValueType, ProductErrorCode } from "./../../types/globalTypes";
+import { AttributeTypeEnum, AttributeInputTypeEnum, AttributeErrorCode } from "./../../types/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: AttributeValueDelete
 // ====================================================
+
+export interface AttributeValueDelete_attributeValueDelete_attribute_metadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface AttributeValueDelete_attributeValueDelete_attribute_privateMetadata {
+  __typename: "MetadataItem";
+  key: string;
+  value: string;
+}
+
+export interface AttributeValueDelete_attributeValueDelete_attribute_values_file {
+  __typename: "File";
+  url: string;
+  contentType: string | null;
+}
 
 export interface AttributeValueDelete_attributeValueDelete_attribute_values {
   __typename: "AttributeValue";
   id: string;
   name: string | null;
   slug: string | null;
-  type: AttributeValueType | null;
+  file: AttributeValueDelete_attributeValueDelete_attribute_values_file | null;
 }
 
 export interface AttributeValueDelete_attributeValueDelete_attribute {
@@ -21,9 +39,12 @@ export interface AttributeValueDelete_attributeValueDelete_attribute {
   id: string;
   name: string | null;
   slug: string | null;
+  type: AttributeTypeEnum | null;
   visibleInStorefront: boolean;
   filterableInDashboard: boolean;
   filterableInStorefront: boolean;
+  metadata: (AttributeValueDelete_attributeValueDelete_attribute_metadata | null)[];
+  privateMetadata: (AttributeValueDelete_attributeValueDelete_attribute_privateMetadata | null)[];
   availableInGrid: boolean;
   inputType: AttributeInputTypeEnum | null;
   storefrontSearchPosition: number;
@@ -32,8 +53,8 @@ export interface AttributeValueDelete_attributeValueDelete_attribute {
 }
 
 export interface AttributeValueDelete_attributeValueDelete_errors {
-  __typename: "ProductError";
-  code: ProductErrorCode;
+  __typename: "AttributeError";
+  code: AttributeErrorCode;
   field: string | null;
 }
 

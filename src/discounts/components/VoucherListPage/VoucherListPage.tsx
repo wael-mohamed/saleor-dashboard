@@ -6,6 +6,7 @@ import PageHeader from "@saleor/components/PageHeader";
 import { VoucherListUrlSortField } from "@saleor/discounts/urls";
 import { sectionNames } from "@saleor/intl";
 import {
+  ChannelProps,
   FilterPageProps,
   ListActions,
   PageListProps,
@@ -28,13 +29,11 @@ export interface VoucherListPageProps
     ListActions,
     FilterPageProps<VoucherFilterKeys, VoucherListFilterOpts>,
     SortPage<VoucherListUrlSortField>,
-    TabPageProps {
-  defaultCurrency: string;
+    TabPageProps,
+    ChannelProps {
   vouchers: VoucherList_vouchers_edges_node[];
 }
-
 const VoucherListPage: React.FC<VoucherListPageProps> = ({
-  currencySymbol,
   currentTab,
   filterOpts,
   initialSearch,
@@ -49,7 +48,6 @@ const VoucherListPage: React.FC<VoucherListPageProps> = ({
   ...listProps
 }) => {
   const intl = useIntl();
-
   const structure = createFilterStructure(intl, filterOpts);
 
   return (
@@ -68,7 +66,6 @@ const VoucherListPage: React.FC<VoucherListPageProps> = ({
             defaultMessage: "All Vouchers",
             description: "tab name"
           })}
-          currencySymbol={currencySymbol}
           currentTab={currentTab}
           filterStructure={structure}
           initialSearch={initialSearch}

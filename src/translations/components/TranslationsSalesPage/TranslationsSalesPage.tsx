@@ -2,19 +2,18 @@ import AppHeader from "@saleor/components/AppHeader";
 import Container from "@saleor/components/Container";
 import LanguageSwitch from "@saleor/components/LanguageSwitch";
 import PageHeader from "@saleor/components/PageHeader";
+import { SaleTranslationFragment } from "@saleor/fragments/types/SaleTranslationFragment";
 import { commonMessages, sectionNames } from "@saleor/intl";
+import { TranslationsEntitiesPageProps } from "@saleor/translations/types";
 import React from "react";
 import { useIntl } from "react-intl";
 
-import { maybe } from "../../../misc";
 import { LanguageCodeEnum } from "../../../types/globalTypes";
-import { SaleTranslationFragment } from "../../types/SaleTranslationFragment";
-import { TranslationsEntitiesPageProps } from "../../types/TranslationsEntitiesPage";
 import TranslationFields from "../TranslationFields";
 
 export interface TranslationsSalesPageProps
   extends TranslationsEntitiesPageProps {
-  sale: SaleTranslationFragment;
+  data: SaleTranslationFragment;
 }
 
 export const fieldNames = {
@@ -26,7 +25,7 @@ const TranslationsSalesPage: React.FC<TranslationsSalesPageProps> = ({
   disabled,
   languageCode,
   languages,
-  sale,
+  data,
   saveButtonState,
   onBack,
   onDiscard,
@@ -49,7 +48,7 @@ const TranslationsSalesPage: React.FC<TranslationsSalesPageProps> = ({
           },
           {
             languageCode,
-            saleName: maybe(() => sale.name, "...")
+            saleName: data?.sale?.name || "..."
           }
         )}
       >
@@ -70,11 +69,9 @@ const TranslationsSalesPage: React.FC<TranslationsSalesPageProps> = ({
               defaultMessage: "Sale Name"
             }),
             name: fieldNames.name,
-            translation: maybe(() =>
-              sale.translation ? sale.translation.name : null
-            ),
+            translation: data?.translation?.name || null,
             type: "short" as "short",
-            value: maybe(() => sale.name)
+            value: data?.sale?.name
           }
         ]}
         saveButtonState={saveButtonState}

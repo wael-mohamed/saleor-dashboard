@@ -12,7 +12,6 @@ function loadStories() {
   require("./stories/components/ActionDialog");
   require("./stories/components/AddressEdit");
   require("./stories/components/AddressFormatter");
-  require("./stories/components/AssignAttributeDialog");
   require("./stories/components/AssignProductDialog");
   require("./stories/components/AutocompleteSelectMenu");
   require("./stories/components/CardMenu");
@@ -35,7 +34,6 @@ function loadStories() {
   require("./stories/components/Percent");
   require("./stories/components/PhoneField");
   require("./stories/components/PriceField");
-  require("./stories/components/RichTextEditor");
   require("./stories/components/SaveButtonBar");
   require("./stories/components/SaveFilterTabDialog");
   require("./stories/components/SingleSelectField");
@@ -121,7 +119,6 @@ function loadStories() {
   require("./stories/orders/OrderCustomer");
   require("./stories/orders/OrderDetailsPage");
   require("./stories/orders/OrderDraftCancelDialog");
-  require("./stories/orders/OrderDraftFinalizeDialog");
   require("./stories/orders/OrderDraftListPage");
   require("./stories/orders/OrderDraftPage");
   require("./stories/orders/OrderFulfillmentCancelDialog");
@@ -134,10 +131,9 @@ function loadStories() {
   require("./stories/orders/OrderPaymentVoidDialog");
   require("./stories/orders/OrderProductAddDialog");
   require("./stories/orders/OrderShippingMethodEditDialog");
+  require("./stories/orders/OrderInvoiceList");
 
   // Product types
-  require("./stories/productTypes/ProductTypeAttributeUnassignDialog");
-  require("./stories/productTypes/ProductTypeBulkAttributeUnassignDialog");
   require("./stories/productTypes/ProductTypeCreatePage");
   require("./stories/productTypes/ProductTypeDeleteDialog");
   require("./stories/productTypes/ProductTypeDetailsPage");
@@ -147,11 +143,9 @@ function loadStories() {
   require("./stories/shipping/ShippingZoneCountriesAssignDialog");
   require("./stories/shipping/ShippingZoneCreatePage");
   require("./stories/shipping/ShippingZoneDetailsPage");
-  require("./stories/shipping/ShippingZoneRateDialog");
   require("./stories/shipping/ShippingZonesListPage");
 
   // Site settings
-  require("./stories/siteSettings/SiteSettingsKeyDialog");
   require("./stories/siteSettings/SiteSettingsPage");
 
   // Taxes

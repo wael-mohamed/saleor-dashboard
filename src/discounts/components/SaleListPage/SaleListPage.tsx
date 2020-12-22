@@ -6,6 +6,7 @@ import PageHeader from "@saleor/components/PageHeader";
 import { SaleListUrlSortField } from "@saleor/discounts/urls";
 import { sectionNames } from "@saleor/intl";
 import {
+  ChannelProps,
   FilterPageProps,
   ListActions,
   PageListProps,
@@ -28,13 +29,12 @@ export interface SaleListPageProps
     ListActions,
     FilterPageProps<SaleFilterKeys, SaleListFilterOpts>,
     SortPage<SaleListUrlSortField>,
-    TabPageProps {
-  defaultCurrency: string;
+    TabPageProps,
+    ChannelProps {
   sales: SaleList_sales_edges_node[];
 }
 
 const SaleListPage: React.FC<SaleListPageProps> = ({
-  currencySymbol,
   currentTab,
   filterOpts,
   initialSearch,
@@ -49,7 +49,6 @@ const SaleListPage: React.FC<SaleListPageProps> = ({
   ...listProps
 }) => {
   const intl = useIntl();
-
   const structure = createFilterStructure(intl, filterOpts);
 
   return (
@@ -65,7 +64,6 @@ const SaleListPage: React.FC<SaleListPageProps> = ({
             defaultMessage: "All Sales",
             description: "tab name"
           })}
-          currencySymbol={currencySymbol}
           currentTab={currentTab}
           filterStructure={structure}
           initialSearch={initialSearch}

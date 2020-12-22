@@ -1,41 +1,17 @@
+import {
+  categoryDetailsFragment,
+  categoryFragment
+} from "@saleor/fragments/categories";
+import { pageInfoFragment } from "@saleor/fragments/pageInfo";
+import { channelListingProductFragment } from "@saleor/fragments/products";
 import makeQuery from "@saleor/hooks/makeQuery";
 import gql from "graphql-tag";
 
-import { pageInfoFragment } from "../queries";
 import {
   CategoryDetails,
   CategoryDetailsVariables
 } from "./types/CategoryDetails";
 import { RootCategories } from "./types/RootCategories";
-
-export const categoryFragment = gql`
-  fragment CategoryFragment on Category {
-    id
-    name
-    children {
-      totalCount
-    }
-    products {
-      totalCount
-    }
-  }
-`;
-export const categoryDetailsFragment = gql`
-  fragment CategoryDetailsFragment on Category {
-    id
-    backgroundImage {
-      alt
-      url
-    }
-    name
-    descriptionJson
-    seoDescription
-    seoTitle
-    parent {
-      id
-    }
-  }
-`;
 
 export const rootCategories = gql`
   ${categoryFragment}
@@ -73,6 +49,7 @@ export const useRootCategoriesQuery = makeQuery<RootCategories, {}>(
 );
 
 export const categoryDetails = gql`
+  ${channelListingProductFragment}
   ${categoryFragment}
   ${categoryDetailsFragment}
   ${pageInfoFragment}
@@ -104,17 +81,15 @@ export const categoryDetails = gql`
           node {
             id
             name
-            basePrice {
-              amount
-              currency
-            }
-            isAvailable
             thumbnail {
               url
             }
             productType {
               id
               name
+            }
+            channelListings {
+              ...ChannelListingProductFragment
             }
           }
         }

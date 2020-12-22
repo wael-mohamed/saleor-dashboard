@@ -1,7 +1,8 @@
-import { TypedMutation } from "@saleor/mutations";
+import { attributeDetailsFragment } from "@saleor/fragments/attributes";
+import { attributeErrorFragment } from "@saleor/fragments/errors";
+import makeMutation from "@saleor/hooks/makeMutation";
 import gql from "graphql-tag";
 
-import { attributeDetailsFragment } from "./queries";
 import {
   AttributeBulkDelete,
   AttributeBulkDeleteVariables
@@ -35,140 +36,133 @@ import {
   AttributeValueUpdateVariables
 } from "./types/AttributeValueUpdate";
 
-export const productErrorFragment = gql`
-  fragment ProductErrorFragment on ProductError {
-    code
-    field
-  }
-`;
-
 const attributeBulkDelete = gql`
-  ${productErrorFragment}
+  ${attributeErrorFragment}
   mutation AttributeBulkDelete($ids: [ID!]!) {
     attributeBulkDelete(ids: $ids) {
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: attributeErrors {
+        ...AttributeErrorFragment
       }
     }
   }
 `;
-export const AttributeBulkDeleteMutation = TypedMutation<
+export const useAttributeBulkDeleteMutation = makeMutation<
   AttributeBulkDelete,
   AttributeBulkDeleteVariables
 >(attributeBulkDelete);
 
 const attributeDelete = gql`
-  ${productErrorFragment}
+  ${attributeErrorFragment}
   mutation AttributeDelete($id: ID!) {
     attributeDelete(id: $id) {
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: attributeErrors {
+        ...AttributeErrorFragment
       }
     }
   }
 `;
-export const AttributeDeleteMutation = TypedMutation<
+export const useAttributeDeleteMutation = makeMutation<
   AttributeDelete,
   AttributeDeleteVariables
 >(attributeDelete);
 
 export const attributeUpdateMutation = gql`
   ${attributeDetailsFragment}
-  ${productErrorFragment}
+  ${attributeErrorFragment}
   mutation AttributeUpdate($id: ID!, $input: AttributeUpdateInput!) {
     attributeUpdate(id: $id, input: $input) {
       attribute {
         ...AttributeDetailsFragment
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: attributeErrors {
+        ...AttributeErrorFragment
       }
     }
   }
 `;
-export const AttributeUpdateMutation = TypedMutation<
+export const useAttributeUpdateMutation = makeMutation<
   AttributeUpdate,
   AttributeUpdateVariables
 >(attributeUpdateMutation);
 
 const attributeValueDelete = gql`
   ${attributeDetailsFragment}
-  ${productErrorFragment}
+  ${attributeErrorFragment}
   mutation AttributeValueDelete($id: ID!) {
     attributeValueDelete(id: $id) {
       attribute {
         ...AttributeDetailsFragment
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: attributeErrors {
+        ...AttributeErrorFragment
       }
     }
   }
 `;
-export const AttributeValueDeleteMutation = TypedMutation<
+export const useAttributeValueDeleteMutation = makeMutation<
   AttributeValueDelete,
   AttributeValueDeleteVariables
 >(attributeValueDelete);
 
 export const attributeValueUpdateMutation = gql`
   ${attributeDetailsFragment}
-  ${productErrorFragment}
+  ${attributeErrorFragment}
   mutation AttributeValueUpdate($id: ID!, $input: AttributeValueCreateInput!) {
     attributeValueUpdate(id: $id, input: $input) {
       attribute {
         ...AttributeDetailsFragment
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: attributeErrors {
+        ...AttributeErrorFragment
       }
     }
   }
 `;
-export const AttributeValueUpdateMutation = TypedMutation<
+export const useAttributeValueUpdateMutation = makeMutation<
   AttributeValueUpdate,
   AttributeValueUpdateVariables
 >(attributeValueUpdateMutation);
 
 export const attributeValueCreateMutation = gql`
   ${attributeDetailsFragment}
-  ${productErrorFragment}
+  ${attributeErrorFragment}
   mutation AttributeValueCreate($id: ID!, $input: AttributeValueCreateInput!) {
     attributeValueCreate(attribute: $id, input: $input) {
       attribute {
         ...AttributeDetailsFragment
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: attributeErrors {
+        ...AttributeErrorFragment
       }
     }
   }
 `;
-export const AttributeValueCreateMutation = TypedMutation<
+export const useAttributeValueCreateMutation = makeMutation<
   AttributeValueCreate,
   AttributeValueCreateVariables
 >(attributeValueCreateMutation);
 
 export const attributeCreateMutation = gql`
   ${attributeDetailsFragment}
-  ${productErrorFragment}
+  ${attributeErrorFragment}
   mutation AttributeCreate($input: AttributeCreateInput!) {
     attributeCreate(input: $input) {
       attribute {
         ...AttributeDetailsFragment
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: attributeErrors {
+        ...AttributeErrorFragment
       }
     }
   }
 `;
-export const AttributeCreateMutation = TypedMutation<
+export const useAttributeCreateMutation = makeMutation<
   AttributeCreate,
   AttributeCreateVariables
 >(attributeCreateMutation);
 
 const attributeValueReorderMutation = gql`
-  ${productErrorFragment}
+  ${attributeErrorFragment}
   mutation AttributeValueReorder($id: ID!, $move: ReorderInput!) {
     attributeReorderValues(attributeId: $id, moves: [$move]) {
       attribute {
@@ -177,13 +171,13 @@ const attributeValueReorderMutation = gql`
           id
         }
       }
-      errors: productErrors {
-        ...ProductErrorFragment
+      errors: attributeErrors {
+        ...AttributeErrorFragment
       }
     }
   }
 `;
-export const AttributeValueReorderMutation = TypedMutation<
+export const useAttributeValueReorderMutation = makeMutation<
   AttributeValueReorder,
   AttributeValueReorderVariables
 >(attributeValueReorderMutation);

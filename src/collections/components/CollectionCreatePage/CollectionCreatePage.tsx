@@ -1,75 +1,59 @@
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import { ProductErrorFragment } from "@saleor/attributes/types/ProductErrorFragment";
+import { ChannelCollectionData } from "@saleor/channels/utils";
 import AppHeader from "@saleor/components/AppHeader";
+import { AvailabilityCard } from "@saleor/components/AvailabilityCard";
 import { CardSpacer } from "@saleor/components/CardSpacer";
-import CardTitle from "@saleor/components/CardTitle";
 import { ConfirmButtonTransitionState } from "@saleor/components/ConfirmButton";
 import { Container } from "@saleor/components/Container";
-import Form from "@saleor/components/Form";
 import Grid from "@saleor/components/Grid";
+import Metadata from "@saleor/components/Metadata";
 import PageHeader from "@saleor/components/PageHeader";
 import SaveButtonBar from "@saleor/components/SaveButtonBar";
 import SeoForm from "@saleor/components/SeoForm";
-import VisibilityCard from "@saleor/components/VisibilityCard";
-import useDateLocalize from "@saleor/hooks/useDateLocalize";
-import { commonMessages, sectionNames } from "@saleor/intl";
-import { ContentState, convertToRaw, RawDraftContentState } from "draft-js";
+import { CollectionChannelListingErrorFragment } from "@saleor/fragments/types/CollectionChannelListingErrorFragment";
+import { CollectionErrorFragment } from "@saleor/fragments/types/CollectionErrorFragment";
+import { SubmitPromise } from "@saleor/hooks/useForm";
+import { sectionNames } from "@saleor/intl";
 import React from "react";
 import { useIntl } from "react-intl";
 
 import CollectionDetails from "../CollectionDetails/CollectionDetails";
 import { CollectionImage } from "../CollectionImage/CollectionImage";
-
-export interface CollectionCreatePageFormData {
-  backgroundImage: {
-    url: string;
-    value: string;
-  };
-  backgroundImageAlt: string;
-  description: RawDraftContentState;
-  name: string;
-  publicationDate: string;
-  isPublished: boolean;
-  seoDescription: string;
-  seoTitle: string;
-}
+import CollectionCreateForm, { CollectionCreateData } from "./form";
 
 export interface CollectionCreatePageProps {
+  channelsCount: number;
+  channelsErrors: CollectionChannelListingErrorFragment[];
+  currentChannels: ChannelCollectionData[];
   disabled: boolean;
-  errors: ProductErrorFragment[];
+  errors: CollectionErrorFragment[];
   saveButtonBarState: ConfirmButtonTransitionState;
   onBack: () => void;
-  onSubmit: (data: CollectionCreatePageFormData) => void;
+  onSubmit: (data: CollectionCreateData) => SubmitPromise;
+  onChannelsChange: (data: ChannelCollectionData[]) => void;
+  openChannelsModal: () => void;
 }
 
-const initialForm: CollectionCreatePageFormData = {
-  backgroundImage: {
-    url: null,
-    value: null
-  },
-  backgroundImageAlt: "",
-  description: convertToRaw(ContentState.createFromText("")),
-  isPublished: false,
-  name: "",
-  publicationDate: "",
-  seoDescription: "",
-  seoTitle: ""
-};
-
 const CollectionCreatePage: React.FC<CollectionCreatePageProps> = ({
+  channelsCount,
+  channelsErrors,
+  currentChannels = [],
   disabled,
   errors,
   saveButtonBarState,
   onBack,
+  onChannelsChange,
+  openChannelsModal,
   onSubmit
 }: CollectionCreatePageProps) => {
   const intl = useIntl();
-  const localizeDate = useDateLocalize();
 
   return (
-    <Form initial={initialForm} onSubmit={onSubmit}>
-      {({ change, data, hasChanged, submit }) => (
+    <CollectionCreateForm
+      onSubmit={onSubmit}
+      currentChannels={currentChannels}
+      setChannels={onChannelsChange}
+    >
+      {({ change, data, handlers, hasChanged, submit }) => (
         <Container>
           <AppHeader onBack={onBack}>
             {intl.formatMessage(sectionNames.collections)}
@@ -87,6 +71,7 @@ const CollectionCreatePage: React.FC<CollectionCreatePageProps> = ({
                 disabled={disabled}
                 errors={errors}
                 onChange={change}
+                onDescriptionChange={handlers.changeDescription}
               />
               <CardSpacer />
               <CollectionImage
@@ -126,6 +111,7 @@ const CollectionCreatePage: React.FC<CollectionCreatePageProps> = ({
               />
               <CardSpacer />
               <SeoForm
+                allowEmptySlug={true}
                 description={data.seoDescription}
                 disabled={disabled}
                 descriptionPlaceholder=""
@@ -133,45 +119,36 @@ const CollectionCreatePage: React.FC<CollectionCreatePageProps> = ({
                   defaultMessage:
                     "Add search engine title and description to make this collection easier to find"
                 })}
+                slug={data.slug}
+                slugPlaceholder={data.name}
                 title={data.seoTitle}
                 titlePlaceholder={data.name}
                 onChange={change}
               />
+              <CardSpacer />
+              <Metadata data={data} onChange={handlers.changeMetadata} />
             </div>
             <div>
-              <div>
-                <Card>
-                  <CardTitle
-                    title={intl.formatMessage(commonMessages.availability)}
-                  />
-                  <CardContent>
-                    <VisibilityCard
-                      data={data}
-                      errors={errors}
-                      disabled={disabled}
-                      hiddenMessage={intl.formatMessage(
-                        {
-                          defaultMessage: "will be visible from {date}",
-                          description: "collection"
-                        },
-                        {
-                          date: localizeDate(data.publicationDate)
-                        }
-                      )}
-                      onChange={change}
-                      visibleMessage={intl.formatMessage(
-                        {
-                          defaultMessage: "since {date}",
-                          description: "collection"
-                        },
-                        {
-                          date: localizeDate(data.publicationDate)
-                        }
-                      )}
-                    />
-                  </CardContent>
-                </Card>
-              </div>
+              <AvailabilityCard
+                messages={{
+                  hiddenLabel: intl.formatMessage({
+                    defaultMessage: "Hidden",
+                    description: "collection label"
+                  }),
+
+                  visibleLabel: intl.formatMessage({
+                    defaultMessage: "Visible",
+                    description: "collection label"
+                  })
+                }}
+                errors={channelsErrors}
+                selectedChannelsCount={data.channelListings.length}
+                allChannelsCount={channelsCount}
+                channels={data.channelListings}
+                disabled={disabled}
+                onChange={handlers.changeChannels}
+                openModal={openChannelsModal}
+              />
             </div>
           </Grid>
           <SaveButtonBar
@@ -182,7 +159,7 @@ const CollectionCreatePage: React.FC<CollectionCreatePageProps> = ({
           />
         </Container>
       )}
-    </Form>
+    </CollectionCreateForm>
   );
 };
 CollectionCreatePage.displayName = "CollectionCreatePage";

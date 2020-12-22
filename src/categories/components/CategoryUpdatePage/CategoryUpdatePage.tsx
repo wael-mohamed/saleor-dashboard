@@ -1,23 +1,24 @@
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
-import { ProductErrorFragment } from "@saleor/attributes/types/ProductErrorFragment";
 import AppHeader from "@saleor/components/AppHeader";
 import { CardSpacer } from "@saleor/components/CardSpacer";
 import CardTitle from "@saleor/components/CardTitle";
 import { ConfirmButtonTransitionState } from "@saleor/components/ConfirmButton";
 import Container from "@saleor/components/Container";
-import Form from "@saleor/components/Form";
+import Metadata from "@saleor/components/Metadata/Metadata";
 import PageHeader from "@saleor/components/PageHeader";
 import SaveButtonBar from "@saleor/components/SaveButtonBar";
 import SeoForm from "@saleor/components/SeoForm";
+import { SingleAutocompleteChoiceType } from "@saleor/components/SingleAutocompleteSelectField";
 import { Tab, TabContainer } from "@saleor/components/Tab";
+import { ProductErrorFragment } from "@saleor/fragments/types/ProductErrorFragment";
+import { SubmitPromise } from "@saleor/hooks/useForm";
 import { sectionNames } from "@saleor/intl";
-import { RawDraftContentState } from "draft-js";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { maybe } from "../../../misc";
-import { TabListActions } from "../../../types";
+import { ChannelProps, TabListActions } from "../../../types";
 import CategoryDetailsForm from "../../components/CategoryDetailsForm";
 import CategoryList from "../../components/CategoryList";
 import {
@@ -27,14 +28,7 @@ import {
 } from "../../types/CategoryDetails";
 import CategoryBackground from "../CategoryBackground";
 import CategoryProducts from "../CategoryProducts";
-
-export interface FormData {
-  backgroundImageAlt: string;
-  description: RawDraftContentState;
-  name: string;
-  seoTitle: string;
-  seoDescription: string;
-}
+import CategoryUpdateForm, { CategoryUpdateData } from "./form";
 
 export enum CategoryPageTab {
   categories = "categories",
@@ -42,7 +36,8 @@ export enum CategoryPageTab {
 }
 
 export interface CategoryUpdatePageProps
-  extends TabListActions<"productListToolbar" | "subcategoryListToolbar"> {
+  extends TabListActions<"productListToolbar" | "subcategoryListToolbar">,
+    ChannelProps {
   changeTab: (index: CategoryPageTab) => void;
   currentTab: CategoryPageTab;
   errors: ProductErrorFragment[];
@@ -55,8 +50,10 @@ export interface CategoryUpdatePageProps
     hasPreviousPage: boolean;
   };
   saveButtonBarState: ConfirmButtonTransitionState;
+  channelChoices: SingleAutocompleteChoiceType[];
+  channelsCount: number;
   onImageDelete: () => void;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: CategoryUpdateData) => SubmitPromise;
   onImageUpload(file: File);
   onNextPage();
   onPreviousPage();
@@ -73,6 +70,8 @@ const ProductsTab = Tab(CategoryPageTab.products);
 
 export const CategoryUpdatePage: React.FC<CategoryUpdatePageProps> = ({
   changeTab,
+  channelChoices,
+  channelsCount,
   currentTab,
   category,
   disabled,
@@ -95,40 +94,27 @@ export const CategoryUpdatePage: React.FC<CategoryUpdatePageProps> = ({
   isChecked,
   productListToolbar,
   selected,
+  selectedChannelId,
   subcategoryListToolbar,
   toggle,
   toggleAll
 }: CategoryUpdatePageProps) => {
   const intl = useIntl();
-  const initialData: FormData = category
-    ? {
-        backgroundImageAlt: maybe(() => category.backgroundImage.alt, ""),
-        description: maybe(() => JSON.parse(category.descriptionJson)),
-        name: category.name || "",
-        seoDescription: category.seoDescription || "",
-        seoTitle: category.seoTitle || ""
-      }
-    : {
-        backgroundImageAlt: "",
-        description: "",
-        name: "",
-        seoDescription: "",
-        seoTitle: ""
-      };
+
   return (
-    <Form onSubmit={onSubmit} initial={initialData} confirmLeave>
-      {({ data, change, submit, hasChanged }) => (
+    <CategoryUpdateForm category={category} onSubmit={onSubmit}>
+      {({ data, change, handlers, submit, hasChanged }) => (
         <Container>
           <AppHeader onBack={onBack}>
             {intl.formatMessage(sectionNames.categories)}
           </AppHeader>
-          <PageHeader title={category ? category.name : undefined} />
+          <PageHeader title={category?.name} />
           <CategoryDetailsForm
-            category={category}
             data={data}
             disabled={disabled}
             errors={errors}
             onChange={change}
+            onDescriptionChange={handlers.changeDescription}
           />
           <CardSpacer />
           <CategoryBackground
@@ -144,14 +130,19 @@ export const CategoryUpdatePage: React.FC<CategoryUpdatePageProps> = ({
               defaultMessage:
                 "Add search engine title and description to make this category easier to find"
             })}
+            errors={errors}
             title={data.seoTitle}
             titlePlaceholder={data.name}
             description={data.seoDescription}
             descriptionPlaceholder={data.name}
+            slug={data.slug}
+            slugPlaceholder={data.name}
             loading={!category}
             onChange={change}
             disabled={disabled}
           />
+          <CardSpacer />
+          <Metadata data={data} onChange={handlers.changeMetadata} />
           <CardSpacer />
           <TabContainer>
             <CategoriesTab
@@ -214,7 +205,9 @@ export const CategoryUpdatePage: React.FC<CategoryUpdatePageProps> = ({
           )}
           {currentTab === CategoryPageTab.products && (
             <CategoryProducts
-              categoryName={maybe(() => category.name)}
+              channelsCount={channelsCount}
+              channelChoices={channelChoices}
+              categoryName={category?.name}
               products={products}
               disabled={disabled}
               pageInfo={pageInfo}
@@ -225,6 +218,7 @@ export const CategoryUpdatePage: React.FC<CategoryUpdatePageProps> = ({
               toggle={toggle}
               toggleAll={toggleAll}
               selected={selected}
+              selectedChannelId={selectedChannelId}
               isChecked={isChecked}
               toolbar={productListToolbar}
             />
@@ -238,7 +232,7 @@ export const CategoryUpdatePage: React.FC<CategoryUpdatePageProps> = ({
           />
         </Container>
       )}
-    </Form>
+    </CategoryUpdateForm>
   );
 };
 CategoryUpdatePage.displayName = "CategoryUpdatePage";

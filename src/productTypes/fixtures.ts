@@ -3,7 +3,11 @@ import {
   SearchProductTypes_search_edges_node_productAttributes
 } from "@saleor/searches/types/SearchProductTypes";
 
-import { AttributeInputTypeEnum } from "../types/globalTypes";
+import {
+  AttributeInputTypeEnum,
+  AttributeTypeEnum,
+  WeightUnitsEnum
+} from "../types/globalTypes";
 import { ProductTypeDetails_productType } from "./types/ProductTypeDetails";
 import { ProductTypeList_productTypes_edges_node } from "./types/ProductTypeList";
 
@@ -19,6 +23,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjI0",
           name: "John Doe",
           slug: "john-doe",
@@ -28,6 +33,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjI1",
           name: "Milionare Pirate",
           slug: "milionare-pirate",
@@ -49,6 +55,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjE1",
           name: "100g",
           slug: "100g",
@@ -58,6 +65,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjE2",
           name: "250g",
           slug: "250g",
@@ -67,6 +75,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjE3",
           name: "500g",
           slug: "500g",
@@ -76,6 +85,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjE4",
           name: "1kg",
           slug: "1kg",
@@ -97,6 +107,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjY=",
           name: "Saleor",
           slug: "saleor",
@@ -118,6 +129,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjIx",
           name: "100g",
           slug: "100g",
@@ -127,6 +139,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjIy",
           name: "250g",
           slug: "250g",
@@ -136,6 +149,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjIz",
           name: "500g",
           slug: "500g",
@@ -157,6 +171,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjEz",
           name: "Arabica",
           slug: "arabica",
@@ -166,6 +181,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjE0",
           name: "Robusta",
           slug: "robusta",
@@ -187,6 +203,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjM=",
           name: "Round",
           slug: "round",
@@ -196,6 +213,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjQ=",
           name: "V-Neck",
           slug: "v-neck",
@@ -205,6 +223,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjU=",
           name: "Polo",
           slug: "polo",
@@ -226,6 +245,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjE=",
           name: "Blue",
           slug: "blue",
@@ -235,6 +255,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjI=",
           name: "White",
           slug: "white",
@@ -256,6 +277,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjMw",
           name: "Soft",
           slug: "soft",
@@ -265,6 +287,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjMx",
           name: "Hard",
           slug: "hard",
@@ -274,6 +297,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjMy",
           name: "Middle soft",
           slug: "middle-soft",
@@ -283,6 +307,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjMz",
           name: "Middle hard",
           slug: "middle-hard",
@@ -292,6 +317,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjM0",
           name: "Middle",
           slug: "middle",
@@ -301,6 +327,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjM1",
           name: "Very hard",
           slug: "very-hard",
@@ -322,6 +349,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjE5",
           name: "Sour",
           slug: "sour",
@@ -331,6 +359,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjIw",
           name: "Sweet",
           slug: "sweet",
@@ -352,6 +381,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjI4",
           name: "English",
           slug: "english",
@@ -361,6 +391,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjI5",
           name: "Pirate",
           slug: "pirate",
@@ -382,6 +413,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjI2",
           name: "Mirumee Press",
           slug: "mirumee-press",
@@ -391,6 +423,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjI3",
           name: "Saleor Publishing",
           slug: "saleor-publishing",
@@ -412,6 +445,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
       values: [
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjc=",
           name: "XS",
           slug: "xs",
@@ -421,6 +455,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjg=",
           name: "S",
           slug: "s",
@@ -430,6 +465,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjk=",
           name: "M",
           slug: "m",
@@ -439,6 +475,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjEw",
           name: "L",
           slug: "l",
@@ -448,6 +485,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjEx",
           name: "XL",
           slug: "xl",
@@ -457,6 +495,7 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
         },
         {
           __typename: "AttributeValue" as "AttributeValue",
+          file: null,
           id: "UHJvZHVjdEF0dHJpYnV0ZVZhbHVlOjEy",
           name: "XXL",
           slug: "xxl",
@@ -550,7 +589,15 @@ export const productType: ProductTypeDetails_productType = {
   hasVariants: false,
   id: "UHJvZHVjdFR5cGU6NQ==",
   isShippingRequired: false,
+  metadata: [
+    {
+      __typename: "MetadataItem",
+      key: "integration.id",
+      value: "100023123"
+    }
+  ],
   name: "E-books",
+  privateMetadata: [],
   productAttributes: [
     {
       __typename: "Attribute" as "Attribute",
@@ -559,6 +606,7 @@ export const productType: ProductTypeDetails_productType = {
       id: "UHJvZHVjdEF0dHJpYnV0ZTo5",
       name: "Author",
       slug: "author",
+      type: AttributeTypeEnum.PRODUCT_TYPE,
       visibleInStorefront: true
     },
     {
@@ -568,6 +616,7 @@ export const productType: ProductTypeDetails_productType = {
       id: "UHJvZHVjdEF0dHJpYnV0ZToxMQ==",
       name: "Language",
       slug: "language",
+      type: AttributeTypeEnum.PRODUCT_TYPE,
       visibleInStorefront: true
     },
     {
@@ -577,6 +626,7 @@ export const productType: ProductTypeDetails_productType = {
       id: "UHJvZHVjdEF0dHJpYnV0ZToxMA==",
       name: "Publisher",
       slug: "publisher",
+      type: AttributeTypeEnum.PRODUCT_TYPE,
       visibleInStorefront: true
     }
   ],
@@ -590,18 +640,20 @@ export const productType: ProductTypeDetails_productType = {
       ...attributes[1],
       filterableInDashboard: true,
       filterableInStorefront: false,
+      type: AttributeTypeEnum.PRODUCT_TYPE,
       visibleInStorefront: true
     },
     {
       ...attributes[6],
       filterableInDashboard: true,
       filterableInStorefront: false,
+      type: AttributeTypeEnum.PRODUCT_TYPE,
       visibleInStorefront: true
     }
   ],
   weight: {
     __typename: "Weight",
-    unit: "kg",
+    unit: WeightUnitsEnum.KG,
     value: 7.82
   }
 };

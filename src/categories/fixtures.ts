@@ -1,6 +1,9 @@
-import { content } from "../storybook/stories/components/RichTextEditor";
+import { CategoryFragment } from "@saleor/fragments/types/CategoryFragment";
+
+import * as richTextEditorFixtures from "../components/RichTextEditor/fixtures.json";
 import { CategoryDetails_category } from "./types/CategoryDetails";
-import { CategoryFragment } from "./types/CategoryFragment";
+
+const content = richTextEditorFixtures.richTextEditor;
 
 export const categories: CategoryFragment[] = [
   {
@@ -104,11 +107,19 @@ export const category: (
   },
   descriptionJson: JSON.stringify(content),
   id: "Q2F0ZWdvcnk6NA==",
+  metadata: [
+    {
+      __typename: "MetadataItem",
+      key: "integration.id",
+      value: "100023123"
+    }
+  ],
   name: "Coffees",
   parent: {
     __typename: "Category",
     id: "Q2F0ZWdvcnk6Mw=="
   },
+  privateMetadata: [],
   products: {
     __typename: "ProductCountableConnection",
     edges: [
@@ -117,13 +128,83 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjA=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 83.3,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "123",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            },
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "12345",
+                name: "Channel2"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDoyMQ==",
-          isAvailable: true,
           name: "Gardner-Schultz",
           productType: {
             __typename: "ProductType",
@@ -138,13 +219,46 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjE=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 68.27,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "523",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDoyMg==",
-          isAvailable: true,
           name: "James, Martinez and Murray",
           productType: {
             __typename: "ProductType",
@@ -159,13 +273,46 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjI=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 21.43,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "1234",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDoyMw==",
-          isAvailable: true,
           name: "Curtis, Joyce and Turner",
           productType: {
             __typename: "ProductType",
@@ -180,13 +327,46 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjM=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 62.76,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "1235",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDoyNA==",
-          isAvailable: true,
           name: "Davis, Brown and Ray",
           productType: {
             __typename: "ProductType",
@@ -201,13 +381,46 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjQ=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 7.13,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "1236",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDoyNQ==",
-          isAvailable: true,
           name: "Gallegos Ltd",
           productType: {
             __typename: "ProductType",
@@ -222,13 +435,46 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjU=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 48.82,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "1237",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDoyNg==",
-          isAvailable: true,
           name: "Franklin Inc",
           productType: {
             __typename: "ProductType",
@@ -243,13 +489,46 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjY=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 27.34,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "1238",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDoyNw==",
-          isAvailable: true,
           name: "Williams-Taylor",
           productType: {
             __typename: "ProductType",
@@ -264,13 +543,46 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjc=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 75.42,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "1239",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDoyOA==",
-          isAvailable: true,
           name: "Riddle, Evans and Hicks",
           productType: {
             __typename: "ProductType",
@@ -285,13 +597,46 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjg=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 86.62,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "223",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDoyOQ==",
-          isAvailable: true,
           name: "Hebert-Sherman",
           productType: {
             __typename: "ProductType",
@@ -306,13 +651,46 @@ export const category: (
         cursor: "YXJyYXljb25uZWN0aW9uOjk=",
         node: {
           __typename: "Product",
-          basePrice: {
-            __typename: "Money",
-            amount: 48.66,
-            currency: "USD"
-          },
+          channelListings: [
+            {
+              __typename: "ProductChannelListing",
+              availableForPurchase: null,
+              channel: {
+                __typename: "Channel",
+                currencyCode: "USD",
+                id: "323",
+                name: "Channel1"
+              },
+              currency: "USD",
+              isAvailableForPurchase: false,
+              isPublished: false,
+              pricing: {
+                __typename: "ProductPricingInfo",
+                priceRange: {
+                  __typename: "TaxedMoneyRange",
+                  start: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 30.1,
+                      currency: "USD"
+                    }
+                  },
+                  stop: {
+                    __typename: "TaxedMoney",
+                    net: {
+                      __typename: "Money",
+                      amount: 44.9,
+                      currency: "USD"
+                    }
+                  }
+                }
+              },
+              publicationDate: null,
+              visibleInListings: false
+            }
+          ],
           id: "UHJvZHVjdDozMA==",
-          isAvailable: true,
           name: "Carter and Sons",
           productType: {
             __typename: "ProductType",
@@ -332,7 +710,8 @@ export const category: (
     }
   },
   seoDescription: null,
-  seoTitle: null
+  seoTitle: null,
+  slug: "coffees"
 });
 export const errors = [
   {

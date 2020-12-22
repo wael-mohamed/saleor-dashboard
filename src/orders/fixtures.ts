@@ -1,3 +1,5 @@
+import { InvoiceFragment } from "@saleor/fragments/types/InvoiceFragment";
+import { OrderSettingsFragment } from "@saleor/fragments/types/OrderSettingsFragment";
 import { SearchCustomers_search_edges_node } from "@saleor/searches/types/SearchCustomers";
 import { warehouseList } from "@saleor/warehouses/fixtures";
 import { MessageDescriptor } from "react-intl";
@@ -5,7 +7,9 @@ import { MessageDescriptor } from "react-intl";
 import { transformOrderStatus, transformPaymentStatus } from "../misc";
 import {
   FulfillmentStatus,
+  JobStatusEnum,
   OrderAction,
+  OrderEventsEmailsEnum,
   OrderEventsEnum,
   OrderStatus,
   PaymentChargeStatusEnum
@@ -808,6 +812,13 @@ export const order = (placeholder: string): OrderDetails_order => ({
     streetAddress2: ""
   },
   canFinalize: true,
+  channel: {
+    __typename: "Channel",
+    currencyCode: "USD",
+    id: "123454",
+    isActive: true,
+    name: "Default Channel"
+  },
   created: "2018-09-11T09:37:28.185874+00:00",
   customerNote: "Lorem ipsum dolor sit amet",
   discount: null,
@@ -819,14 +830,155 @@ export const order = (placeholder: string): OrderDetails_order => ({
       email: null,
       emailType: null,
       id: "T3JkZXJFdmVudDoyMQ==",
+      invoiceNumber: null,
+      lines: [],
       message: null,
       quantity: 1,
+      shippingCostsIncluded: false,
+      transactionReference: "123",
       type: OrderEventsEnum.FULFILLMENT_FULFILLED_ITEMS,
       user: {
         __typename: "User",
         email: "admin@example.com",
         id: "QWRkcmVzczoxNQ=="
       }
+    },
+    {
+      __typename: "OrderEvent",
+      amount: null,
+      date: "2018-09-17T13:22:24.376193+00:00",
+      email: null,
+      emailType: null,
+      id: "UYgDNUnnfyiuyimuhd==",
+      invoiceNumber: null,
+      lines: [
+        {
+          __typename: "OrderEventOrderLineObject",
+          orderLine: {
+            __typename: "OrderLine",
+            id: "h47gfncfgwegfehfhj",
+            productName: "Milk",
+            variantName: "Cow's milk"
+          },
+          quantity: 4
+        },
+        {
+          __typename: "OrderEventOrderLineObject",
+          orderLine: {
+            __typename: "OrderLine",
+            id: "7846f857t4t84y8fgh",
+            productName: "Milk",
+            variantName: "Goat's milk"
+          },
+          quantity: 4
+        }
+      ],
+      message: null,
+      quantity: 1,
+      shippingCostsIncluded: true,
+      transactionReference: "123",
+      type: OrderEventsEnum.FULFILLMENT_REFUNDED,
+      user: {
+        __typename: "User",
+        email: "admin@example.com",
+        id: "QWRkcmVzczoxNQ=="
+      }
+    },
+    {
+      __typename: "OrderEvent",
+      amount: null,
+      date: "2019-09-17T13:22:24.376193+00:00",
+      email: null,
+      emailType: null,
+      id: "T3JkZXJFdmVudDo0",
+      invoiceNumber: null,
+      lines: [],
+      message: "This is note",
+      quantity: null,
+      shippingCostsIncluded: false,
+      transactionReference: "124",
+      type: OrderEventsEnum.NOTE_ADDED,
+      user: null
+    },
+    {
+      __typename: "OrderEvent",
+      amount: null,
+      date: "2019-09-17T13:22:24.376193+00:00",
+      email: null,
+      emailType: null,
+      id: "T3JkZXJFdmVudDo1",
+      invoiceNumber: null,
+      lines: [],
+      message: "This is note",
+      quantity: null,
+      shippingCostsIncluded: false,
+      transactionReference: "125",
+      type: OrderEventsEnum.NOTE_ADDED,
+      user: null
+    },
+    {
+      __typename: "OrderEvent",
+      amount: null,
+      date: "2019-09-17T13:22:24.376193+00:00",
+      email: null,
+      emailType: null,
+      id: "T3JkZXJFdmVudDo2",
+      invoiceNumber: null,
+      lines: [],
+      message: "Note from external service",
+      quantity: null,
+      shippingCostsIncluded: false,
+      transactionReference: "126",
+      type: OrderEventsEnum.EXTERNAL_SERVICE_NOTIFICATION,
+      user: null
+    },
+    {
+      __typename: "OrderEvent",
+      amount: null,
+      date: "2019-09-17T13:22:24.376193+00:00",
+      email: null,
+      emailType: OrderEventsEmailsEnum.ORDER_CANCEL,
+      id: "T3JkZXJFdmVudDo3",
+      invoiceNumber: null,
+      lines: [],
+      message: null,
+      quantity: null,
+      shippingCostsIncluded: false,
+      transactionReference: "127",
+      type: OrderEventsEnum.EMAIL_SENT,
+      user: null
+    },
+    {
+      __typename: "OrderEvent",
+      amount: null,
+      date: "2019-09-17T13:22:24.376193+00:00",
+      email: null,
+      emailType: OrderEventsEmailsEnum.ORDER_REFUND,
+      id: "T3JkZXJFdmVudDo4",
+      invoiceNumber: null,
+      lines: [],
+      message: null,
+      quantity: null,
+      shippingCostsIncluded: false,
+      transactionReference: "128",
+      type: OrderEventsEnum.EMAIL_SENT,
+      user: null
+    },
+    {
+      __typename: "OrderEvent",
+      amount: null,
+      date: "2019-09-17T13:22:24.376193+00:00",
+      email: null,
+      emailType: null,
+      id: "T3JkZXJFdmVudDo5",
+      invoiceNumber: null,
+      lines: [],
+      message: null,
+      quantity: null,
+      shippingCostsIncluded: false,
+      transactionReference: "129",
+      type: OrderEventsEnum.PAYMENT_AUTHORIZED,
+      user: null
     }
   ],
   fulfillments: [
@@ -862,6 +1014,11 @@ export const order = (placeholder: string): OrderDetails_order => ({
                 amount: 79.71,
                 currency: "USD"
               }
+            },
+            variant: {
+              __typename: "ProductVariant",
+              id: "dsfsfuhb",
+              quantityAvailable: 10
             }
           },
           quantity: 1
@@ -903,6 +1060,11 @@ export const order = (placeholder: string): OrderDetails_order => ({
                 amount: 79.71,
                 currency: "USD"
               }
+            },
+            variant: {
+              __typename: "ProductVariant",
+              id: "dsfsfuhb",
+              quantityAvailable: 10
             }
           },
           quantity: 1
@@ -914,6 +1076,17 @@ export const order = (placeholder: string): OrderDetails_order => ({
     }
   ],
   id: "T3JkZXI6OQ==",
+  invoices: [
+    {
+      __typename: "Invoice",
+      createdAt: "2020-06-22T13:52:05.094636+00:00",
+      id: "SW52b2ljZTox",
+      number: "1",
+      status: JobStatusEnum.SUCCESS,
+      url: "invoice1"
+    }
+  ],
+  isPaid: true,
   lines: [
     {
       __typename: "OrderLine",
@@ -939,6 +1112,11 @@ export const order = (placeholder: string): OrderDetails_order => ({
           amount: 18.51,
           currency: "USD"
         }
+      },
+      variant: {
+        __typename: "ProductVariant",
+        id: "dsfsfuhb",
+        quantityAvailable: 10
       }
     },
     {
@@ -965,11 +1143,24 @@ export const order = (placeholder: string): OrderDetails_order => ({
           amount: 79.71,
           currency: "USD"
         }
+      },
+      variant: {
+        __typename: "ProductVariant",
+        id: "dsfsfuhb",
+        quantityAvailable: 10
       }
+    }
+  ],
+  metadata: [
+    {
+      __typename: "MetadataItem",
+      key: "integration.key",
+      value: "some-value"
     }
   ],
   number: "9",
   paymentStatus: PaymentChargeStatusEnum.NOT_CHARGED,
+  privateMetadata: [],
   shippingAddress: {
     __typename: "Address",
     city: "West Patriciastad",
@@ -1040,12 +1231,30 @@ export const draftOrder = (placeholder: string): OrderDetails_order => ({
   availableShippingMethods: null,
   billingAddress: null,
   canFinalize: true,
+  channel: {
+    __typename: "Channel",
+    currencyCode: "USD",
+    id: "123454",
+    isActive: true,
+    name: "Default Channel"
+  },
   created: "2018-09-20T23:23:39.811428+00:00",
   customerNote: "Lorem ipsum dolor sit",
   discount: null,
   events: [],
   fulfillments: [],
   id: "T3JkZXI6MjQ=",
+  invoices: [
+    {
+      __typename: "Invoice",
+      createdAt: "2020-06-22T13:52:05.094636+00:00",
+      id: "SW52b2ljZTox",
+      number: "1",
+      status: JobStatusEnum.SUCCESS,
+      url: "invoice1"
+    }
+  ],
+  isPaid: false,
   lines: [
     {
       __typename: "OrderLine" as "OrderLine",
@@ -1071,6 +1280,11 @@ export const draftOrder = (placeholder: string): OrderDetails_order => ({
           amount: 65.95,
           currency: "USD"
         }
+      },
+      variant: {
+        __typename: "ProductVariant",
+        id: "dsfsfuhb",
+        quantityAvailable: 10
       }
     },
     {
@@ -1097,11 +1311,18 @@ export const draftOrder = (placeholder: string): OrderDetails_order => ({
           amount: 68.2,
           currency: "USD"
         }
+      },
+      variant: {
+        __typename: "ProductVariant",
+        id: "dsfsfuhb",
+        quantityAvailable: 10
       }
     }
   ],
+  metadata: [],
   number: "24",
   paymentStatus: null,
+  privateMetadata: [],
   shippingAddress: null,
   shippingMethod: null,
   shippingMethodName: null,
@@ -1184,53 +1405,116 @@ export const orderLineSearch = (
     variants: [
       {
         __typename: "ProductVariant" as "ProductVariant",
-        id: "UHJvZHVjdFZhcmlhbnQ6MjAy",
-        name: "500ml",
-        pricing: {
-          __typename: "VariantPricingInfo",
-          priceUndiscounted: {
-            __typename: "TaxedMoney",
-            net: {
-              __typename: "Money" as "Money",
-              amount: 3.0,
+        channelListings: [
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "123",
+              isActive: true,
+              name: "Channel1"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
+              currency: "USD"
+            }
+          },
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "124",
+              isActive: true,
+              name: "Channel2"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
               currency: "USD"
             }
           }
-        },
+        ],
+        id: "UHJvZHVjdFZhcmlhbnQ6MjAy",
+        name: "500ml",
         sku: "93855755"
       },
       {
         __typename: "ProductVariant" as "ProductVariant",
-        id: "UHJvZHVjdFZhcmlhbnQ6MjAz",
-        name: "1l",
-        pricing: {
-          __typename: "VariantPricingInfo",
-          priceUndiscounted: {
-            __typename: "TaxedMoney",
-            net: {
-              __typename: "Money" as "Money",
-              amount: 5.0,
+        channelListings: [
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "123",
+              isActive: true,
+              name: "Channel1"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
+              currency: "USD"
+            }
+          },
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "124",
+              isActive: true,
+              name: "Channel2"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
               currency: "USD"
             }
           }
-        },
+        ],
+        id: "UHJvZHVjdFZhcmlhbnQ6MjAz",
+        name: "1l",
         sku: "43226647"
       },
       {
         __typename: "ProductVariant" as "ProductVariant",
-        id: "UHJvZHVjdFZhcmlhbnQ6MjA0",
-        name: "2l",
-        pricing: {
-          __typename: "VariantPricingInfo",
-          priceUndiscounted: {
-            __typename: "TaxedMoney",
-            net: {
-              __typename: "Money" as "Money",
-              amount: 7.0,
+        channelListings: [
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "123",
+              isActive: true,
+              name: "Channel1"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
+              currency: "USD"
+            }
+          },
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "124",
+              isActive: true,
+              name: "Channel2"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
               currency: "USD"
             }
           }
-        },
+        ],
+        id: "UHJvZHVjdFZhcmlhbnQ6MjA0",
+        name: "2l",
         sku: "80884671"
       }
     ]
@@ -1246,55 +1530,162 @@ export const orderLineSearch = (
     variants: [
       {
         __typename: "ProductVariant" as "ProductVariant",
-        id: "UHJvZHVjdFZhcmlhbnQ6MjEx",
-        name: "500ml",
-        pricing: {
-          __typename: "VariantPricingInfo",
-          priceUndiscounted: {
-            __typename: "TaxedMoney",
-            net: {
-              __typename: "Money" as "Money",
-              amount: 3.0,
+        channelListings: [
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "123",
+              isActive: true,
+              name: "Channel1"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
+              currency: "USD"
+            }
+          },
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "124",
+              isActive: true,
+              name: "Channel2"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
               currency: "USD"
             }
           }
-        },
+        ],
+        id: "UHJvZHVjdFZhcmlhbnQ6MjEx",
+        name: "500ml",
         sku: "43200242"
       },
       {
         __typename: "ProductVariant" as "ProductVariant",
-        id: "UHJvZHVjdFZhcmlhbnQ6MjEy",
-        name: "1l",
-        pricing: {
-          __typename: "VariantPricingInfo",
-          priceUndiscounted: {
-            __typename: "TaxedMoney",
-            net: {
-              __typename: "Money" as "Money",
-              amount: 5.0,
+        channelListings: [
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "123",
+              isActive: true,
+              name: "Channel1"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
+              currency: "USD"
+            }
+          },
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "124",
+              isActive: true,
+              name: "Channel2"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
               currency: "USD"
             }
           }
-        },
+        ],
+        id: "UHJvZHVjdFZhcmlhbnQ6MjEy",
+        name: "1l",
         sku: "79129513"
       },
       {
         __typename: "ProductVariant" as "ProductVariant",
-        id: "UHJvZHVjdFZhcmlhbnQ6MjEz",
-        name: "2l",
-        pricing: {
-          __typename: "VariantPricingInfo",
-          priceUndiscounted: {
-            __typename: "TaxedMoney",
-            net: {
-              __typename: "Money" as "Money",
-              amount: 7.0,
+        channelListings: [
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "123",
+              isActive: true,
+              name: "Channel1"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
+              currency: "USD"
+            }
+          },
+          {
+            __typename: "ProductVariantChannelListing",
+            channel: {
+              __typename: "Channel",
+              currencyCode: "USD",
+              id: "124",
+              isActive: true,
+              name: "Channel2"
+            },
+            price: {
+              __typename: "Money",
+              amount: 1,
               currency: "USD"
             }
           }
-        },
+        ],
+        id: "UHJvZHVjdFZhcmlhbnQ6MjEz",
+        name: "2l",
         sku: "75799450"
       }
     ]
   }
 ];
+
+export const invoices: InvoiceFragment[] = [
+  {
+    __typename: "Invoice",
+    createdAt: "2020-07-02T12:13:56.901097+00:00",
+    id: "SW52b2ljZTo0",
+    number: "1/07/2020",
+    status: JobStatusEnum.PENDING,
+    url:
+      "http://localhost:8000/media/invoices/invoice-1/07/2020-order-20-1fef611b-7514-4dc6-aee3-09a8232b1d6a.pdf"
+  },
+  {
+    __typename: "Invoice",
+    createdAt: "2020-07-02T09:06:17.059412+00:00",
+    id: "SW52b2ljZToz",
+    number: "1/07/2020",
+    status: JobStatusEnum.SUCCESS,
+    url:
+      "http://localhost:8000/media/invoices/invoice-1/07/2020-order-20-8df26967-ad21-4075-a446-cef44ae05197.pdf"
+  },
+  {
+    __typename: "Invoice",
+    createdAt: "2020-07-02T09:05:58.300952+00:00",
+    id: "SW52b2ljZToy",
+    number: "1/07/2020",
+    status: JobStatusEnum.SUCCESS,
+    url:
+      "http://localhost:8000/media/invoices/invoice-1/07/2020-order-20-5ebc85e0-e587-4386-8292-9b85839281e6.pdf"
+  },
+  {
+    __typename: "Invoice",
+    createdAt: "2020-07-02T09:04:27.257562+00:00",
+    id: "SW52b2ljZTox",
+    number: "1/07/2020",
+    status: JobStatusEnum.SUCCESS,
+    url:
+      "http://localhost:8000/media/invoices/invoice-1/07/2020-order-20-0e449e10-ef4b-4066-bebe-361f670b6820.pdf"
+  }
+];
+
+export const orderSettings: OrderSettingsFragment = {
+  __typename: "OrderSettings",
+  automaticallyConfirmAllNewOrders: true
+};

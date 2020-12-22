@@ -2,13 +2,14 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import { CollectionListUrlSortField } from "@saleor/collections/urls";
 import { Container } from "@saleor/components/Container";
-import FilterBar from "@saleor/components/FilterBar";
 import PageHeader from "@saleor/components/PageHeader";
+import SearchBar from "@saleor/components/SearchBar";
 import { sectionNames } from "@saleor/intl";
 import {
-  FilterPageProps,
+  ChannelProps,
   ListActions,
   PageListProps,
+  SearchPageProps,
   SortPage,
   TabPageProps
 } from "@saleor/types";
@@ -17,40 +18,34 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import { CollectionList_collections_edges_node } from "../../types/CollectionList";
 import CollectionList from "../CollectionList/CollectionList";
-import {
-  CollectionFilterKeys,
-  CollectionListFilterOpts,
-  createFilterStructure
-} from "./filters";
 
 export interface CollectionListPageProps
   extends PageListProps,
     ListActions,
-    FilterPageProps<CollectionFilterKeys, CollectionListFilterOpts>,
+    SearchPageProps,
     SortPage<CollectionListUrlSortField>,
-    TabPageProps {
+    TabPageProps,
+    ChannelProps {
   collections: CollectionList_collections_edges_node[];
+  channelsCount: number;
 }
 
 const CollectionListPage: React.FC<CollectionListPageProps> = ({
-  currencySymbol,
+  channelsCount,
   currentTab,
   disabled,
-  filterOpts,
   initialSearch,
   onAdd,
   onAll,
-  onFilterChange,
   onSearchChange,
   onTabChange,
   onTabDelete,
   onTabSave,
+  selectedChannelId,
   tabs,
   ...listProps
 }) => {
   const intl = useIntl();
-
-  const structure = createFilterStructure(intl, filterOpts);
 
   return (
     <Container>
@@ -68,27 +63,29 @@ const CollectionListPage: React.FC<CollectionListPageProps> = ({
         </Button>
       </PageHeader>
       <Card>
-        <FilterBar
+        <SearchBar
           allTabLabel={intl.formatMessage({
             defaultMessage: "All Collections",
             description: "tab name"
           })}
-          currencySymbol={currencySymbol}
           currentTab={currentTab}
-          filterStructure={structure}
           initialSearch={initialSearch}
           searchPlaceholder={intl.formatMessage({
             defaultMessage: "Search Collection"
           })}
           tabs={tabs}
           onAll={onAll}
-          onFilterChange={onFilterChange}
           onSearchChange={onSearchChange}
           onTabChange={onTabChange}
           onTabDelete={onTabDelete}
           onTabSave={onTabSave}
         />
-        <CollectionList disabled={disabled} {...listProps} />
+        <CollectionList
+          disabled={disabled}
+          channelsCount={channelsCount}
+          selectedChannelId={selectedChannelId}
+          {...listProps}
+        />
       </Card>
     </Container>
   );

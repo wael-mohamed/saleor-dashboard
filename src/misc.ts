@@ -4,6 +4,7 @@ import { defineMessages, IntlShape } from "react-intl";
 import urlJoin from "url-join";
 
 import { ConfirmButtonTransitionState } from "./components/ConfirmButton/ConfirmButton";
+import { StatusType } from "./components/StatusChip/types";
 import { APP_MOUNT_URI } from "./config";
 import { AddressType, AddressTypeInput } from "./customers/types";
 import {
@@ -13,7 +14,6 @@ import {
 } from "./types";
 import {
   AddressInput,
-  AuthorizationKeyType,
   CountryCode,
   OrderStatus,
   PaymentChargeStatusEnum
@@ -57,6 +57,10 @@ export function decimal(value: string | number) {
     return value === "" ? null : value;
   }
   return value;
+}
+
+export function weight(value: string) {
+  return value === "" ? null : parseFloat(value);
 }
 
 export const removeDoubleSlashes = (url: string) =>
@@ -140,43 +144,55 @@ export const orderStatusMessages = defineMessages({
     defaultMessage: "Ready to fulfill",
     description: "order status"
   },
+  unconfirmed: {
+    defaultMessage: "Unconfirmed",
+    description: "order status"
+  },
   unfulfilled: {
     defaultMessage: "Unfulfilled",
     description: "order status"
   }
 });
 
-export const transformOrderStatus = (status: string, intl: IntlShape) => {
+export const transformOrderStatus = (
+  status: string,
+  intl: IntlShape
+): { localized: string; status: StatusType } => {
   switch (status) {
     case OrderStatus.FULFILLED:
       return {
         localized: intl.formatMessage(orderStatusMessages.fulfilled),
-        status: "success"
+        status: StatusType.SUCCESS
       };
     case OrderStatus.PARTIALLY_FULFILLED:
       return {
         localized: intl.formatMessage(orderStatusMessages.partiallyFulfilled),
-        status: "neutral"
+        status: StatusType.NEUTRAL
       };
     case OrderStatus.UNFULFILLED:
       return {
         localized: intl.formatMessage(orderStatusMessages.unfulfilled),
-        status: "error"
+        status: StatusType.ERROR
       };
     case OrderStatus.CANCELED:
       return {
         localized: intl.formatMessage(orderStatusMessages.cancelled),
-        status: "error"
+        status: StatusType.ERROR
       };
     case OrderStatus.DRAFT:
       return {
         localized: intl.formatMessage(orderStatusMessages.draft),
-        status: "error"
+        status: StatusType.ERROR
+      };
+    case OrderStatus.UNCONFIRMED:
+      return {
+        localized: intl.formatMessage(orderStatusMessages.unconfirmed),
+        status: StatusType.NEUTRAL
       };
   }
   return {
     localized: status,
-    status: "error"
+    status: StatusType.ERROR
   };
 };
 
@@ -193,11 +209,6 @@ export const transformAddressToForm = (data: AddressType) => ({
   streetAddress1: maybe(() => data.streetAddress1, ""),
   streetAddress2: maybe(() => data.streetAddress2, "")
 });
-
-export const authorizationKeyTypes = {
-  [AuthorizationKeyType.FACEBOOK]: "Facebook",
-  [AuthorizationKeyType.GOOGLE_OAUTH2]: "Google OAuth2"
-};
 
 export function maybe<T>(exp: () => T): T | undefined;
 export function maybe<T>(exp: () => T, d: T): T;
@@ -231,7 +242,7 @@ export function hasErrors(errorList: UserError[] | null): boolean {
 export function getMutationState(
   called: boolean,
   loading: boolean,
-  ...errorList: UserError[][]
+  ...errorList: any[][]
 ): ConfirmButtonTransitionState {
   if (loading) {
     return "loading";
@@ -247,15 +258,18 @@ export function getMutationState(
 interface SaleorMutationResult {
   errors?: UserError[];
 }
+export function getMutationErrors<
+  TData extends Record<string, SaleorMutationResult>
+>(data: TData): UserError[] {
+  return Object.values(data).reduce(
+    (acc: UserError[], mut) => [...acc, ...maybe(() => mut.errors, [])],
+    []
+  );
+}
 export function getMutationStatus<
   TData extends Record<string, SaleorMutationResult | any>
 >(opts: MutationResult<TData>): ConfirmButtonTransitionState {
-  const errors = opts.data
-    ? Object.values(opts.data).reduce(
-        (acc: UserError[], mut) => [...acc, ...maybe(() => mut.errors, [])],
-        []
-      )
-    : [];
+  const errors = opts.data ? getMutationErrors(opts.data) : [];
 
   return getMutationState(opts.called, opts.loading, errors);
 }
@@ -302,10 +316,10 @@ export function createHref(url: string) {
 interface AnyEvent {
   stopPropagation: () => void;
 }
-export function stopPropagation(cb: () => void) {
+export function stopPropagation(cb: (event?: AnyEvent) => void) {
   return (event: AnyEvent) => {
     event.stopPropagation();
-    cb();
+    cb(event);
   };
 }
 

@@ -1,6 +1,15 @@
+import { ChannelData } from "@saleor/channels/utils";
+import {
+  AttributeInput,
+  VariantAttributeScope
+} from "@saleor/components/Attributes";
+import { MetadataFormData } from "@saleor/components/Metadata/types";
 import { MultiAutocompleteChoiceType } from "@saleor/components/MultiAutocompleteSelectField";
 import { SingleAutocompleteChoiceType } from "@saleor/components/SingleAutocompleteSelectField";
-import { FormsetAtomicData } from "@saleor/hooks/useFormset";
+import { ProductVariant } from "@saleor/fragments/types/ProductVariant";
+import { SelectedVariantAttributeFragment } from "@saleor/fragments/types/SelectedVariantAttributeFragment";
+import { VariantAttributeFragment } from "@saleor/fragments/types/VariantAttributeFragment";
+import { FormsetAtomicData, FormsetData } from "@saleor/hooks/useFormset";
 import { maybe } from "@saleor/misc";
 import {
   ProductDetails_product,
@@ -9,12 +18,9 @@ import {
 } from "@saleor/products/types/ProductDetails";
 import { SearchProductTypes_search_edges_node_productAttributes } from "@saleor/searches/types/SearchProductTypes";
 import { StockInput } from "@saleor/types/globalTypes";
-import { RawDraftContentState } from "draft-js";
+import { mapMetadataItemToInput } from "@saleor/utils/maps";
 
-import { ProductAttributeInput } from "../components/ProductAttributes";
 import { ProductStockInput } from "../components/ProductStocks";
-import { VariantAttributeInput } from "../components/ProductVariantAttributes";
-import { ProductVariant } from "../types/ProductVariant";
 import { ProductVariantCreateData_product } from "../types/ProductVariantCreateData";
 
 export interface Collection {
@@ -36,13 +42,14 @@ export interface ProductType {
 
 export function getAttributeInputFromProduct(
   product: ProductDetails_product
-): ProductAttributeInput[] {
+): AttributeInput[] {
   return maybe(
-    (): ProductAttributeInput[] =>
+    (): AttributeInput[] =>
       product.attributes.map(attribute => ({
         data: {
           inputType: attribute.attribute.inputType,
           isRequired: attribute.attribute.valueRequired,
+          selectedValues: attribute.values,
           values: attribute.attribute.values
         },
         id: attribute.attribute.id,
@@ -75,7 +82,7 @@ export function getSelectedAttributesFromProduct(
 
 export function getAttributeInputFromProductType(
   productType: ProductType
-): ProductAttributeInput[] {
+): AttributeInput[] {
   return productType.productAttributes.map(attribute => ({
     data: {
       inputType: attribute.inputType,
@@ -88,20 +95,73 @@ export function getAttributeInputFromProductType(
   }));
 }
 
+export function getAttributeInputFromAttributes(
+  variantAttributes: VariantAttributeFragment[],
+  variantAttributeScope: VariantAttributeScope
+): AttributeInput[] {
+  return variantAttributes?.map(attribute => ({
+    data: {
+      inputType: attribute.inputType,
+      isRequired: attribute.valueRequired,
+      values: attribute.values,
+      variantAttributeScope
+    },
+    id: attribute.id,
+    label: attribute.name,
+    value: [""]
+  }));
+}
+
+export function getAttributeInputFromSelectedAttributes(
+  variantAttributes: SelectedVariantAttributeFragment[],
+  variantAttributeScope: VariantAttributeScope
+): AttributeInput[] {
+  return variantAttributes?.map(attribute => ({
+    data: {
+      inputType: attribute.attribute.inputType,
+      isRequired: attribute.attribute.valueRequired,
+      selectedValues: attribute.values,
+      values: attribute.attribute.values,
+      variantAttributeScope
+    },
+    id: attribute.attribute.id,
+    label: attribute.attribute.name,
+    value: [(attribute.values.length && attribute.values[0]?.slug) || null]
+  }));
+}
+
 export function getAttributeInputFromVariant(
   variant: ProductVariant
-): VariantAttributeInput[] {
-  return maybe(
-    (): VariantAttributeInput[] =>
-      variant.attributes.map(attribute => ({
-        data: {
-          values: attribute.attribute.values
-        },
-        id: attribute.attribute.id,
-        label: attribute.attribute.name,
-        value: maybe(() => attribute.values[0].slug, null)
-      })),
-    []
+): AttributeInput[] {
+  const selectionAttributeInput = getAttributeInputFromSelectedAttributes(
+    variant?.selectionAttributes,
+    VariantAttributeScope.VARIANT_SELECTION
+  );
+  const nonSelectionAttributeInput = getAttributeInputFromSelectedAttributes(
+    variant?.nonSelectionAttributes,
+    VariantAttributeScope.NOT_VARIANT_SELECTION
+  );
+
+  return (
+    selectionAttributeInput?.concat(nonSelectionAttributeInput ?? []) ?? []
+  );
+}
+
+export function getVariantAttributeInputFromProduct(
+  product: ProductVariantCreateData_product
+): AttributeInput[] {
+  const selectionAttributeInput = getAttributeInputFromAttributes(
+    product?.productType?.selectionVariantAttributes,
+    VariantAttributeScope.VARIANT_SELECTION
+  );
+
+  const nonSelectionAttributeInput = getAttributeInputFromAttributes(
+    product?.productType?.nonSelectionVariantAttributes,
+    VariantAttributeScope.NOT_VARIANT_SELECTION
+  );
+
+  return (
+    selectionAttributeInput?.concat(nonSelectionAttributeInput ?? []) ?? []
   );
 }
 
@@ -110,7 +170,9 @@ export function getStockInputFromVariant(
 ): ProductStockInput[] {
   return (
     variant?.stocks.map(stock => ({
-      data: null,
+      data: {
+        quantityAllocated: stock.quantityAllocated
+      },
       id: stock.warehouse.id,
       label: stock.warehouse.name,
       value: stock.quantity.toString()
@@ -118,26 +180,13 @@ export function getStockInputFromVariant(
   );
 }
 
-export function getVariantAttributeInputFromProduct(
-  product: ProductVariantCreateData_product
-): VariantAttributeInput[] {
-  return maybe(() =>
-    product.productType.variantAttributes.map(attribute => ({
-      data: {
-        values: attribute.values
-      },
-      id: attribute.id,
-      label: attribute.name,
-      value: ""
-    }))
-  );
-}
-
 export function getStockInputFromProduct(
   product: ProductDetails_product
 ): ProductStockInput[] {
   return product?.variants[0]?.stocks.map(stock => ({
-    data: null,
+    data: {
+      quantityAllocated: stock?.quantityAllocated
+    },
     id: stock.warehouse.id,
     label: stock.warehouse.name,
     value: stock.quantity.toString()
@@ -168,37 +217,63 @@ export function getChoices(nodes: Node[]): SingleAutocompleteChoiceType[] {
   );
 }
 
-export interface ProductUpdatePageFormData {
-  basePrice: number;
+export const getAttributesDisplayData = (
+  attributes: AttributeInput[],
+  attributesWithNewFileValue: FormsetData<null, File>
+) =>
+  attributes.map(attribute => {
+    const attributeWithNewFileValue = attributesWithNewFileValue.find(
+      attributeWithNewFile => attribute.id === attributeWithNewFile.id
+    );
+
+    if (attributeWithNewFileValue) {
+      return {
+        ...attribute,
+        value: attributeWithNewFileValue?.value?.name
+          ? [attributeWithNewFileValue.value.name]
+          : []
+      };
+    }
+    return attribute;
+  });
+
+export interface ProductUpdatePageFormData extends MetadataFormData {
   category: string | null;
-  collections: string[];
+  changeTaxCode: boolean;
+  channelListings: ChannelData[];
   chargeTaxes: boolean;
-  description: RawDraftContentState;
-  isPublished: boolean;
+  collections: string[];
+  isAvailable: boolean;
   name: string;
-  publicationDate: string;
+  slug: string;
+  rating: number;
   seoDescription: string;
   seoTitle: string;
   sku: string;
+  taxCode: string;
   trackInventory: boolean;
+  weight: string;
 }
 
 export function getProductUpdatePageFormData(
   product: ProductDetails_product,
-  variants: ProductDetails_product_variants[]
+  variants: ProductDetails_product_variants[],
+  currentChannels: ChannelData[]
 ): ProductUpdatePageFormData {
   return {
-    basePrice: maybe(() => product.basePrice.amount, 0),
     category: maybe(() => product.category.id, ""),
+    changeTaxCode: !!product?.taxType.taxCode,
+    channelListings: currentChannels,
     chargeTaxes: maybe(() => product.chargeTaxes, false),
     collections: maybe(
       () => product.collections.map(collection => collection.id),
       []
     ),
-    description: maybe(() => JSON.parse(product.descriptionJson)),
-    isPublished: maybe(() => product.isPublished, false),
+    isAvailable: !!product?.isAvailable,
+    metadata: product?.metadata?.map(mapMetadataItemToInput),
     name: maybe(() => product.name, ""),
-    publicationDate: maybe(() => product.publicationDate, ""),
+    privateMetadata: product?.privateMetadata?.map(mapMetadataItemToInput),
+    rating: maybe(() => product.rating, null),
     seoDescription: maybe(() => product.seoDescription, ""),
     seoTitle: maybe(() => product.seoTitle, ""),
     sku: maybe(
@@ -210,7 +285,10 @@ export function getProductUpdatePageFormData(
           : undefined,
       ""
     ),
-    trackInventory: !!product?.variants[0]?.trackInventory
+    slug: product?.slug || "",
+    taxCode: product?.taxType.taxCode,
+    trackInventory: !!product?.variants[0]?.trackInventory,
+    weight: product?.weight?.value.toString() || ""
   };
 }
 
@@ -218,7 +296,7 @@ export function mapFormsetStockToStockInput(
   stock: FormsetAtomicData<null, string>
 ): StockInput {
   return {
-    quantity: parseInt(stock.value, 10),
+    quantity: parseInt(stock.value, 10) || 0,
     warehouse: stock.id
   };
 }

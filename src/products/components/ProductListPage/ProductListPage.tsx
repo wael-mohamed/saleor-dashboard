@@ -1,6 +1,7 @@
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import CardMenu from "@saleor/components/CardMenu";
 import ColumnPicker, {
   ColumnPickerChoice
 } from "@saleor/components/ColumnPicker";
@@ -10,11 +11,12 @@ import PageHeader from "@saleor/components/PageHeader";
 import { ProductListColumns } from "@saleor/config";
 import { sectionNames } from "@saleor/intl";
 import {
-  AvailableInGridAttributes_availableInGrid_edges_node,
-  AvailableInGridAttributes_grid_edges_node
-} from "@saleor/products/types/AvailableInGridAttributes";
+  GridAttributes_availableInGrid_edges_node,
+  GridAttributes_grid_edges_node
+} from "@saleor/products/types/GridAttributes";
 import { ProductList_products_edges_node } from "@saleor/products/types/ProductList";
 import {
+  ChannelProps,
   FetchMoreProps,
   FilterPageProps,
   ListActions,
@@ -37,19 +39,25 @@ export interface ProductListPageProps
     ListActions,
     FilterPageProps<ProductFilterKeys, ProductListFilterOpts>,
     FetchMoreProps,
-    SortPage<ProductListUrlSortField> {
+    SortPage<ProductListUrlSortField>,
+    ChannelProps {
   activeAttributeSortId: string;
-  availableInGridAttributes: AvailableInGridAttributes_availableInGrid_edges_node[];
+  availableInGridAttributes: GridAttributes_availableInGrid_edges_node[];
+  channelsCount: number;
   currencySymbol: string;
-  gridAttributes: AvailableInGridAttributes_grid_edges_node[];
+  gridAttributes: GridAttributes_grid_edges_node[];
   totalGridAttributes: number;
   products: ProductList_products_edges_node[];
+  onExport: () => void;
 }
 
 const useStyles = makeStyles(
   theme => ({
     columnPicker: {
       marginRight: theme.spacing(3)
+    },
+    settings: {
+      marginRight: theme.spacing(2)
     }
   }),
   { name: "ProductListPage" }
@@ -57,6 +65,7 @@ const useStyles = makeStyles(
 
 export const ProductListPage: React.FC<ProductListPageProps> = props => {
   const {
+    channelsCount,
     currencySymbol,
     currentTab,
     defaultSettings,
@@ -71,6 +80,7 @@ export const ProductListPage: React.FC<ProductListPageProps> = props => {
     totalGridAttributes,
     onAdd,
     onAll,
+    onExport,
     onFetchMore,
     onFilterChange,
     onSearchChange,
@@ -78,6 +88,7 @@ export const ProductListPage: React.FC<ProductListPageProps> = props => {
     onTabDelete,
     onTabSave,
     onUpdateListSettings,
+    selectedChannelId,
     ...listProps
   } = props;
   const intl = useIntl();
@@ -89,13 +100,6 @@ export const ProductListPage: React.FC<ProductListPageProps> = props => {
   const filterStructure = createFilterStructure(intl, filterOpts);
 
   const columns: ColumnPickerChoice[] = [
-    {
-      label: intl.formatMessage({
-        defaultMessage: "Published",
-        description: "product status"
-      }),
-      value: "isPublished" as ProductListColumns
-    },
     {
       label: intl.formatMessage({
         defaultMessage: "Price",
@@ -119,6 +123,20 @@ export const ProductListPage: React.FC<ProductListPageProps> = props => {
   return (
     <Container>
       <PageHeader title={intl.formatMessage(sectionNames.products)}>
+        <CardMenu
+          className={classes.settings}
+          menuItems={[
+            {
+              label: intl.formatMessage({
+                defaultMessage: "Export Products",
+                description: "export products to csv file, button"
+              }),
+              onSelect: onExport,
+              testId: "export"
+            }
+          ]}
+          data-test="menu"
+        />
         <ColumnPicker
           className={classes.columnPicker}
           columns={columns}
@@ -138,7 +156,7 @@ export const ProductListPage: React.FC<ProductListPageProps> = props => {
           onClick={onAdd}
           color="primary"
           variant="contained"
-          data-tc="add-product"
+          data-test="add-product"
         >
           <FormattedMessage
             defaultMessage="Create Product"
@@ -169,8 +187,11 @@ export const ProductListPage: React.FC<ProductListPageProps> = props => {
         />
         <ProductList
           {...listProps}
+          loading={loading}
           gridAttributes={gridAttributes}
           settings={settings}
+          channelsCount={channelsCount}
+          selectedChannelId={selectedChannelId}
           onUpdateListSettings={onUpdateListSettings}
         />
       </Card>

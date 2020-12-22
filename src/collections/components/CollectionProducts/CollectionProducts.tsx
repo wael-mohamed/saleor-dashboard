@@ -8,10 +8,10 @@ import TableFooter from "@material-ui/core/TableFooter";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CardTitle from "@saleor/components/CardTitle";
+import { ChannelsAvailabilityDropdown } from "@saleor/components/ChannelsAvailabilityDropdown";
 import Checkbox from "@saleor/components/Checkbox";
 import ResponsiveTable from "@saleor/components/ResponsiveTable";
 import Skeleton from "@saleor/components/Skeleton";
-import StatusLabel from "@saleor/components/StatusLabel";
 import TableCellAvatar, {
   AVATAR_MARGIN
 } from "@saleor/components/TableCellAvatar";
@@ -21,7 +21,7 @@ import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { maybe, renderCollection } from "../../../misc";
-import { ListActions, PageListProps } from "../../../types";
+import { ChannelProps, ListActions, PageListProps } from "../../../types";
 import { CollectionDetails_collection } from "../../types/CollectionDetails";
 
 const useStyles = makeStyles(
@@ -55,8 +55,12 @@ const useStyles = makeStyles(
   { name: "CollectionProducts" }
 );
 
-export interface CollectionProductsProps extends PageListProps, ListActions {
+export interface CollectionProductsProps
+  extends PageListProps,
+    ListActions,
+    ChannelProps {
   collection: CollectionDetails_collection;
+  channelsCount: number;
   onProductUnassign: (id: string, event: React.MouseEvent<any>) => void;
 }
 
@@ -64,6 +68,7 @@ const numberOfColumns = 5;
 
 const CollectionProducts: React.FC<CollectionProductsProps> = props => {
   const {
+    channelsCount,
     collection,
     disabled,
     onAdd,
@@ -72,6 +77,7 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
     onProductUnassign,
     onRowClick,
     pageInfo,
+    selectedChannelId,
     isChecked,
     selected,
     toggle,
@@ -139,8 +145,8 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
           </TableCell>
           <TableCell className={classes.colPublished}>
             <FormattedMessage
-              defaultMessage="Published"
-              description="product is published"
+              defaultMessage="Availability"
+              description="product availability"
             />
           </TableCell>
           <TableCell className={classes.colActions} />
@@ -149,9 +155,9 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
           <TableRow>
             <TablePagination
               colSpan={numberOfColumns}
-              hasNextPage={maybe(() => pageInfo.hasNextPage)}
+              hasNextPage={pageInfo?.hasNextPage}
               onNextPage={onNextPage}
-              hasPreviousPage={maybe(() => pageInfo.hasPreviousPage)}
+              hasPreviousPage={pageInfo?.hasPreviousPage}
               onPreviousPage={onPreviousPage}
             />
           </TableRow>
@@ -161,6 +167,10 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
             maybe(() => collection.products.edges.map(edge => edge.node)),
             product => {
               const isSelected = product ? isChecked(product.id) : false;
+              const channel =
+                product?.channelListings.find(
+                  listing => listing.channel.id === selectedChannelId
+                ) || product?.channelListings[0];
 
               return (
                 <TableRow
@@ -190,24 +200,16 @@ const CollectionProducts: React.FC<CollectionProductsProps> = props => {
                       <Skeleton />
                     )}
                   </TableCell>
-                  <TableCell className={classes.colPublished}>
-                    {maybe(
-                      () => (
-                        <StatusLabel
-                          label={
-                            product.isPublished
-                              ? intl.formatMessage({
-                                  defaultMessage: "Published",
-                                  description: "product is published"
-                                })
-                              : intl.formatMessage({
-                                  defaultMessage: "Not published",
-                                  description: "product is not published"
-                                })
-                          }
-                          status={product.isPublished ? "success" : "error"}
-                        />
-                      ),
+                  <TableCell className={classes.colType}>
+                    {product && !product?.channelListings?.length ? (
+                      "-"
+                    ) : product?.channelListings !== undefined ? (
+                      <ChannelsAvailabilityDropdown
+                        allChannelsCount={channelsCount}
+                        currentChannel={channel}
+                        channels={product?.channelListings}
+                      />
+                    ) : (
                       <Skeleton />
                     )}
                   </TableCell>

@@ -1,111 +1,107 @@
-import { ProductErrorFragment } from "@saleor/attributes/types/ProductErrorFragment";
+import { ChannelCollectionData } from "@saleor/channels/utils";
 import AppHeader from "@saleor/components/AppHeader";
+import { AvailabilityCard } from "@saleor/components/AvailabilityCard";
 import { CardSpacer } from "@saleor/components/CardSpacer";
 import { ConfirmButtonTransitionState } from "@saleor/components/ConfirmButton";
 import { Container } from "@saleor/components/Container";
-import ControlledCheckbox from "@saleor/components/ControlledCheckbox";
-import Form from "@saleor/components/Form";
-import FormSpacer from "@saleor/components/FormSpacer";
 import Grid from "@saleor/components/Grid";
-import Hr from "@saleor/components/Hr";
+import Metadata from "@saleor/components/Metadata/Metadata";
 import PageHeader from "@saleor/components/PageHeader";
 import SaveButtonBar from "@saleor/components/SaveButtonBar";
 import SeoForm from "@saleor/components/SeoForm";
-import VisibilityCard from "@saleor/components/VisibilityCard";
-import useDateLocalize from "@saleor/hooks/useDateLocalize";
+import { CollectionChannelListingErrorFragment } from "@saleor/fragments/types/CollectionChannelListingErrorFragment";
+import { CollectionErrorFragment } from "@saleor/fragments/types/CollectionErrorFragment";
+import { SubmitPromise } from "@saleor/hooks/useForm";
 import { sectionNames } from "@saleor/intl";
-import { RawDraftContentState } from "draft-js";
 import React from "react";
 import { useIntl } from "react-intl";
 
-import { maybe } from "../../../misc";
-import { ListActions, PageListProps } from "../../../types";
+import { ChannelProps, ListActions, PageListProps } from "../../../types";
 import { CollectionDetails_collection } from "../../types/CollectionDetails";
 import CollectionDetails from "../CollectionDetails/CollectionDetails";
 import { CollectionImage } from "../CollectionImage/CollectionImage";
 import CollectionProducts from "../CollectionProducts/CollectionProducts";
+import CollectionUpdateForm, { CollectionUpdateData } from "./form";
 
-export interface CollectionDetailsPageFormData {
-  backgroundImageAlt: string;
-  description: RawDraftContentState;
-  name: string;
-  publicationDate: string;
-  seoDescription: string;
-  seoTitle: string;
-  isFeatured: boolean;
-  isPublished: boolean;
-}
-
-export interface CollectionDetailsPageProps extends PageListProps, ListActions {
+export interface CollectionDetailsPageProps
+  extends PageListProps,
+    ListActions,
+    ChannelProps {
+  channelsCount: number;
+  channelsErrors: CollectionChannelListingErrorFragment[];
   collection: CollectionDetails_collection;
-  errors: ProductErrorFragment[];
-  isFeatured: boolean;
+  currentChannels: ChannelCollectionData[];
+  errors: CollectionErrorFragment[];
+  hasChannelChanged: boolean;
   saveButtonBarState: ConfirmButtonTransitionState;
   onBack: () => void;
   onCollectionRemove: () => void;
   onImageDelete: () => void;
   onImageUpload: (file: File) => void;
   onProductUnassign: (id: string, event: React.MouseEvent<any>) => void;
-  onSubmit: (data: CollectionDetailsPageFormData) => void;
+  onSubmit: (data: CollectionUpdateData) => SubmitPromise;
+  onChannelsChange: (data: ChannelCollectionData[]) => void;
+  openChannelsModal: () => void;
 }
 
 const CollectionDetailsPage: React.FC<CollectionDetailsPageProps> = ({
+  channelsCount,
+  channelsErrors,
   collection,
+  currentChannels = [],
   disabled,
   errors,
-  isFeatured,
+  hasChannelChanged,
   saveButtonBarState,
+  selectedChannelId,
   onBack,
   onCollectionRemove,
   onImageDelete,
   onImageUpload,
   onSubmit,
+  onChannelsChange,
+  openChannelsModal,
   ...collectionProductsProps
 }: CollectionDetailsPageProps) => {
   const intl = useIntl();
-  const localizeDate = useDateLocalize();
 
   return (
-    <Form
-      initial={{
-        backgroundImageAlt: maybe(() => collection.backgroundImage.alt, ""),
-        description: maybe(() => JSON.parse(collection.descriptionJson)),
-        isFeatured,
-        isPublished: maybe(() => collection.isPublished, false),
-        name: maybe(() => collection.name, ""),
-        publicationDate: maybe(() => collection.publicationDate, ""),
-        seoDescription: maybe(() => collection.seoDescription, ""),
-        seoTitle: maybe(() => collection.seoTitle, "")
-      }}
+    <CollectionUpdateForm
+      collection={collection}
+      currentChannels={currentChannels}
+      setChannels={onChannelsChange}
       onSubmit={onSubmit}
-      confirmLeave
     >
-      {({ change, data, hasChanged, submit }) => (
+      {({ change, data, handlers, hasChanged, submit }) => (
         <Container>
           <AppHeader onBack={onBack}>
             {intl.formatMessage(sectionNames.collections)}
           </AppHeader>
-          <PageHeader title={maybe(() => collection.name)} />
+          <PageHeader title={collection?.name} />
           <Grid>
             <div>
               <CollectionDetails
-                collection={collection}
                 data={data}
                 disabled={disabled}
                 errors={errors}
                 onChange={change}
+                onDescriptionChange={handlers.changeDescription}
               />
               <CardSpacer />
               <CollectionImage
                 data={data}
-                image={maybe(() => collection.backgroundImage)}
+                image={collection?.backgroundImage}
                 onImageDelete={onImageDelete}
                 onImageUpload={onImageUpload}
                 onChange={change}
               />
               <CardSpacer />
+              <Metadata data={data} onChange={handlers.changeMetadata} />
+              <CardSpacer />
               <CollectionProducts
                 disabled={disabled}
+                channelsCount={channelsCount}
+                selectedChannelId={selectedChannelId}
                 collection={collection}
                 {...collectionProductsProps}
               />
@@ -118,63 +114,49 @@ const CollectionDetailsPage: React.FC<CollectionDetailsPageProps> = ({
                   defaultMessage:
                     "Add search engine title and description to make this collection easier to find"
                 })}
+                errors={errors}
+                slug={data.slug}
+                slugPlaceholder={data.name}
                 title={data.seoTitle}
-                titlePlaceholder={maybe(() => collection.name)}
+                titlePlaceholder={collection?.name}
                 onChange={change}
               />
             </div>
             <div>
               <div>
-                <VisibilityCard
-                  data={data}
-                  errors={errors}
+                <AvailabilityCard
+                  messages={{
+                    hiddenLabel: intl.formatMessage({
+                      defaultMessage: "Hidden",
+                      description: "collection label"
+                    }),
+
+                    visibleLabel: intl.formatMessage({
+                      defaultMessage: "Visible",
+                      description: "collection label"
+                    })
+                  }}
+                  errors={channelsErrors}
+                  selectedChannelsCount={data.channelListings.length}
+                  allChannelsCount={channelsCount}
+                  channels={data.channelListings}
                   disabled={disabled}
-                  hiddenMessage={intl.formatMessage(
-                    {
-                      defaultMessage: "will be visible from {date}",
-                      description: "collection"
-                    },
-                    {
-                      date: localizeDate(data.publicationDate)
-                    }
-                  )}
-                  onChange={change}
-                  visibleMessage={intl.formatMessage(
-                    {
-                      defaultMessage: "since {date}",
-                      description: "collection"
-                    },
-                    {
-                      date: localizeDate(data.publicationDate)
-                    }
-                  )}
-                >
-                  <FormSpacer />
-                  <Hr />
-                  <ControlledCheckbox
-                    name={"isFeatured" as keyof CollectionDetailsPageFormData}
-                    label={intl.formatMessage({
-                      defaultMessage: "Feature on Homepage",
-                      description: "switch button"
-                    })}
-                    checked={data.isFeatured}
-                    onChange={change}
-                    disabled={disabled}
-                  />
-                </VisibilityCard>
+                  onChange={handlers.changeChannels}
+                  openModal={openChannelsModal}
+                />
               </div>
             </div>
           </Grid>
           <SaveButtonBar
             state={saveButtonBarState}
-            disabled={disabled || !hasChanged}
+            disabled={disabled || (!hasChanged && !hasChannelChanged)}
             onCancel={onBack}
             onDelete={onCollectionRemove}
             onSave={submit}
           />
         </Container>
       )}
-    </Form>
+    </CollectionUpdateForm>
   );
 };
 CollectionDetailsPage.displayName = "CollectionDetailsPage";

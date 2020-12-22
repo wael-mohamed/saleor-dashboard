@@ -1,9 +1,9 @@
 import { MutationResult } from "react-apollo";
 
-import { User_userPermissions } from "./auth/types/User";
 import { ConfirmButtonTransitionState } from "./components/ConfirmButton";
 import { IFilter } from "./components/Filter";
 import { MultiAutocompleteChoiceType } from "./components/MultiAutocompleteSelectField";
+import { User_userPermissions } from "./fragments/types/User";
 
 export interface UserError {
   field: string | null;
@@ -21,6 +21,7 @@ export interface ListSettings<TColumn extends string = string> {
 }
 
 export enum ListViews {
+  APPS_LIST = "APPS_LIST",
   ATTRIBUTE_LIST = "ATTRIBUTE_LIST",
   CATEGORY_LIST = "CATEGORY_LIST",
   COLLECTION_LIST = "COLLECTION_LIST",
@@ -29,6 +30,7 @@ export enum ListViews {
   NAVIGATION_LIST = "NAVIGATION_LIST",
   ORDER_LIST = "ORDER_LIST",
   PAGES_LIST = "PAGES_LIST",
+  PAGE_TYPES_LIST = "PAGE_TYPES_LIST",
   PLUGINS_LIST = "PLUGIN_LIST",
   PRODUCT_LIST = "PRODUCT_LIST",
   PERMISSION_GROUP_LIST = "PERMISSION_GROUP_LIST",
@@ -102,7 +104,7 @@ export interface FilterPageProps<TKeys extends string, TOpts extends object>
 }
 
 export interface FilterProps<TKeys extends string> {
-  currencySymbol: string;
+  currencySymbol?: string;
   onFilterChange: (filter: IFilter<TKeys>) => void;
 }
 
@@ -113,6 +115,10 @@ export interface TabPageProps {
   onTabChange: (tab: number) => void;
   onTabDelete: () => void;
   onTabSave: () => void;
+}
+
+export interface ChannelProps {
+  selectedChannelId: string;
 }
 
 export interface PartialMutationProviderOutput<

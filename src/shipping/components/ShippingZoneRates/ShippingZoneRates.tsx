@@ -14,14 +14,15 @@ import MoneyRange from "@saleor/components/MoneyRange";
 import ResponsiveTable from "@saleor/components/ResponsiveTable";
 import Skeleton from "@saleor/components/Skeleton";
 import WeightRange from "@saleor/components/WeightRange";
+import { ShippingZoneDetailsFragment_shippingMethods } from "@saleor/fragments/types/ShippingZoneDetailsFragment";
+import { ChannelProps } from "@saleor/types";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { maybe, renderCollection } from "../../../misc";
 import { ICONBUTTON_SIZE } from "../../../theme";
-import { ShippingZoneDetailsFragment_shippingMethods } from "../../types/ShippingZoneDetailsFragment";
 
-export interface ShippingZoneRatesProps {
+export interface ShippingZoneRatesProps extends ChannelProps {
   disabled: boolean;
   rates: ShippingZoneDetailsFragment_shippingMethods[];
   variant: "price" | "weight";
@@ -33,17 +34,18 @@ export interface ShippingZoneRatesProps {
 const useStyles = makeStyles(
   theme => ({
     alignRight: {
-      "&:last-child": {
-        paddingRight: 0
-      },
-      paddingRight: 0,
+      paddingRight: 24,
       width: ICONBUTTON_SIZE + theme.spacing(0.5)
     },
     nameColumn: {
-      width: 300
+      width: "auto"
     },
     valueColumn: {
-      width: 300
+      width: "auto"
+    },
+    buttonColumn: {
+      width: "62px",
+      padding: "4px 0"
     }
   }),
   { name: "ShippingZoneRates" }
@@ -55,6 +57,7 @@ const ShippingZoneRates: React.FC<ShippingZoneRatesProps> = props => {
     onRateEdit,
     onRateRemove,
     rates,
+    selectedChannelId,
     variant
   } = props;
 
@@ -111,61 +114,73 @@ const ShippingZoneRates: React.FC<ShippingZoneRatesProps> = props => {
                 description="shipping method price"
               />
             </TableCell>
-            <TableCell />
-            <TableCell />
+            <TableCell className={classes.buttonColumn} />
+            <TableCell className={classes.buttonColumn} />
           </TableRow>
         </TableHead>
         <TableBody>
           {renderCollection(
             rates,
-            rate => (
-              <TableRow
-                hover={!!rate}
-                key={rate ? rate.id : "skeleton"}
-                onClick={!!rate ? () => onRateEdit(rate.id) : undefined}
-              >
-                <TableCell className={classes.nameColumn}>
-                  {maybe<React.ReactNode>(() => rate.name, <Skeleton />)}
-                </TableCell>
-                <TableCell>
-                  {maybe<React.ReactNode>(
-                    () =>
-                      variant === "price" ? (
-                        <MoneyRange
-                          from={rate.minimumOrderPrice}
-                          to={rate.maximumOrderPrice}
-                        />
-                      ) : (
-                        <WeightRange
-                          from={rate.minimumOrderWeight}
-                          to={rate.maximumOrderWeight}
-                        />
-                      ),
-                    <Skeleton />
-                  )}
-                </TableCell>
-                <TableCell>
-                  {maybe<React.ReactNode>(
-                    () => (
-                      <Money money={rate.price} />
-                    ),
-                    <Skeleton />
-                  )}
-                </TableCell>
-                <IconButtonTableCell
-                  disabled={disabled}
-                  onClick={() => onRateEdit(rate.id)}
+            rate => {
+              const channel = rate?.channelListings?.find(
+                listing => listing.channel.id === selectedChannelId
+              );
+              return (
+                <TableRow
+                  hover={!!rate}
+                  key={rate ? rate.id : "skeleton"}
+                  onClick={!!rate ? () => onRateEdit(rate.id) : undefined}
                 >
-                  <EditIcon />
-                </IconButtonTableCell>
-                <IconButtonTableCell
-                  disabled={disabled}
-                  onClick={() => onRateRemove(rate.id)}
-                >
-                  <DeleteIcon />
-                </IconButtonTableCell>
-              </TableRow>
-            ),
+                  <TableCell className={classes.nameColumn}>
+                    {maybe<React.ReactNode>(() => rate.name, <Skeleton />)}
+                  </TableCell>
+                  <TableCell>
+                    {maybe<React.ReactNode>(
+                      () =>
+                        rate && !channel ? (
+                          "-"
+                        ) : variant === "price" ? (
+                          <MoneyRange
+                            from={channel.minimumOrderPrice}
+                            to={channel.maximumOrderPrice}
+                          />
+                        ) : (
+                          <WeightRange
+                            from={rate.minimumOrderWeight}
+                            to={rate.maximumOrderWeight}
+                          />
+                        ),
+                      <Skeleton />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {maybe<React.ReactNode>(
+                      () =>
+                        rate && !channel ? (
+                          "-"
+                        ) : (
+                          <Money money={channel.price} />
+                        ),
+                      <Skeleton />
+                    )}
+                  </TableCell>
+                  <IconButtonTableCell
+                    disabled={disabled}
+                    onClick={() => onRateEdit(rate.id)}
+                    className={classes.buttonColumn}
+                  >
+                    <EditIcon />
+                  </IconButtonTableCell>
+                  <IconButtonTableCell
+                    disabled={disabled}
+                    onClick={() => onRateRemove(rate.id)}
+                    className={classes.buttonColumn}
+                  >
+                    <DeleteIcon />
+                  </IconButtonTableCell>
+                </TableRow>
+              );
+            },
             () => (
               <TableRow>
                 <TableCell colSpan={5}>

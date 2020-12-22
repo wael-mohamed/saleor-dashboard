@@ -10,6 +10,7 @@ import Money from "@saleor/components/Money";
 import Percent from "@saleor/components/Percent";
 import Skeleton from "@saleor/components/Skeleton";
 import { commonMessages } from "@saleor/intl";
+import { ChannelProps } from "@saleor/types";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
@@ -17,14 +18,19 @@ import { maybe } from "../../../misc";
 import { SaleType } from "../../../types/globalTypes";
 import { SaleDetails_sale } from "../../types/SaleDetails";
 
-export interface SaleSummaryProps {
-  defaultCurrency: string;
+export interface SaleSummaryProps extends ChannelProps {
   sale: SaleDetails_sale;
 }
 
-const SaleSummary: React.FC<SaleSummaryProps> = ({ defaultCurrency, sale }) => {
+const SaleSummary: React.FC<SaleSummaryProps> = ({
+  selectedChannelId,
+  sale
+}) => {
   const intl = useIntl();
 
+  const channel = sale?.channelListings?.find(
+    listing => listing.channel.id === selectedChannelId
+  );
   return (
     <Card>
       <CardTitle title={intl.formatMessage(commonMessages.summary)} />
@@ -41,18 +47,20 @@ const SaleSummary: React.FC<SaleSummaryProps> = ({ defaultCurrency, sale }) => {
           <FormattedMessage defaultMessage="Value" description="sale value" />
         </Typography>
         <Typography>
-          {maybe<React.ReactNode>(
-            () =>
-              sale.type === SaleType.FIXED ? (
-                <Money
-                  money={{
-                    amount: sale.value,
-                    currency: defaultCurrency
-                  }}
-                />
-              ) : (
-                <Percent amount={sale.value} />
-              ),
+          {sale ? (
+            sale.type === SaleType.FIXED && channel?.discountValue ? (
+              <Money
+                money={{
+                  amount: channel.discountValue,
+                  currency: channel.currency
+                }}
+              />
+            ) : channel?.discountValue ? (
+              <Percent amount={channel.discountValue} />
+            ) : (
+              "-"
+            )
+          ) : (
             <Skeleton />
           )}
         </Typography>
